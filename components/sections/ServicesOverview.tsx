@@ -1,81 +1,35 @@
 "use client";
-import { useLayoutEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useRef, useState } from "react";
+import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 import Link from "next/link";
 import { SERVICES } from "@/lib/content";
 
-gsap.registerPlugin(ScrollTrigger);
-
 const CARD_W = 480;
 const CARD_GAP = 40;
+const STEP = CARD_W + CARD_GAP;
 
 export default function ServicesOverview() {
-  const sectionRef = useRef<HTMLElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const x = useMotionValue(0);
   const trackRef = useRef<HTMLDivElement>(null);
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  useLayoutEffect(() => {
-    const ctx = gsap.context(() => {
-      const numCards = SERVICES.length;
-      const cards = cardRefs.current.filter(Boolean) as HTMLDivElement[];
-      const totalTravel = (numCards - 1) * (CARD_W + CARD_GAP);
+  function snapTo(index: number) {
+    const clamped = Math.max(0, Math.min(index, SERVICES.length - 1));
+    setActiveIndex(clamped);
+    animate(x, -clamped * STEP, { type: "spring", stiffness: 300, damping: 35 });
+  }
 
-      // Center first card on load
-      const startX = window.innerWidth / 2 - CARD_W / 2;
-      gsap.set(trackRef.current, { x: startX });
-
-      // Initial scale state
-      cards.forEach((card, i) => {
-        gsap.set(card, {
-          scale: i === 0 ? 1 : 0.82,
-          opacity: i === 0 ? 1 : 0.45,
-        });
-      });
-
-      gsap.to(trackRef.current, {
-        x: startX - totalTravel,
-        ease: "none",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          pin: true,
-          scrub: 1,
-          start: "top top",
-          end: () => `+=${totalTravel}`,
-          snap: {
-            snapTo: 1 / (numCards - 1),
-            duration: { min: 0.3, max: 0.6 },
-            ease: "power2.inOut",
-          },
-          onUpdate(self) {
-            const activeFloat = self.progress * (numCards - 1);
-            cards.forEach((card, i) => {
-              const dist = Math.abs(i - activeFloat);
-              const clamped = Math.min(dist, 1);
-              gsap.set(card, {
-                scale: 1 - clamped * 0.18,
-                opacity: 1 - clamped * 0.55,
-              });
-            });
-          },
-        },
-      });
-    });
-
-    return () => {
-      ScrollTrigger.getAll().forEach((t) => t.kill());
-      ctx.revert();
-    };
-  }, []);
+  function onDragEnd(_: unknown, info: { offset: { x: number } }) {
+    const threshold = STEP / 4;
+    if (info.offset.x < -threshold) snapTo(activeIndex + 1);
+    else if (info.offset.x > threshold) snapTo(activeIndex - 1);
+    else snapTo(activeIndex);
+  }
 
   return (
-    <section
-      ref={sectionRef}
-      className="bg-transparent overflow-hidden grid-bg"
-      style={{ height: "100vh" }}
-    >
+    <section className="bg-transparent overflow-hidden grid-bg py-20">
       {/* Header */}
-      <div className="max-w-7xl mx-auto px-6 pt-20 pb-10">
+      <div className="max-w-7xl mx-auto px-6 pb-10">
         <p className="section-label mb-6">WHAT I DO</p>
         <h2 className="text-2xl sm:text-3xl md:text-6xl font-black text-white leading-tight">
           Five ways I help
@@ -87,58 +41,70 @@ export default function ServicesOverview() {
         </p>
       </div>
 
-      {/* Cards track */}
-      <div
-        className="overflow-visible"
-        style={{ height: "calc(100vh - 260px)", display: "flex", alignItems: "center" }}
-      >
-        <div
+      {/* Drag carousel */}
+      <div className="overflow-hidden cursor-grab active:cursor-grabbing" style={{ paddingLeft: "max(24px, calc(50vw - 240px))" }}>
+        <motion.div
           ref={trackRef}
-          style={{
-            display: "flex",
-            gap: `${CARD_GAP}px`,
-            alignItems: "center",
-            willChange: "transform",
-          }}
+          style={{ x, display: "flex", gap: `${CARD_GAP}px`, alignItems: "center" }}
+          drag="x"
+          dragConstraints={{ left: -(SERVICES.length - 1) * STEP, right: 0 }}
+          dragElastic={0.08}
+          onDragEnd={onDragEnd}
+          dragTransition={{ bounceStiffness: 300, bounceDamping: 35 }}
         >
-          {SERVICES.map((service, i) => (
-            <div
-              key={service.slug}
-              ref={(el) => { cardRefs.current[i] = el; }}
-              className="flex-shrink-0 glass-card-dark rounded-2xl p-8 border-t-2 border-t-brand-orange cyber-corner"
-              style={{ width: `min(${CARD_W}px, 85vw)`, willChange: "transform, opacity" }}
-            >
-              <p className="text-xs font-black tracking-[0.3em] text-brand-orange/40 mb-6">
-                {service.number}
-              </p>
-              <h3 className="text-2xl md:text-3xl font-black text-white leading-tight mb-4">
-                {service.bigHeadline.map((l, j) => (
-                  <span key={j} className="block">{l}</span>
-                ))}
-              </h3>
-              <p className="text-sm text-brand-gray-text leading-relaxed mb-6">
-                {service.pain.split("\n")[0]}
-              </p>
-              <p className="text-sm text-white/70 leading-relaxed mb-8">
-                {service.description.split("\n")[0]}
-              </p>
-              <Link
-                href={service.cta.href}
-                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold btn-red"
+          {SERVICES.map((service, i) => {
+            const dist = useTransform(x, (v) => Math.abs(i + v / STEP));
+            const scale = useTransform(dist, [0, 1], [1, 0.88]);
+            const opacity = useTransform(dist, [0, 1], [1, 0.45]);
+
+            return (
+              <motion.div
+                key={service.slug}
+                style={{ width: `min(${CARD_W}px, 85vw)`, scale, opacity, flexShrink: 0 }}
+                className="glass-card-dark rounded-2xl p-8 border-t-2 border-t-brand-orange cyber-corner"
               >
-                {service.cta.label}
-              </Link>
-            </div>
-          ))}
-        </div>
+                <p className="text-xs font-black tracking-[0.3em] text-brand-orange/40 mb-6">
+                  {service.number}
+                </p>
+                <h3 className="text-2xl md:text-3xl font-black text-white leading-tight mb-4">
+                  {service.bigHeadline.map((l, j) => (
+                    <span key={j} className="block">{l}</span>
+                  ))}
+                </h3>
+                <p className="text-sm text-brand-gray-text leading-relaxed mb-6">
+                  {service.pain.split("\n")[0]}
+                </p>
+                <p className="text-sm text-white/70 leading-relaxed mb-8">
+                  {service.description.split("\n")[0]}
+                </p>
+                <Link
+                  href={service.cta.href}
+                  className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold btn-red"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {service.cta.label}
+                </Link>
+              </motion.div>
+            );
+          })}
+        </motion.div>
       </div>
 
       {/* Progress dots */}
-      <div className="flex justify-center gap-2 mt-4">
+      <div className="flex justify-center gap-2 mt-8">
         {SERVICES.map((_, i) => (
-          <div
+          <button
             key={i}
-            className="h-1.5 w-1.5 rounded-full bg-brand-orange/30"
+            onClick={() => snapTo(i)}
+            className="transition-all duration-300"
+            style={{
+              height: "6px",
+              width: i === activeIndex ? "24px" : "6px",
+              borderRadius: "9999px",
+              background: i === activeIndex ? "#FF6A00" : "rgba(255,106,0,0.3)",
+              border: "none",
+              cursor: "pointer",
+            }}
           />
         ))}
       </div>
