@@ -27,6 +27,21 @@ export default function ContactPage() {
         styles: { branding: { brandColor: "#FF6A00" } },
         hideEventTypeDetails: false,
         cssVarsPerTheme: {
+          light: {
+            "cal-bg":              "#ffffff",
+            "cal-bg-emphasis":     "#f7f7f7",
+            "cal-bg-subtle":       "#f3f4f6",
+            "cal-bg-muted":        "#e5e7eb",
+            "cal-brand":           "#FF6A00",
+            "cal-brand-emphasis":  "#C83205",
+            "cal-brand-text":      "#ffffff",
+            "cal-text":            "#111827",
+            "cal-text-emphasis":   "#000000",
+            "cal-text-subtle":     "#6b7280",
+            "cal-border":          "rgba(255,106,0,0.25)",
+            "cal-border-subtle":   "rgba(255,106,0,0.12)",
+            "cal-border-emphasis": "rgba(255,106,0,0.5)",
+          },
           dark: {
             "cal-bg":              "#110800",
             "cal-bg-emphasis":     "#1f0e00",
