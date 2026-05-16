@@ -31,7 +31,7 @@ export default function Testimonials() {
           viewport={{ once: true }}
           className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-black text-white mb-16"
         >
-          Don&apos;t take my word for it.
+          My clients do the talking.
         </motion.h2>
 
         <div className="relative min-h-52">
