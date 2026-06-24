@@ -14,6 +14,13 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Benzadid Intelligence — AI Websites, Agents & Automation",
   description: "AI-powered websites, automation agents, AI audit consultancy, and mentorship for professionals.",
+  icons: {
+    icon: [
+      { url: "/icon.png", type: "image/png" },
+    ],
+    apple: "/icon.png",
+    shortcut: "/icon.png",
+  },
 };
 
 export default function RootLayout({
