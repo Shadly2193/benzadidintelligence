@@ -16,10 +16,11 @@ export const metadata: Metadata = {
   description: "AI-powered websites, automation agents, AI audit consultancy, and mentorship for professionals.",
   icons: {
     icon: [
-      { url: "/icon.png", type: "image/png" },
+      { url: "/favicon.ico" },
+      { url: "/icon.png", type: "image/png", sizes: "any" },
     ],
-    apple: "/icon.png",
-    shortcut: "/icon.png",
+    apple: { url: "/icon.png", sizes: "any" },
+    shortcut: "/favicon.ico",
   },
 };
 
