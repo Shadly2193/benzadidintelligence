@@ -1,5 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
+import AutoPlayVideo from "@/components/ui/AutoPlayVideo";
 
 const videos = [
   {
@@ -50,12 +51,8 @@ export default function VideoShowcase() {
               className="glass-card-dark rounded-2xl overflow-hidden cyber-corner"
             >
               <div className="video-glass-border rounded-none border-0">
-                <video
+                <AutoPlayVideo
                   src={video.src}
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
                   className="w-full aspect-video object-cover"
                 />
               </div>

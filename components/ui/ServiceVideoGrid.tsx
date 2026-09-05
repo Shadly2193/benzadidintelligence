@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 
 export interface VideoItem {
@@ -12,8 +12,17 @@ export interface VideoItem {
 function VideoCard({ item, priority = false }: { item: VideoItem; priority?: boolean }) {
   const [hovered, setHovered] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
-
   const playPromiseRef = useRef<Promise<void> | null>(null);
+
+  useEffect(() => {
+    const el = videoRef.current;
+    if (!el || !item.src) return;
+    el.muted = true;
+    el.load();
+    el.play().catch(() => {
+      el.addEventListener("canplay", () => el.play().catch(() => {}), { once: true });
+    });
+  }, [item.src]);
 
   const handleMouseEnter = () => {
     setHovered(true);
@@ -23,17 +32,9 @@ function VideoCard({ item, priority = false }: { item: VideoItem; priority?: boo
   };
   const handleMouseLeave = () => {
     setHovered(false);
-    const vid = videoRef.current;
-    if (!vid) return;
-    if (playPromiseRef.current) {
-      playPromiseRef.current.then(() => {
-        vid.pause();
-        vid.currentTime = 0;
-      }).catch(() => {});
+    if (videoRef.current) {
+      playPromiseRef.current?.then(() => {}).catch(() => {});
       playPromiseRef.current = null;
-    } else {
-      vid.pause();
-      vid.currentTime = 0;
     }
   };
 
@@ -52,6 +53,7 @@ function VideoCard({ item, priority = false }: { item: VideoItem; priority?: boo
         <video
           ref={videoRef}
           src={item.src}
+          autoPlay
           muted
           loop
           playsInline

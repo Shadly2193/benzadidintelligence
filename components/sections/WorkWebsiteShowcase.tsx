@@ -1,5 +1,6 @@
 "use client";
 import DecryptText from "@/components/ui/DecryptText";
+import AutoPlayVideo from "@/components/ui/AutoPlayVideo";
 
 export default function WorkWebsiteShowcase() {
   return (
@@ -40,12 +41,8 @@ export default function WorkWebsiteShowcase() {
                   boxShadow: "0 4px 40px rgba(0,0,0,0.4)",
                 }}
               >
-                <video
+                <AutoPlayVideo
                   src={v.src}
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
                   className="w-full aspect-video object-cover"
                 />
               </div>

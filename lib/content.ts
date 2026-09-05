@@ -111,7 +111,7 @@ export const SERVICES = [
       "Social + YouTube connected",
       "Optimised for conversions, not just looks",
     ],
-    pricing: "Starting from ৳30,000",
+    pricing: "Starting from ৳40,000",
     bestFor: "Doctors · Dentists · Architects · Engineers · Consultants",
   },
   {
