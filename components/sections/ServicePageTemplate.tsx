@@ -79,7 +79,7 @@ export default function ServicePageTemplate({
       >
         <div className="max-w-4xl">
           <p className="section-label mb-8 justify-center">
-            {service.number} / {service.title.toUpperCase()}
+            {service.title.toUpperCase()}
           </p>
           {service.pain.split("\n").map((line, i) => (
             <div

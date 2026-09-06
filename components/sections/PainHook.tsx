@@ -3,6 +3,7 @@ import { useLayoutEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { PAIN_HOOK } from "@/lib/content";
+import ScrollCue from "@/components/ui/ScrollCue";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -41,7 +42,7 @@ export default function PainHook() {
   return (
     <section
       ref={sectionRef}
-      className="min-h-screen flex flex-col items-center justify-center bg-transparent px-6 text-center grid-bg"
+      className="relative min-h-screen flex flex-col items-center justify-center bg-transparent px-6 text-center grid-bg"
     >
       <div className="max-w-4xl">
         <div
@@ -70,6 +71,7 @@ export default function PainHook() {
           ))}
         </div>
       </div>
+      <ScrollCue containerRef={sectionRef} />
     </section>
   );
 }

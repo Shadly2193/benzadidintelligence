@@ -4,6 +4,7 @@ import Link from "next/link";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ABOUT_SNIPPET } from "@/lib/content";
+import ScrollCue from "@/components/ui/ScrollCue";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -54,7 +55,7 @@ export default function AboutSnippet() {
   return (
     <section
       ref={sectionRef}
-      className="min-h-screen flex items-center bg-transparent overflow-hidden"
+      className="relative min-h-screen flex items-center bg-transparent overflow-hidden"
       style={{ isolation: "isolate" }}
     >
       <div className="max-w-7xl mx-auto px-6 w-full grid grid-cols-1 md:grid-cols-[1fr_420px] gap-5 md:gap-10 items-center">
@@ -112,6 +113,7 @@ export default function AboutSnippet() {
         </div>
 
       </div>
+      <ScrollCue containerRef={sectionRef} />
     </section>
   );
 }

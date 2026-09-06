@@ -10,19 +10,40 @@ export default function ScrollCue({ containerRef, className = "" }: ScrollCuePro
   const [entered, setEntered] = useState(false);
   const [dismissed, setDismissed] = useState(false);
   const dismissTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const rafRef = useRef<number | null>(null);
 
+  // Robust "is this section on screen" check — measured directly via
+  // getBoundingClientRect on scroll/resize instead of IntersectionObserver,
+  // since GSAP ScrollTrigger's pin:true reparents the element into a
+  // pin-spacer and can make IntersectionObserver misfire during that reflow.
   useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
+    const check = () => {
+      const el = containerRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const inView = rect.top < window.innerHeight * 0.9 && rect.bottom > window.innerHeight * 0.1;
+      if (inView) setEntered(true);
+    };
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) setEntered(true);
-      },
-      { threshold: 0.6 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
+    check();
+    const onScrollOrResize = () => {
+      if (rafRef.current) return;
+      rafRef.current = requestAnimationFrame(() => {
+        rafRef.current = null;
+        check();
+      });
+    };
+
+    window.addEventListener("scroll", onScrollOrResize, { passive: true });
+    window.addEventListener("resize", onScrollOrResize);
+    const retryTimer = setTimeout(check, 300); // catch late layout (GSAP pin-spacer insertion)
+
+    return () => {
+      window.removeEventListener("scroll", onScrollOrResize);
+      window.removeEventListener("resize", onScrollOrResize);
+      clearTimeout(retryTimer);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
   }, [containerRef]);
 
   useEffect(() => {
