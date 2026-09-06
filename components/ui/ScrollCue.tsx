@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 interface ScrollCueProps {
   containerRef: React.RefObject<HTMLElement | null>;
@@ -9,7 +10,10 @@ interface ScrollCueProps {
 export default function ScrollCue({ containerRef, className = "" }: ScrollCueProps) {
   const [entered, setEntered] = useState(false);
   const [dismissed, setDismissed] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const rafRef = useRef<number | null>(null);
+
+  useEffect(() => setMounted(true), []);
 
   // Robust "is this section on screen" check — measured directly via
   // getBoundingClientRect on scroll/resize instead of IntersectionObserver,
@@ -65,9 +69,17 @@ export default function ScrollCue({ containerRef, className = "" }: ScrollCuePro
 
   const visible = entered && !dismissed;
 
-  return (
+  if (!mounted) return null;
+
+  // Rendered via portal straight into <body> — GSAP ScrollTrigger's pin:true
+  // applies a CSS transform to the pinned section (its default "transform"
+  // pinType), and any transformed ancestor creates a new containing block
+  // for position:fixed descendants. Without the portal, this cue would be
+  // fixed relative to the pinned section instead of the real viewport,
+  // landing it just off-screen below the fold.
+  return createPortal(
     <div
-      className={`absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none transition-opacity duration-700 z-20 ${
+      className={`fixed bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none transition-opacity duration-700 z-[9999] ${
         visible ? "opacity-100" : "opacity-0"
       } ${className}`}
     >
@@ -81,6 +93,7 @@ export default function ScrollCue({ containerRef, className = "" }: ScrollCuePro
       >
         <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
-    </div>
+    </div>,
+    document.body
   );
 }
