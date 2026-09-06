@@ -3,6 +3,7 @@ import { useMemo, useRef, useState } from "react";
 import ServicePageTemplate from "@/components/sections/ServicePageTemplate";
 import ServiceVideoGrid from "@/components/ui/ServiceVideoGrid";
 import WebsitePricingTiers, { Tier } from "@/components/sections/WebsitePricingTiers";
+import CustomPlanBanner from "@/components/sections/CustomPlanBanner";
 import PricingComparisonTable from "@/components/sections/PricingComparisonTable";
 import { SERVICES } from "@/lib/content";
 
@@ -135,7 +136,12 @@ export default function WebsiteServicePage() {
           onViewAll={() => setActiveTier(null)}
         />
       }
-      afterAllSlot={<PricingComparisonTable />}
+      afterAllSlot={
+        <>
+          <CustomPlanBanner />
+          <PricingComparisonTable />
+        </>
+      }
     />
   );
 }
