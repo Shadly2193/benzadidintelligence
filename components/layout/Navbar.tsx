@@ -13,18 +13,27 @@ interface Glimpse {
 }
 
 const GLIMPSES: Record<string, Glimpse> = {
-  "/services/website": { kind: "video", src: "/videos/sikder-dental-point.mp4" },
-  "/services/automation": { kind: "video", src: "/videos/automation.mp4" },
-  "/services/content": { kind: "video", src: "/videos/icecream-ad.mp4" },
+  "/services/website": { kind: "video", src: "/videos/nav-glimpse-website.mp4" },
+  "/services/automation": { kind: "video", src: "/videos/nav-glimpse-automation.mp4" },
+  "/services/content": { kind: "video", src: "/videos/nav-glimpse-content.mp4" },
   "/services/audit": { kind: "icon", icon: "audit", label: "AUDIT" },
   "/services/guidance": { kind: "icon", icon: "mentor", label: "MENTORSHIP" },
 };
 
-function GlimpsePanel({ href, title }: { href: string; title: string }) {
+// Video stays mounted and playing at all times (never unmounted when
+// switching hover targets) — `active` only toggles opacity/visibility.
+// Re-mounting a fresh <video src> on every hover was the cause of the
+// visible loading delay: the browser had to re-fetch + re-decode from
+// scratch each time instead of the clip already running in the background.
+function GlimpsePanel({ href, title, active = true }: { href: string; title: string; active?: boolean }) {
   const glimpse = GLIMPSES[href];
   if (!glimpse) return null;
   return (
-    <div className="relative w-full h-full rounded-xl overflow-hidden border border-brand-orange/20">
+    <div
+      className={`relative w-full h-full rounded-xl overflow-hidden border border-brand-orange/20 ${
+        active ? "" : "absolute inset-0 opacity-0 invisible pointer-events-none"
+      }`}
+    >
       {glimpse.kind === "video" ? (
         <video
           src={glimpse.src}
@@ -32,6 +41,7 @@ function GlimpsePanel({ href, title }: { href: string; title: string }) {
           muted
           loop
           playsInline
+          preload="auto"
           className="w-full h-full object-cover"
         />
       ) : (
@@ -136,13 +146,17 @@ export default function Navbar() {
                           ))}
                         </div>
 
-                        {/* Right: glimpse preview */}
+                        {/* Right: glimpse preview — all panels pre-mounted, only opacity toggles */}
                         <div className="p-5">
-                          <div className="w-full h-full min-h-[220px]">
-                            <GlimpsePanel
-                              href={link.children[activeChild]?.href ?? link.children[0].href}
-                              title={link.children[activeChild]?.label ?? link.children[0].label}
-                            />
+                          <div className="relative w-full h-full min-h-[220px]">
+                            {link.children.map((child, i) => (
+                              <GlimpsePanel
+                                key={child.href}
+                                href={child.href}
+                                title={child.label}
+                                active={activeChild === i}
+                              />
+                            ))}
                           </div>
                         </div>
                       </motion.div>
