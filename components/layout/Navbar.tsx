@@ -2,65 +2,23 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ChevronDown, ShieldCheck, Users } from "lucide-react";
-import { NAV_LINKS, SITE_NAME } from "@/lib/content";
+import { Menu, X, ChevronDown } from "lucide-react";
+import { NAV_LINKS, SITE_NAME, SERVICES } from "@/lib/content";
 
-interface Glimpse {
-  kind: "video" | "icon";
-  src?: string;
-  icon?: "audit" | "mentor";
-  label?: string;
+function pitchFor(href: string) {
+  const slug = href.split("/").pop();
+  const service = SERVICES.find((s) => s.slug === slug);
+  return service?.description.split("\n")[0] ?? "";
 }
 
-const GLIMPSES: Record<string, Glimpse> = {
-  "/services/website": { kind: "video", src: "/videos/nav-glimpse-website.mp4" },
-  "/services/automation": { kind: "video", src: "/videos/nav-glimpse-automation.mp4" },
-  "/services/content": { kind: "video", src: "/videos/nav-glimpse-content.mp4" },
-  "/services/audit": { kind: "icon", icon: "audit", label: "AUDIT" },
-  "/services/guidance": { kind: "icon", icon: "mentor", label: "MENTORSHIP" },
-};
-
-// Video stays mounted and playing at all times (never unmounted when
-// switching hover targets) — `active` only toggles opacity/visibility.
-// Re-mounting a fresh <video src> on every hover was the cause of the
-// visible loading delay: the browser had to re-fetch + re-decode from
-// scratch each time instead of the clip already running in the background.
-function GlimpsePanel({ href, title, active = true }: { href: string; title: string; active?: boolean }) {
-  const glimpse = GLIMPSES[href];
-  if (!glimpse) return null;
+function headlineWithUnderline(title: string) {
+  const words = title.split(" ");
+  const last = words.pop();
   return (
-    <div
-      className={`relative w-full h-full rounded-xl overflow-hidden border border-brand-orange/20 ${
-        active ? "" : "absolute inset-0 opacity-0 invisible pointer-events-none"
-      }`}
-    >
-      {glimpse.kind === "video" ? (
-        <video
-          src={glimpse.src}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          className="w-full h-full object-cover"
-        />
-      ) : (
-        <div
-          className="w-full h-full flex flex-col items-center justify-center gap-3"
-          style={{ background: "linear-gradient(135deg, rgba(255,106,0,0.14), rgba(200,50,5,0.06))" }}
-        >
-          {glimpse.icon === "audit" ? (
-            <ShieldCheck className="w-8 h-8 text-brand-orange" />
-          ) : (
-            <Users className="w-8 h-8 text-brand-orange" />
-          )}
-          <span className="text-[11px] tracking-widest uppercase text-brand-gray-text">{glimpse.label}</span>
-        </div>
-      )}
-      <div className="absolute bottom-0 left-0 right-0 p-4 text-sm font-bold text-white bg-gradient-to-t from-black/85 to-transparent">
-        {title}
-      </div>
-    </div>
+    <>
+      {words.length > 0 && `${words.join(" ")} `}
+      <span className="underline decoration-brand-orange decoration-2 underline-offset-8">{last}</span>
+    </>
   );
 }
 
@@ -69,7 +27,6 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const [activeChild, setActiveChild] = useState(0);
-  const [mobileAccordion, setMobileAccordion] = useState<number | null>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -118,46 +75,54 @@ export default function Navbar() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 8 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute top-full left-1/2 -translate-x-1/2 mt-3 grid grid-cols-[240px_360px] rounded-2xl overflow-hidden shadow-2xl border border-brand-orange/20"
+                        className="absolute top-full left-1/2 -translate-x-1/2 mt-3 grid grid-cols-[110px_460px] rounded-2xl overflow-hidden shadow-2xl border border-brand-orange/20"
                         style={{
                           background: "rgba(12,7,4,0.98)",
                           backdropFilter: "blur(20px)",
                           WebkitBackdropFilter: "blur(20px)",
                         }}
                       >
-                        {/* Left: service list */}
-                        <div className="py-3 border-r border-brand-orange/10">
+                        {/* Left: serif numeral rail */}
+                        <div className="py-6 border-r border-brand-orange/10">
                           {link.children.map((child, i) => (
-                            <Link
+                            <button
                               key={child.href}
-                              href={child.href}
                               onMouseEnter={() => setActiveChild(i)}
-                              className={`flex items-center gap-3 px-6 py-3.5 text-sm font-semibold border-l-2 transition-all ${
-                                activeChild === i
-                                  ? "text-white bg-brand-orange/10 border-brand-orange"
-                                  : "text-white/65 border-transparent hover:text-white hover:bg-brand-orange/5"
+                              className={`block w-full text-left pl-7 py-2.5 font-serif text-[22px] font-bold transition-colors ${
+                                activeChild === i ? "text-brand-orange" : "text-white/20 hover:text-white/50"
                               }`}
                             >
-                              <span className={`text-[11px] font-bold ${activeChild === i ? "text-brand-orange" : "text-white/25"}`}>
-                                0{i + 1}
-                              </span>
-                              {child.label}
-                            </Link>
+                              0{i + 1}
+                            </button>
                           ))}
                         </div>
 
-                        {/* Right: glimpse preview — all panels pre-mounted, only opacity toggles */}
-                        <div className="p-5">
-                          <div className="relative w-full h-full min-h-[220px]">
-                            {link.children.map((child, i) => (
-                              <GlimpsePanel
-                                key={child.href}
+                        {/* Right: editorial headline panel — all pre-mounted, opacity toggles */}
+                        <div className="relative p-9 min-h-[220px]">
+                          {link.children.map((child, i) => (
+                            <div
+                              key={child.href}
+                              className={`transition-opacity duration-300 ${
+                                activeChild === i ? "opacity-100" : "absolute inset-9 opacity-0 pointer-events-none"
+                              }`}
+                            >
+                              <p className="text-[11px] tracking-[0.25em] uppercase text-brand-gray-text mb-3">
+                                Service 0{i + 1}
+                              </p>
+                              <h2 className="font-serif text-[32px] font-bold leading-[1.05] text-white mb-4">
+                                {headlineWithUnderline(child.label)}
+                              </h2>
+                              <p className="text-sm text-brand-gray-text leading-relaxed max-w-[340px] mb-4">
+                                {pitchFor(child.href)}
+                              </p>
+                              <Link
                                 href={child.href}
-                                title={child.label}
-                                active={activeChild === i}
-                              />
-                            ))}
-                          </div>
+                                className="text-xs font-bold tracking-wide text-brand-orange"
+                              >
+                                Explore This Service →
+                              </Link>
+                            </div>
+                          ))}
                         </div>
                       </motion.div>
                     )}
@@ -211,51 +176,26 @@ export default function Navbar() {
                     <p className="text-xs font-bold tracking-widest text-brand-gray-text uppercase mb-2 px-1">
                       {link.label}
                     </p>
-                    {link.children.map((child, i) => {
-                      const isOpen = mobileAccordion === i;
-                      return (
-                        <div key={child.href} className="border-b border-white/6 last:border-b-0">
-                          <button
-                            className="w-full flex items-center justify-between py-3 pl-3 pr-1 text-sm font-semibold text-white/80"
-                            onClick={() => setMobileAccordion(isOpen ? null : i)}
-                          >
+                    {link.children.map((child, i) => (
+                      <Link
+                        key={child.href}
+                        href={child.href}
+                        className="flex items-start gap-4 py-4 border-b border-white/6 last:border-b-0"
+                        onClick={() => setMobileOpen(false)}
+                      >
+                        <span className="font-serif text-2xl font-bold text-brand-orange/50 flex-shrink-0">
+                          0{i + 1}
+                        </span>
+                        <span>
+                          <span className="block font-serif text-base font-bold text-white mb-1">
                             {child.label}
-                            <ChevronDown
-                              className={`w-4 h-4 text-brand-orange transition-transform duration-200 ${
-                                isOpen ? "rotate-180" : ""
-                              }`}
-                            />
-                          </button>
-                          <AnimatePresence initial={false}>
-                            {isOpen && (
-                              <motion.div
-                                initial={{ height: 0, opacity: 0 }}
-                                animate={{ height: "auto", opacity: 1 }}
-                                exit={{ height: 0, opacity: 0 }}
-                                transition={{ duration: 0.25 }}
-                                className="overflow-hidden"
-                              >
-                                <div className="pl-3 pb-4">
-                                  <div className="h-32 rounded-xl overflow-hidden mb-3">
-                                    <GlimpsePanel href={child.href} title={child.label} />
-                                  </div>
-                                  <Link
-                                    href={child.href}
-                                    className="inline-flex items-center text-xs font-bold text-brand-orange"
-                                    onClick={() => {
-                                      setMobileOpen(false);
-                                      setMobileAccordion(null);
-                                    }}
-                                  >
-                                    View {child.label} →
-                                  </Link>
-                                </div>
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
-                        </div>
-                      );
-                    })}
+                          </span>
+                          <span className="block text-xs text-brand-gray-text leading-relaxed">
+                            {pitchFor(child.href)}
+                          </span>
+                        </span>
+                      </Link>
+                    ))}
                   </div>
                 ) : (
                   <Link
