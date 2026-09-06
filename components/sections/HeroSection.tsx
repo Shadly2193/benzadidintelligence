@@ -6,12 +6,14 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { HERO } from "@/lib/content";
 import DecryptText from "@/components/ui/DecryptText";
+import ScrollCue from "@/components/ui/ScrollCue";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function HeroSection() {
   const textRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -59,7 +61,7 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden bg-transparent pt-20" style={{ isolation: "isolate" }}>
+    <section ref={sectionRef} className="relative min-h-screen flex items-center overflow-hidden bg-transparent pt-20" style={{ isolation: "isolate" }}>
       {/* Full-screen background image — zoomed, right-anchored for face visibility */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
@@ -173,19 +175,7 @@ export default function HeroSection() {
       </div>
 
       {/* Scroll indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.8 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-      >
-        <span className="text-xs tracking-[0.3em] uppercase text-brand-gray-text">scroll</span>
-        <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{ repeat: Infinity, duration: 1.5 }}
-          className="w-px h-10 bg-gradient-to-b from-brand-orange/60 to-transparent"
-        />
-      </motion.div>
+      <ScrollCue containerRef={sectionRef} />
     </section>
   );
 }

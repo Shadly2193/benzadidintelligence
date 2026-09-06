@@ -6,6 +6,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { CheckCircle } from "lucide-react";
 import GlassCard from "@/components/ui/GlassCard";
+import ScrollCue from "@/components/ui/ScrollCue";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -74,7 +75,7 @@ export default function ServicePageTemplate({
       {/* Pinned pain hook */}
       <section
         ref={pinRef}
-        className="min-h-screen flex items-center justify-center bg-transparent px-6 text-center grid-bg"
+        className="relative min-h-screen flex items-center justify-center bg-transparent px-6 text-center grid-bg"
       >
         <div className="max-w-4xl">
           <p className="section-label mb-8 justify-center">
@@ -92,6 +93,7 @@ export default function ServicePageTemplate({
             </div>
           ))}
         </div>
+        <ScrollCue containerRef={pinRef} />
       </section>
 
       {afterHeroSlot}

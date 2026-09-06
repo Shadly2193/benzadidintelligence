@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ABOUT_PAGE } from "@/lib/content";
+import ScrollCue from "@/components/ui/ScrollCue";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -176,15 +177,7 @@ export default function AboutPage() {
         </div>
 
         {/* Scroll hint */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.2 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none"
-        >
-          <p className="text-xs tracking-widest text-white/30 uppercase">Scroll</p>
-          <div className="w-px h-10 bg-gradient-to-b from-brand-orange/50 to-transparent" />
-        </motion.div>
+        <ScrollCue containerRef={heroSectionRef} />
       </section>
 
       {/* ── Pinned Timeline Scroll Reveal ── */}
@@ -194,6 +187,7 @@ export default function AboutPage() {
         style={{ height: "100vh" }}
       >
         <p className="absolute top-10 left-1/2 -translate-x-1/2 section-label z-10">MY JOURNEY</p>
+        <ScrollCue containerRef={timelineRef} />
 
         <div className="max-w-6xl mx-auto h-full relative">
           {ABOUT_PAGE.timeline.map((entry, i) => {
