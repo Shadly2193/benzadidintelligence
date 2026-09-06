@@ -111,7 +111,7 @@ export const SERVICES = [
       "Social + YouTube connected",
       "Optimised for conversions, not just looks",
     ],
-    pricing: "Starting from ৳40,000",
+    pricing: "Starting from $400",
     bestFor: "Doctors · Dentists · Architects · Engineers · Consultants",
   },
   {
@@ -131,7 +131,7 @@ export const SERVICES = [
       "Customer Support Bot (24/7)",
       "Custom workflow for your process",
     ],
-    pricing: "Starting from ৳40,000",
+    pricing: "Starting from $400",
     bestFor: "Businesses · Clinics · Agencies · Content teams",
   },
   {
@@ -151,7 +151,7 @@ export const SERVICES = [
       "Ad creatives optimised for CTR",
       "Fast turnaround — no production delays",
     ],
-    pricing: "Starting from ৳15,000",
+    pricing: "Starting from $200",
     bestFor: "Brands · Businesses · Agencies · Content creators",
   },
   {
@@ -171,7 +171,7 @@ export const SERVICES = [
       "Consult on tool selection, workflows, and rollout",
       "Ongoing advisory support available after the audit",
     ],
-    pricing: "Starting from ৳5,000",
+    pricing: "Starting from $100",
     bestFor: "Companies with 5–100+ staff · Leadership teams · Scaling businesses",
   },
   {
@@ -191,7 +191,7 @@ export const SERVICES = [
       "Profession-specific AI roadmap",
       "Session resources, recordings, and action plan",
     ],
-    pricing: "From ৳3,000 / session",
+    pricing: "From $49 / session",
     bestFor: "Professionals · Teams · Companies building AI capacity · Anyone who tried courses but still feels lost",
   },
 ];

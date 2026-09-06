@@ -28,6 +28,9 @@ interface ServicePageTemplateProps {
   afterHeroSlot?: React.ReactNode;
   beforeWhatYouGetSlot?: React.ReactNode;
   whatYouGetHeadline?: React.ReactNode;
+  /** Fully replaces the default "What You Get" section (features + process + pricing box) */
+  whatYouGetOverride?: React.ReactNode;
+  afterAllSlot?: React.ReactNode;
 }
 
 const PROCESS_STEPS = [
@@ -43,6 +46,8 @@ export default function ServicePageTemplate({
   afterHeroSlot,
   beforeWhatYouGetSlot,
   whatYouGetHeadline,
+  whatYouGetOverride,
+  afterAllSlot,
 }: ServicePageTemplateProps) {
   const heroRef = useRef<HTMLDivElement>(null);
   const pinRef = useRef<HTMLElement>(null);
@@ -129,7 +134,8 @@ export default function ServicePageTemplate({
 
       {beforeWhatYouGetSlot}
 
-      {/* What you get */}
+      {whatYouGetOverride ?? (
+      /* What you get */
       <section className="py-24 bg-transparent px-6">
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12 items-start">
           <div>
@@ -194,6 +200,9 @@ export default function ServicePageTemplate({
           </div>
         </div>
       </section>
+      )}
+
+      {afterAllSlot}
     </div>
   );
 }
