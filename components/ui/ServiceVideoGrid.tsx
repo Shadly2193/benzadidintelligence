@@ -7,6 +7,7 @@ export interface VideoItem {
   youtubeId?: string;
   title: string;
   tag?: string;
+  link?: string;
 }
 
 function VideoCard({ item, priority = false }: { item: VideoItem; priority?: boolean }) {
@@ -38,7 +39,7 @@ function VideoCard({ item, priority = false }: { item: VideoItem; priority?: boo
     }
   };
 
-  return (
+  const card = (
     <motion.div
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -49,6 +50,21 @@ function VideoCard({ item, priority = false }: { item: VideoItem; priority?: boo
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
+      {item.link && (
+        <div
+          className="absolute top-3 right-3 z-10 flex items-center gap-1.5 text-xs font-bold tracking-wide px-3 py-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          style={{
+            background: "rgba(255,106,0,0.85)",
+            color: "#0a0603",
+            backdropFilter: "blur(4px)",
+          }}
+        >
+          Click to Watch the Website
+          <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-none stroke-current" strokeWidth={2.5}>
+            <path d="M7 17L17 7M17 7H8M17 7V16" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </div>
+      )}
       {item.src ? (
         <video
           ref={videoRef}
@@ -112,6 +128,15 @@ function VideoCard({ item, priority = false }: { item: VideoItem; priority?: boo
       </div>
     </motion.div>
   );
+
+  if (item.link) {
+    return (
+      <a href={item.link} target="_blank" rel="noopener noreferrer" className="block">
+        {card}
+      </a>
+    );
+  }
+  return card;
 }
 
 interface ServiceVideoGridProps {
