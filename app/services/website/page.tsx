@@ -101,7 +101,7 @@ export default function WebsiteServicePage() {
 
   const filteredVideos = useMemo(() => {
     if (!activeTier) return WEBSITE_VIDEOS;
-    return WEBSITE_VIDEOS.filter((v) => v.tier === activeTier || !v.tier);
+    return WEBSITE_VIDEOS.filter((v) => v.tier === activeTier);
   }, [activeTier]);
 
   const handleSelectTier = (tier: Tier) => {
