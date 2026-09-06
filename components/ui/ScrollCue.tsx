@@ -9,7 +9,6 @@ interface ScrollCueProps {
 export default function ScrollCue({ containerRef, className = "" }: ScrollCueProps) {
   const [entered, setEntered] = useState(false);
   const [dismissed, setDismissed] = useState(false);
-  const dismissTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const rafRef = useRef<number | null>(null);
 
   // Robust "is this section on screen" check — measured directly via
@@ -46,18 +45,21 @@ export default function ScrollCue({ containerRef, className = "" }: ScrollCuePro
     };
   }, [containerRef]);
 
+  // Dismiss only on an actual user scroll/touch gesture — no timer.
+  // A fixed timeout was hiding the cue before real-world page load +
+  // hydration delay even gave the visitor a chance to notice it.
   useEffect(() => {
     if (!entered || dismissed) return;
 
     const dismiss = () => setDismissed(true);
     window.addEventListener("wheel", dismiss, { passive: true, once: true });
     window.addEventListener("touchmove", dismiss, { passive: true, once: true });
-    dismissTimerRef.current = setTimeout(dismiss, 4500);
+    window.addEventListener("keydown", dismiss, { once: true });
 
     return () => {
       window.removeEventListener("wheel", dismiss);
       window.removeEventListener("touchmove", dismiss);
-      if (dismissTimerRef.current) clearTimeout(dismissTimerRef.current);
+      window.removeEventListener("keydown", dismiss);
     };
   }, [entered, dismissed]);
 
