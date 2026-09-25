@@ -1,9 +1,13 @@
 "use client";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { FINAL_CTA } from "@/lib/content";
+interface FinalCtaData {
+  bigText: string[];
+  subtext: string;
+  options: { title: string; description: string; href: string; cta: string }[];
+}
 
-export default function FinalCTA() {
+export default function FinalCTA({ data: FINAL_CTA }: { data: FinalCtaData }) {
 
   return (
     <section className="py-24 bg-transparent px-6 overflow-hidden relative grid-bg">

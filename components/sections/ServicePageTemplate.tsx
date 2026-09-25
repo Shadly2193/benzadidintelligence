@@ -51,52 +51,77 @@ export default function ServicePageTemplate({
 }: ServicePageTemplateProps) {
   const heroRef = useRef<HTMLDivElement>(null);
   const pinRef = useRef<HTMLElement>(null);
-  const line1Ref = useRef<HTMLDivElement>(null);
-  const line2Ref = useRef<HTMLDivElement>(null);
+  const wordsWrapRef = useRef<HTMLDivElement>(null);
+
+  const painLines = service.pain.split("\n");
 
   useLayoutEffect(() => {
+    const words = wordsWrapRef.current?.querySelectorAll<HTMLSpanElement>("[data-word]");
+    if (!words || words.length === 0) return;
+
     const ctx = gsap.context(() => {
+      gsap.set(words, { opacity: 0.14, filter: "blur(6px)", y: 10 });
+
+      const wordCount = words.length;
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: pinRef.current,
           start: "top top",
-          end: "+=200%",
+          end: `+=${Math.max(200, wordCount * 18)}%`,
           scrub: 1,
           pin: true,
           anticipatePin: 1,
         },
       });
-      tl.fromTo(line1Ref.current, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 1 })
-        .fromTo(line2Ref.current, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 1 }, "-=0.3");
+
+      tl.to(words, {
+        opacity: 1,
+        filter: "blur(0px)",
+        y: 0,
+        duration: 1,
+        stagger: 1 / wordCount,
+        ease: "none",
+      });
     });
+
     return () => {
       ScrollTrigger.getAll().forEach((t) => t.kill());
       ctx.revert();
     };
-  }, []);
+  }, [service.pain]);
 
   return (
     <div className="pt-20">
       {/* Pinned pain hook */}
       <section
         ref={pinRef}
-        className="relative min-h-screen flex items-center justify-center bg-transparent px-6 text-center grid-bg"
+        className="relative min-h-screen flex items-center justify-center bg-transparent px-6 py-28 text-center grid-bg"
       >
-        <div className="max-w-4xl">
-          <p className="section-label mb-8 justify-center">
+        <div className={painLines.length > 2 ? "max-w-5xl" : "max-w-4xl"}>
+          <p className="section-label mb-6 justify-center">
             {service.title.toUpperCase()}
           </p>
-          {service.pain.split("\n").map((line, i) => (
-            <div
-              key={i}
-              ref={i === 0 ? line1Ref : i === 1 ? line2Ref : undefined}
-              className={`text-xl sm:text-2xl md:text-5xl lg:text-6xl font-black leading-tight mb-4 opacity-0 ${
-                i === 0 ? "text-white" : "text-brand-gray-text"
-              }`}
-            >
-              {line}
-            </div>
-          ))}
+          <div ref={wordsWrapRef}>
+            {painLines.map((line, i) => (
+              <div
+                key={i}
+                className={`font-black leading-tight mb-2 ${
+                  painLines.length > 2
+                    ? "text-lg sm:text-xl md:text-3xl lg:text-4xl"
+                    : "text-xl sm:text-2xl md:text-5xl lg:text-6xl mb-4"
+                } ${i % 2 === 0 ? "text-white" : "text-brand-gray-text"} ${
+                  painLines.length > 2 && i === 2 ? "mt-6 md:mt-10" : ""
+                }`}
+              >
+                {line.split(" ").map((word, wi) => (
+                  <span key={wi} data-word className="inline-block will-change-[opacity,filter,transform]">
+                    {word}
+                    {wi < line.split(" ").length - 1 ? " " : ""}
+                  </span>
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
         <ScrollCue containerRef={pinRef} />
       </section>

@@ -2,17 +2,25 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { TESTIMONIALS } from "@/lib/content";
+interface TestimonialData {
+  quote: string;
+  author: string;
+  role: string | null;
+  avatar_url: string | null;
+}
 
-export default function Testimonials() {
+export default function Testimonials({ data: TESTIMONIALS }: { data: TestimonialData[] }) {
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {
+    if (TESTIMONIALS.length === 0) return;
     const timer = setInterval(() => {
       setCurrent((prev) => (prev + 1) % TESTIMONIALS.length);
     }, 4000);
     return () => clearInterval(timer);
-  }, []);
+  }, [TESTIMONIALS.length]);
+
+  if (TESTIMONIALS.length === 0) return null;
 
   return (
     <section className="py-24 bg-transparent px-6">
@@ -50,7 +58,7 @@ export default function Testimonials() {
               <div className="flex items-center gap-3">
                 <div className="relative w-11 h-11 rounded-full overflow-hidden ring-2 ring-brand-orange/40 flex-shrink-0">
                   <Image
-                    src={TESTIMONIALS[current].avatar}
+                    src={TESTIMONIALS[current].avatar_url ?? "/images/logo-icon.png"}
                     alt={TESTIMONIALS[current].author}
                     fill
                     className="object-cover object-top"

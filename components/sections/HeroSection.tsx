@@ -4,13 +4,23 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { HERO } from "@/lib/content";
 import DecryptText from "@/components/ui/DecryptText";
 import ScrollCue from "@/components/ui/ScrollCue";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function HeroSection() {
+interface HeroData {
+  label: string;
+  headline: string[];
+  glitchWord: string;
+  subtext: string;
+  subsubtext: string;
+  cta1: { label: string; href: string };
+  cta2: { label: string; href: string };
+  microtag: string;
+}
+
+export default function HeroSection({ data: HERO }: { data: HeroData }) {
   const textRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
   const sectionRef = useRef<HTMLElement>(null);

@@ -2,83 +2,21 @@
 import DecryptText from "@/components/ui/DecryptText";
 import AutoPlayVideo from "@/components/ui/AutoPlayVideo";
 
-const WEBSITES = [
-  {
-    src: "/videos/sikder-dental-point.mp4",
-    title: "Sikder Dental Point",
-    tag: "Healthcare · AI Build",
-    link: "https://sikdar-dental-site.vercel.app/",
-  },
-  {
-    src: "/videos/fouzia-dental-care.mp4",
-    title: "Fouzia Dental Care",
-    tag: "Healthcare · AI Build",
-    link: "https://fouziadentalcare.com/",
-  },
-  {
-    src: "/videos/dr-rajarshi-nag-orthopedic.mp4",
-    title: "Dr. Rajarshi Nag — Orthopedic Surgeon",
-    tag: "Healthcare · AI Build",
-    link: "https://dr-rajarshi-nag-website.vercel.app/",
-  },
-  {
-    src: "/videos/dr-ibrahim-khalil-dental.mp4",
-    title: "Dr. Ibrahim Khalil — Dental Surgeon",
-    tag: "Healthcare · AI Build",
-  },
-  {
-    src: "/videos/dr-nahal-ophthalmologist.mp4",
-    title: "Dr. Nahal — Ophthalmologist",
-    tag: "Healthcare · AI Build",
-  },
-  {
-    src: "/videos/dr-arif-endovascular-surgeon.mp4",
-    title: "Dr. Arif — Endovascular Surgeon",
-    tag: "Healthcare · AI Build",
-    link: "https://www.drarifvascularsurgeon.com/",
-  },
-  {
-    src: "/videos/dr-rayhan-hepatobiliary-surgeon.mp4",
-    title: "Dr. Rayhan — Hepatobiliary Surgeon",
-    tag: "Healthcare · AI Build",
-    link: "https://www.drrayhanhpb.com/",
-  },
-  {
-    src: "/videos/dr-towhid-medicine-specialist.mp4",
-    title: "Dr. Towhid — Medicine Specialist",
-    tag: "Healthcare · AI Build",
-    link: "https://dr-hanif-ahmed-towhid.vercel.app/",
-  },
-  {
-    src: "/videos/dr-ehsan-website.mp4",
-    title: "Dr. Ehsan — Professional Website",
-    tag: "Healthcare · AI Build",
-  },
-  {
-    src: "/videos/digital-dental-zone-dr-nusrat.mp4",
-    title: "Digital Dental Zone — Dr. Nusrat",
-    tag: "Healthcare · AI Build",
-    link: "https://digital-dental-zone.vercel.app/",
-  },
-  {
-    src: "/videos/tooth-castle-dental-dr-arafat.mp4",
-    title: "Tooth Castle Dental — Dr. Arafat",
-    tag: "Healthcare · AI Build",
-    link: "https://toothcastlewebsite.vercel.app/",
-  },
-  {
-    src: "/videos/dental-surgeon-website.mp4",
-    title: "Dental Surgeon Website",
-    tag: "Healthcare · AI Build",
-  },
-  {
-    src: "/videos/orthopedic-surgeon-website.mp4",
-    title: "Orthopedic Surgeon Website",
-    tag: "Healthcare · AI Build",
-  },
-];
+interface PortfolioVideo {
+  video_url: string | null;
+  title: string;
+  tag: string | null;
+  live_link: string | null;
+}
 
-export default function WorkWebsiteShowcase() {
+export default function WorkWebsiteShowcase({ data }: { data: PortfolioVideo[] }) {
+  const WEBSITES = data.map((v) => ({
+    src: v.video_url ?? "",
+    title: v.title,
+    tag: v.tag ? `${v.tag} · AI Build` : "AI Build",
+    link: v.live_link ?? undefined,
+  }));
+
   return (
     <section className="py-20 px-6">
       <div className="max-w-7xl mx-auto">

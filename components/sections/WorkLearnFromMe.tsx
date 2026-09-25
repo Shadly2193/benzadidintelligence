@@ -7,58 +7,7 @@ interface Tutorial {
   tag: string;
 }
 
-const TUTORIALS: Tutorial[] = [
-  {
-    videoId: "YxNGS6qKyKk",
-    title: "This Dental Website Looks Developer-Built — I Made It With AI",
-    tag: "Website",
-  },
-  {
-    videoId: "iaaRB8i2EUs",
-    title: "Best AI Tools for Content Creation",
-    tag: "Content",
-  },
-  {
-    videoId: "BZSlrHejrLo",
-    title: "AI Image Style Guide | 20+ Styles for Beginners",
-    tag: "Image AI",
-  },
-  {
-    videoId: "FRWbN-RBGEU",
-    title: "AI Camera Shot Guide | Full Tutorial",
-    tag: "Image AI",
-  },
-  {
-    videoId: "_N4vorm9I0o",
-    title: "The Secret Formula for AI Image Prompting",
-    tag: "Prompting",
-  },
-  {
-    videoId: "3ZJD91RWaqA",
-    title: "How To Make Commercial AI Images",
-    tag: "Content",
-  },
-  {
-    videoId: "9YdvE5SHvkg",
-    title: "Google AI Studio — More Powerful Than You Think",
-    tag: "Tools",
-  },
-  {
-    videoId: "0xlGr_3AdYg",
-    title: "I Made a Full Annual Report in 10 Minutes With AI",
-    tag: "Productivity",
-  },
-  {
-    videoId: "suNIannuMRw",
-    title: "What Is an API — And Why Your AI Agent Needs It",
-    tag: "AI Agents",
-  },
-  {
-    videoId: "fL5wrhGTg3c",
-    title: "What Is an AI Agent? Super Simple Explanation",
-    tag: "AI Agents",
-  },
-];
+
 
 function TutorialCard({ tutorial }: { tutorial: Tutorial }) {
   const [hovered, setHovered] = useState(false);
@@ -115,7 +64,8 @@ function TutorialCard({ tutorial }: { tutorial: Tutorial }) {
   );
 }
 
-export default function WorkLearnFromMe() {
+export default function WorkLearnFromMe({ data }: { data: { youtube_id: string; title: string; tag: string | null }[] }) {
+  const TUTORIALS: Tutorial[] = data.map((t) => ({ videoId: t.youtube_id, title: t.title, tag: t.tag ?? "" }));
   return (
     <section className="py-20 px-6 border-t border-white/5">
       <div className="max-w-7xl mx-auto">

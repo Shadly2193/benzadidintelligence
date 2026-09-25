@@ -99,7 +99,7 @@ export const SERVICES = [
     slug: "website",
     title: "AI-Powered Website",
     bigHeadline: ["Your expertise deserves", "a website that shows it."],
-    pain: "Doctors and engineers spend a decade becoming world-class.\nThen their website looks like it was made in 2009. On a lunch break.",
+    pain: "Doctors — you spent a decade becoming world-class.\nBut your website looks like it was made in 2009.\nYour website is your digital asset, your own digital chamber.\nIf you don't decorate it beautifully, what was the point of building it?",
     description:
       "I build custom, modern websites — specifically designed for high-skilled professionals.\nFast. Beautiful. Built to convert visitors into clients.",
     cta: { label: "See Examples →", href: "/services/website" },
@@ -193,46 +193,6 @@ export const SERVICES = [
     ],
     pricing: "From $49 / session",
     bestFor: "Professionals · Teams · Companies building AI capacity · Anyone who tried courses but still feels lost",
-  },
-];
-
-export const CASE_STUDIES = [
-  {
-    id: 1,
-    title: "Sports Content Automation System",
-    category: "AI Agents",
-    problem:
-      "A sports media client needed content pulled from their app and posted on Twitter/X — daily, automatically, with zero manual work.",
-    solution:
-      "Built a full n8n pipeline: app connection, data filtering, AI caption generation, Airtable tracking, Slack approval loop, auto-publishing via Blotato.",
-    results: ["50+ posts/week", "Fully automated", "Zero manual effort"],
-    tools: ["n8n", "Airtable", "Blotato", "Slack API", "AI Agents"],
-    href: "/services/automation",
-    cta: "See the system →",
-  },
-  {
-    id: 2,
-    title: "Full AI Agent Suite — Purplebot LLC",
-    category: "AI Agents",
-    problem: "Client needed a complete set of AI agents to handle multiple business operations simultaneously.",
-    solution:
-      "Built 7 specialized agents: Voice AI Receptionist, Social Media Agent, Content Creation Agent, Email Handler, FB Auto-Reply Agent, Gmail Handler, and Sports News Agent.",
-    results: ["200+ hrs/year saved", "$500/mo per client", "7 agents running 24/7"],
-    tools: ["n8n", "VAPI", "Relevance AI", "Make", "Airtable"],
-    href: "/services/automation",
-    cta: "See the system →",
-  },
-  {
-    id: 3,
-    title: "AI Visual & Video Ad Campaign",
-    category: "Content",
-    problem: "Client needed high-quality advertising visuals and video content without traditional production costs.",
-    solution:
-      "Full AI content pipeline — static visuals using Reve, Grok, Gemini; video ads using Kling, Veo 3.1, Sora, and Higgsfield.",
-    results: ["5,000+ impressions", "One ad hit 10,000+ views", "Improved client CTR"],
-    tools: ["Kling", "Veo 3.1", "Sora", "Higgsfield", "Reve", "Grok", "Gemini"],
-    href: "/services/content",
-    cta: "See the work →",
   },
 ];
 

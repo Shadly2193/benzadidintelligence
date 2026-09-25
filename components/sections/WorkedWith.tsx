@@ -1,15 +1,9 @@
 "use client";
 
-const LOGOS = [
-  { src: "/images/logos/pbd.png", alt: "PBD" },
-  { src: "/images/logos/hmbd.png", alt: "HMBD" },
-  { src: "/images/logos/360academy.png", alt: "360 Academy" },
-  { src: "/images/logos/ngoforum.png", alt: "NGO Forum" },
-  { src: "/images/logos/nsu.png", alt: "NSU" },
-  { src: "/images/logos/cnrs.png", alt: "CNRS" },
-];
+interface Logo { logo_url: string; name: string; no_invert: boolean }
 
-export default function WorkedWith() {
+export default function WorkedWith({ data }: { data: Logo[] }) {
+  const LOGOS = data.map((l) => ({ src: l.logo_url, alt: l.name, noInvert: l.no_invert }));
   return (
     <section className="bg-transparent py-8 border-b border-white/8 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 mb-5">
@@ -34,7 +28,7 @@ export default function WorkedWith() {
                   width: "auto",
                   height: "auto",
                   objectFit: "contain",
-                  filter: "brightness(0) invert(1)",
+                  filter: logo.noInvert ? "none" : "brightness(0) invert(1)",
                   opacity: 0.55,
                   background: "transparent",
                 }}

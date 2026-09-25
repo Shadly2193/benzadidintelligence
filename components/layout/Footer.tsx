@@ -1,7 +1,23 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { SITE_NAME, SITE_TAGLINE, SOCIAL_LINKS, CONTACT_EMAIL, NAV_LINKS } from "@/lib/content";
+const NAV_LINKS = [
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about" },
+  { label: "Services", href: "/services", children: [{}] },
+  { label: "Work", href: "/work" },
+  { label: "Contact", href: "/contact" },
+];
+
+interface Social { label: string; href: string; icon: string }
+
+interface FooterProps {
+  siteName: string;
+  tagline: string;
+  logoUrl: string;
+  contactEmail: string;
+  socials: Social[];
+}
 
 const SocialIcon = ({ icon }: { icon: string }) => {
   const map: Record<string, { label: string; svg: string }> = {
@@ -42,7 +58,7 @@ const SocialIcon = ({ icon }: { icon: string }) => {
   );
 };
 
-export default function Footer() {
+export default function Footer({ siteName: SITE_NAME, tagline: SITE_TAGLINE, logoUrl, contactEmail: CONTACT_EMAIL, socials: SOCIAL_LINKS }: FooterProps) {
   const quickLinks = NAV_LINKS.filter((l) => !l.children);
 
   return (
@@ -66,7 +82,7 @@ export default function Footer() {
           <div>
             <div className="mb-4">
               <img
-                src="/images/logo.png"
+                src={logoUrl}
                 alt={SITE_NAME}
                 style={{ height: "58px", width: "auto", display: "block" }}
               />
@@ -147,7 +163,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-white/10 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-white/40">© 2025 Md. Shadly Benzadid. All rights reserved.</p>
+          <p className="text-xs text-white/40">© {new Date().getFullYear()} Md. Shadly Benzadid. All rights reserved.</p>
           <p className="text-xs text-white/40">{SITE_NAME} — AI Agency</p>
         </div>
       </div>

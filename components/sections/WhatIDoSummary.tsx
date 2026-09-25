@@ -2,12 +2,18 @@
 import { useLayoutEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { WHAT_I_DO } from "@/lib/content";
 import DecryptText from "@/components/ui/DecryptText";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function WhatIDoSummary() {
+interface WhatIDoData {
+  label: string;
+  pairs: { problem: string; solution: string }[];
+  tags: string[];
+  subtext: string;
+}
+
+export default function WhatIDoSummary({ data: WHAT_I_DO }: { data: WhatIDoData }) {
   const sectionRef = useRef<HTMLElement>(null);
   const labelRef = useRef<HTMLParagraphElement>(null);
   const pairsRef = useRef<(HTMLDivElement | null)[]>([]);

@@ -2,37 +2,21 @@
 import { motion } from "framer-motion";
 import AutoPlayVideo from "@/components/ui/AutoPlayVideo";
 
-const videos = [
-  {
-    src: "/videos/sikder-dental-point.mp4",
-    label: "AI WEBSITE BUILD",
-    title: "Sikder Dental Point",
-    desc: "A clean, fast dental practice website built to convert visitors into patients.",
-    link: "https://sikdar-dental-site.vercel.app/",
-  },
-  {
-    src: "/videos/fouzia-dental-care.mp4",
-    label: "AI WEBSITE BUILD",
-    title: "Fouzia Dental Care",
-    desc: "Modern dental care website designed for trust and easy appointment booking.",
-    link: "https://fouziadentalcare.com/",
-  },
-  {
-    src: "/videos/dr-rajarshi-nag-orthopedic.mp4",
-    label: "AI WEBSITE BUILD",
-    title: "Dr. Rajarshi Nag — Orthopedic Surgeon",
-    desc: "Professional orthopedic surgeon website built for patient confidence and clarity.",
-    link: "https://dr-rajarshi-nag-website.vercel.app/",
-  },
-  {
-    src: "/videos/dr-nahal-ophthalmologist.mp4",
-    label: "AI WEBSITE BUILD",
-    title: "Dr. Nahal — Ophthalmologist",
-    desc: "Sleek ophthalmology website showcasing expertise and patient-first care.",
-  },
-];
+interface PortfolioVideo {
+  video_url: string | null;
+  title: string;
+  tag: string | null;
+  live_link: string | null;
+}
 
-export default function VideoShowcase() {
+export default function VideoShowcase({ data }: { data: PortfolioVideo[] }) {
+  const videos = data.map((v) => ({
+    src: v.video_url ?? "",
+    label: "AI WEBSITE BUILD",
+    title: v.title,
+    desc: `${v.tag ?? "Client project"} — built and deployed, live in production.`,
+    link: v.live_link ?? undefined,
+  }));
   return (
     <section className="py-24 px-6 bg-transparent grid-bg">
       <div className="max-w-7xl mx-auto">

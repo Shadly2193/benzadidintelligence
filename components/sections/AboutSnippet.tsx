@@ -3,12 +3,18 @@ import { useLayoutEffect, useRef } from "react";
 import Link from "next/link";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ABOUT_SNIPPET } from "@/lib/content";
 import ScrollCue from "@/components/ui/ScrollCue";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function AboutSnippet() {
+interface AboutSnippetData {
+  label: string;
+  lines: string[];
+  body: string;
+  cta: { label: string; href: string };
+}
+
+export default function AboutSnippet({ data: ABOUT_SNIPPET }: { data: AboutSnippetData }) {
   const sectionRef = useRef<HTMLElement>(null);
   const labelRef = useRef<HTMLParagraphElement>(null);
   const line1Ref = useRef<HTMLDivElement>(null); // "I went all in on AI."
@@ -67,19 +73,19 @@ export default function AboutSnippet() {
           </p>
 
           <div ref={line1Ref} className="font-black leading-none mb-3 opacity-0 text-white text-[clamp(2.2rem,4.5vw,4.5rem)]">
-            I went all in on AI.
+            {ABOUT_SNIPPET.lines[0]}
           </div>
           <div ref={line2Ref} className="font-black leading-none mb-3 opacity-0 text-white text-[clamp(2.2rem,4.5vw,4.5rem)]">
-            Built.
+            {ABOUT_SNIPPET.lines[1]}
           </div>
           <div ref={line3Ref} className="font-black leading-none mb-3 opacity-0 text-white text-[clamp(2.2rem,4.5vw,4.5rem)]">
-            Trained.
+            {ABOUT_SNIPPET.lines[2]}
           </div>
           <div ref={line4Ref} className="font-black leading-none mb-3 opacity-0 text-white text-[clamp(2.2rem,4.5vw,4.5rem)]">
-            Delivered.
+            {ABOUT_SNIPPET.lines[3]}
           </div>
           <div ref={line5Ref} className="font-black leading-none mb-10 opacity-0 text-brand-orange text-glow-orange text-[clamp(2.5rem,5vw,5rem)]">
-            Now I build for you.
+            {ABOUT_SNIPPET.lines[4]}
           </div>
 
           <div ref={ctaRef} className="opacity-0">

@@ -1,22 +1,7 @@
 "use client";
 
-const ROW1 = [
-  { src: "/images/logos/pran.png", alt: "Pran", noInvert: true },
-  { src: "/images/logos/taste-terminal.png", alt: "Taste Terminal" },
-  { src: "/images/logos/brac-epl.png", alt: "BRAC EPL" },
-  { src: "/images/logos/11plus.png", alt: "11+" },
-  { src: "/images/logos/vision-em.png", alt: "Vision Em" },
-];
-
-const ROW2 = [
-  { src: "/images/logos/medix.png", alt: "Medix" },
-  { src: "/images/logos/regal-furniture.png", alt: "Regal Furniture" },
-  { src: "/images/logos/bizli.png", alt: "Bizli" },
-  { src: "/images/logos/shamadhan.png", alt: "Shamadhan" },
-  { src: "/images/logos/ucb.png", alt: "UCB" },
-];
-
 type Logo = { src: string; alt: string; noInvert?: boolean };
+interface DbLogo { logo_url: string; name: string; no_invert: boolean }
 
 function LogoRow({ logos, className }: { logos: Logo[]; className: string }) {
   const items = [...logos, ...logos];
@@ -61,7 +46,12 @@ function LogoRow({ logos, className }: { logos: Logo[]; className: string }) {
   );
 }
 
-export default function AIContentSupport() {
+export default function AIContentSupport({ data }: { data: DbLogo[] }) {
+  const logos: Logo[] = data.map((l) => ({ src: l.logo_url, alt: l.name, noInvert: l.no_invert }));
+  const mid = Math.ceil(logos.length / 2);
+  const ROW1 = logos.slice(0, mid);
+  const ROW2 = logos.slice(mid);
+
   return (
     <section className="bg-transparent py-8 border-b border-white/8 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 mb-5">

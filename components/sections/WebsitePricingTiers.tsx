@@ -1,7 +1,8 @@
 "use client";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, Gift, Plus } from "lucide-react";
+import type { PricingConfig } from "@/lib/pricingConfig";
 
 export type Tier = "essential" | "premium";
 
@@ -11,57 +12,40 @@ interface TierCardData {
   price: string;
   recommended?: boolean;
   bestFor: string;
-  features: { label: string; sub: string }[];
+  basePrice: number;
+  features: { label: string; sub: string; bonus: boolean }[];
 }
 
-const CARDS: TierCardData[] = [
-  {
-    tier: "essential",
-    name: "Essential",
-    price: "Starting from $400",
-    bestFor: "Professionals who want a clean, modern presence — fast and beautiful.",
-    features: [
-      { label: "Bilingual site (English + Bangla)", sub: "Speak to every patient, in the language they trust" },
-      { label: "Fully custom admin panel", sub: "Update your own bio, services, and photos — anytime" },
-      { label: "5 SEO blog articles", sub: "Start showing up when patients Google your specialty" },
-      { label: "Google Business Profile setup", sub: "Get found on Google Maps and local search from day one" },
-      { label: "Unique, modern, beautiful design", sub: "A website that finally matches the trust you've earned" },
-      { label: "Booking & lead capture system", sub: "Turn visitors into booked appointments, automatically" },
-      { label: "Mobile-first, fast, SEO-ready", sub: "Built for how patients actually search, on their phone" },
-      { label: "Personally built by me, 30–40 days", sub: "No agency hand-offs, no outsourcing" },
-      { label: "Pay in 3 installments", sub: "Spread the cost across the build, zero pressure upfront" },
-    ],
-  },
-  {
-    tier: "premium",
-    name: "Premium",
-    price: "Starting from $600",
-    recommended: true,
-    bestFor: "Doctors who want to look like the #1 choice in their field — not just \"a good option.\"",
-    features: [
-      { label: "Bilingual site (English + Bangla)", sub: "Speak to every patient, in the language they trust" },
-      { label: "Fully custom admin panel", sub: "Update your own bio, services, and photos — anytime" },
-      { label: "10 SEO blog articles", sub: "Double the content, double the ways patients discover you" },
-      { label: "Google Business Profile setup", sub: "Get found on Google Maps and local search from day one" },
-      { label: "3D & scroll-triggered animations", sub: "A site that moves and reacts as patients scroll" },
-      { label: "Eye-catching, animated hero section", sub: "The first 3 seconds that make a patient stay" },
-      { label: "High-end, agency-level visual design", sub: "The kind of website patients screenshot to friends" },
-      { label: "Booking & lead capture system", sub: "Turn visitors into booked appointments, automatically" },
-      { label: "Mobile-first, fast, SEO-ready", sub: "Built for how patients actually search, on their phone" },
-      { label: "FREE 5–6 session personal guidance", sub: "I coach you on social media & digital growth, alongside the build" },
-      { label: "Personally built by me, 30–40 days", sub: "No agency hand-offs, no outsourcing" },
-      { label: "Pay in 3 installments", sub: "Spread the cost across the build, zero pressure upfront" },
-    ],
-  },
-];
+export interface DbTier {
+  key: Tier;
+  name: string;
+  price: number;
+  best_for: string | null;
+  recommended: boolean;
+  pricing_tier_features: { id: string; label: string; sub: string | null; sort_order: number }[];
+}
 
 interface Props {
+  tiers: DbTier[];
+  config: PricingConfig;
   activeTier: Tier | null;
   onSelectTier: (tier: Tier) => void;
   onViewAll: () => void;
 }
 
-export default function WebsitePricingTiers({ activeTier, onSelectTier, onViewAll }: Props) {
+export default function WebsitePricingTiers({ tiers, config, activeTier, onSelectTier, onViewAll }: Props) {
+  const CARDS: TierCardData[] = tiers.map((t) => ({
+    tier: t.key,
+    name: t.name,
+    price: `Starting from $${t.price}`,
+    basePrice: t.price,
+    recommended: t.recommended,
+    bestFor: t.best_for ?? "",
+    features: [...t.pricing_tier_features]
+      .sort((a, b) => a.sort_order - b.sort_order)
+      .map((f) => ({ label: f.label, sub: f.sub ?? "", bonus: config.bonusFeatureIds.includes(f.id) })),
+  }));
+
   return (
     <section className="py-24 bg-transparent px-6">
       <div className="max-w-5xl mx-auto">
@@ -106,8 +90,8 @@ export default function WebsitePricingTiers({ activeTier, onSelectTier, onViewAl
               <p className="text-2xl sm:text-3xl font-black text-white mb-3">{card.price}</p>
               <p className="text-xs text-brand-gray-text leading-relaxed mb-6">{card.bestFor}</p>
 
-              <div className="space-y-3 mb-8 flex-1">
-                {card.features.map((f, i) => (
+              <div className="space-y-3 mb-6">
+                {card.features.filter((f) => !f.bonus).map((f, i) => (
                   <div key={i} className="flex items-start gap-2.5">
                     <CheckCircle className="w-4 h-4 text-brand-orange flex-shrink-0 mt-0.5" />
                     <div>
@@ -116,6 +100,48 @@ export default function WebsitePricingTiers({ activeTier, onSelectTier, onViewAl
                     </div>
                   </div>
                 ))}
+              </div>
+
+              {card.features.some((f) => f.bonus) && (
+                <div
+                  className="rounded-xl p-4 mb-6"
+                  style={{ background: "rgba(255,106,0,0.07)", border: "1px solid rgba(255,106,0,0.3)" }}
+                >
+                  <p className="flex items-center gap-1.5 text-[11px] font-bold tracking-widest uppercase text-brand-orange mb-3">
+                    <Gift className="w-3.5 h-3.5" />
+                    Bonus — included free
+                  </p>
+                  <div className="space-y-3">
+                    {card.features.filter((f) => f.bonus).map((f, i) => (
+                      <div key={i} className="flex items-start gap-2.5">
+                        <Gift className="w-4 h-4 text-brand-orange flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="text-sm text-white font-medium leading-snug">{f.label}</p>
+                          <p className="text-xs text-brand-gray-text leading-snug">{f.sub}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="flex-1 flex flex-col justify-end mb-8">
+                {config.addon.enabled && (
+                  <div
+                    className="rounded-xl p-4"
+                    style={{ border: "1px dashed rgba(255,106,0,0.4)", background: "rgba(255,255,255,0.02)" }}
+                  >
+                    <p className="flex items-center gap-1.5 text-[11px] font-bold tracking-widest uppercase text-brand-orange mb-2">
+                      <Plus className="w-3.5 h-3.5" />
+                      Optional add-on · +${config.addon.price}
+                    </p>
+                    <p className="text-sm text-white font-medium leading-snug">{config.addon.label}</p>
+                    <p className="text-xs text-brand-gray-text leading-snug mt-1">{config.addon.sub}</p>
+                    <p className="text-xs text-white/80 font-semibold mt-3">
+                      With add-on: ${card.basePrice + config.addon.price}
+                    </p>
+                  </div>
+                )}
               </div>
 
               <div className="space-y-2.5 mt-auto">

@@ -1,16 +1,17 @@
 "use client";
-import Link from "next/link";
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles } from "lucide-react";
+import CustomInquiryForm from "@/components/sections/CustomInquiryForm";
 
-const POINTS = [
-  "Patient data tracking & management systems",
-  "Payment gateway integration",
-  "Custom features built around your exact workflow",
-  "Hospital / multi-department / software-based platforms",
-];
+interface Props {
+  points: string[];
+  custom: { startingFrom: number; delivery: string };
+}
 
-export default function CustomPlanBanner() {
+export default function CustomPlanBanner({ points: POINTS, custom }: Props) {
+  const [open, setOpen] = useState(false);
+
   return (
     <section className="px-6 -mt-4 mb-4">
       <motion.div
@@ -51,15 +52,37 @@ export default function CustomPlanBanner() {
         </div>
 
         <div className="flex-shrink-0 flex flex-col items-start md:items-end gap-2">
-          <Link
-            href="/contact"
-            className="inline-flex items-center px-6 py-3 rounded-full text-sm font-bold btn-outline whitespace-nowrap"
+          <p className="text-2xl font-black text-white leading-none">
+            Starting from ${custom.startingFrom.toLocaleString("en-US")}
+          </p>
+          <p className="text-[11px] text-brand-gray-text">Delivery {custom.delivery}</p>
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            className="inline-flex items-center px-6 py-3 rounded-full text-sm font-bold btn-outline whitespace-nowrap mt-1"
           >
-            Book a Requirements Call →
-          </Link>
+            {open ? "Close ↑" : "Start Your Custom Quote →"}
+          </button>
           <p className="text-[11px] text-brand-gray-text">Custom quotation within 7 days</p>
         </div>
       </motion.div>
+
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            key="custom-form"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.35 }}
+            className="max-w-5xl mx-auto overflow-hidden"
+          >
+            <div className="pt-4">
+              <CustomInquiryForm startingFrom={custom.startingFrom} delivery={custom.delivery} />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }

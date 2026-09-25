@@ -1,9 +1,11 @@
 "use client";
 import { motion } from "framer-motion";
 import CountUpNumber from "@/components/ui/CountUpNumber";
-import { TRUST_STATS } from "@/lib/content";
 
-export default function TrustStrip() {
+interface Stat { number: number; prefix?: string; suffix?: string; label: string }
+
+export default function TrustStrip({ data }: { data: { items: Stat[] } }) {
+  const TRUST_STATS = data.items;
   return (
     <motion.section
       initial={{ opacity: 0, y: 24 }}

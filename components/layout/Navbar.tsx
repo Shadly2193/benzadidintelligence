@@ -3,11 +3,30 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronDown } from "lucide-react";
-import { NAV_LINKS, SITE_NAME, SERVICES } from "@/lib/content";
 
-function pitchFor(href: string) {
+const NAV_LINKS = [
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about" },
+  {
+    label: "Services",
+    href: "/services",
+    children: [
+      { label: "AI Website", href: "/services/website" },
+      { label: "AI Agents & Automation", href: "/services/automation" },
+      { label: "AI Content Creation", href: "/services/content" },
+      { label: "AI Audit & Consultancy", href: "/services/audit" },
+      { label: "Mentorship", href: "/services/guidance" },
+    ],
+  },
+  { label: "Work", href: "/work" },
+  { label: "Contact", href: "/contact" },
+];
+
+interface NavService { slug: string; description: string }
+
+function pitchFor(href: string, services: NavService[]) {
   const slug = href.split("/").pop();
-  const service = SERVICES.find((s) => s.slug === slug);
+  const service = services.find((s) => s.slug === slug);
   return service?.description.split("\n")[0] ?? "";
 }
 
@@ -22,7 +41,13 @@ function headlineWithUnderline(title: string) {
   );
 }
 
-export default function Navbar() {
+interface NavbarProps {
+  siteName: string;
+  logoUrl: string;
+  services: NavService[];
+}
+
+export default function Navbar({ siteName, logoUrl, services }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
@@ -47,8 +72,8 @@ export default function Navbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center group">
             <img
-              src="/images/logo.png"
-              alt={SITE_NAME}
+              src={logoUrl}
+              alt={siteName}
               style={{ height: "clamp(40px, 10vw, 58px)", width: "auto", display: "block" }}
             />
           </Link>
@@ -113,7 +138,7 @@ export default function Navbar() {
                                 {headlineWithUnderline(child.label)}
                               </h2>
                               <p className="text-sm text-brand-gray-text leading-relaxed max-w-[340px] mb-4">
-                                {pitchFor(child.href)}
+                                {pitchFor(child.href, services)}
                               </p>
                               <Link
                                 href={child.href}
@@ -191,7 +216,7 @@ export default function Navbar() {
                             {child.label}
                           </span>
                           <span className="block text-xs text-brand-gray-text leading-relaxed">
-                            {pitchFor(child.href)}
+                            {pitchFor(child.href, services)}
                           </span>
                         </span>
                       </Link>

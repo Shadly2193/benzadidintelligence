@@ -12,65 +12,14 @@ interface ContentItem {
   localSrc?: string;
 }
 
-const COMMERCIAL_ADS: ContentItem[] = [
-  {
-    platform: "linkedin",
-    title: "AI-Generated Sprite Commercial",
-    href: "https://www.linkedin.com/feed/update/urn:li:activity:7372253096200110080/",
-    localSrc: "/videos/sprite-ad.mp4",
-  },
-  {
-    platform: "linkedin",
-    title: "AI-Generated Ice Cream Ad",
-    href: "https://www.linkedin.com/feed/update/urn:li:activity:7374736708522672129/",
-    localSrc: "/videos/icecream-ad.mp4",
-  },
-  {
-    platform: "instagram",
-    title: "AI Orange Juice Commercial",
-    href: "https://www.instagram.com/reel/DOjP097glsB/",
-    localSrc: "/videos/orange-juice-ad.mp4",
-  },
-  {
-    platform: "instagram",
-    title: "AI Brand Commercial — Black & Orange",
-    href: "https://www.instagram.com/reel/DPA1ce_CASV/",
-    localSrc: "/videos/black-orange-ad.mp4",
-  },
-  {
-    platform: "youtube",
-    title: "The Next Level of Advertising: 100% AI Earbuds Commercial",
-    href: "https://www.youtube.com/watch?v=FIMeNgEDQ9o",
-    videoId: "FIMeNgEDQ9o",
-  },
-  {
-    platform: "youtube",
-    title: "KitKat AI Commercial",
-    href: "https://www.youtube.com/",
-    localSrc: "/videos/kitkat-commercial.mp4",
-  },
-];
-
-const STORYTELLING: ContentItem[] = [
-  {
-    platform: "youtube",
-    title: "The 5 Monkeys & The Banana Experiment",
-    href: "https://youtu.be/q_-P6ni581A",
-    videoId: "q_-P6ni581A",
-  },
-  {
-    platform: "youtube",
-    title: "I Almost Cried Making This AI Film 'Ababil'",
-    href: "https://youtu.be/-OIixVWHhmA",
-    videoId: "-OIixVWHhmA",
-  },
-  {
-    platform: "youtube",
-    title: "Bizarre Dental Care — AI Storytelling",
-    href: "https://www.youtube.com/",
-    localSrc: "/videos/bizarre-dental-care.mp4",
-  },
-];
+interface ContentVideoRow {
+  title: string;
+  category: "ad" | "storytelling";
+  platform: Platform;
+  video_url: string | null;
+  youtube_id: string | null;
+  href: string | null;
+}
 
 const PLATFORM_STYLES: Record<Platform, { bg: string; label: string; icon: string }> = {
   youtube: {
@@ -202,7 +151,17 @@ function ContentCard({ item }: { item: ContentItem }) {
   );
 }
 
-export default function WorkAIContent() {
+export default function WorkAIContent({ data }: { data: ContentVideoRow[] }) {
+  const toItem = (row: ContentVideoRow): ContentItem => ({
+    platform: row.platform,
+    title: row.title,
+    href: row.href ?? "",
+    videoId: row.youtube_id ?? undefined,
+    localSrc: row.video_url ?? undefined,
+  });
+  const COMMERCIAL_ADS = data.filter((d) => d.category === "ad").map(toItem);
+  const STORYTELLING = data.filter((d) => d.category === "storytelling").map(toItem);
+
   return (
     <section className="py-20 px-6 border-t border-white/5">
       <div className="max-w-7xl mx-auto">

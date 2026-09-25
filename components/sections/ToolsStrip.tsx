@@ -1,8 +1,7 @@
-import { TOOLS } from "@/lib/content";
 import DecryptText from "@/components/ui/DecryptText";
 
-export default function ToolsStrip() {
-  const doubled = [...TOOLS, ...TOOLS];
+export default function ToolsStrip({ data }: { data: { items: string[] } }) {
+  const doubled = [...data.items, ...data.items];
   return (
     <section className="py-16 bg-transparent overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 mb-8">

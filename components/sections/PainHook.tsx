@@ -2,12 +2,13 @@
 import { useLayoutEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { PAIN_HOOK } from "@/lib/content";
 import ScrollCue from "@/components/ui/ScrollCue";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function PainHook() {
+interface PainHookData { lines: string[]; subtext: string }
+
+export default function PainHook({ data: PAIN_HOOK }: { data: PainHookData }) {
   const sectionRef = useRef<HTMLElement>(null);
   const line1Ref = useRef<HTMLDivElement>(null);
   const line2Ref = useRef<HTMLDivElement>(null);

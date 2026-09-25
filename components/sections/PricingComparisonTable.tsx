@@ -1,30 +1,29 @@
 "use client";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Check, X } from "lucide-react";
+import { Check, X, Gift } from "lucide-react";
 
 interface Row {
   feature: string;
   essential: string | boolean;
   premium: string | boolean;
   premiumOnly?: boolean;
+  bonus?: boolean;
 }
 
-const ROWS: Row[] = [
-  { feature: "Bilingual site (English + Bangla)", essential: true, premium: true },
-  { feature: "Fully custom admin panel", essential: true, premium: true },
-  { feature: "Google Business Profile setup", essential: true, premium: true },
-  { feature: "Booking & lead capture system", essential: true, premium: true },
-  { feature: "Mobile-first, fast, SEO-ready", essential: true, premium: true },
-  { feature: "Personally built by me, 30–40 days", essential: true, premium: true },
-  { feature: "Pay in 3 installments", essential: true, premium: true },
-  { feature: "SEO blog articles", essential: "5 articles", premium: "10 articles", premiumOnly: true },
-  { feature: "Design style", essential: "Modern & beautiful", premium: "3D & scroll-animated", premiumOnly: true },
-  { feature: "Hero section", essential: "Clean, professional", premium: "Eye-catching, animated", premiumOnly: true },
-  { feature: "Video / 3D video animation", essential: false, premium: true, premiumOnly: true },
-  { feature: "Visual finish", essential: "Modern", premium: "Agency-level, premium", premiumOnly: true },
-  { feature: "Personal guidance (marketing & social growth)", essential: false, premium: "FREE 5–6 sessions", premiumOnly: true },
-];
+export interface DbComparisonRow {
+  id: string;
+  feature: string;
+  essential_value: string | null;
+  premium_value: string | null;
+  premium_only: boolean;
+}
+
+function parseValue(v: string | null): string | boolean {
+  if (v === "true") return true;
+  if (v === "false") return false;
+  return v ?? "";
+}
 
 function Cell({ value, highlight }: { value: string | boolean; highlight?: boolean }) {
   if (typeof value === "boolean") {
@@ -37,7 +36,15 @@ function Cell({ value, highlight }: { value: string | boolean; highlight?: boole
   return <span className={`text-xs sm:text-sm ${highlight ? "text-brand-orange font-semibold" : "text-white/70"}`}>{value}</span>;
 }
 
-export default function PricingComparisonTable() {
+export default function PricingComparisonTable({ rows: dbRows, bonusRowIds }: { rows: DbComparisonRow[]; bonusRowIds: string[] }) {
+  const ROWS: Row[] = dbRows.map((r) => ({
+    feature: r.feature,
+    essential: parseValue(r.essential_value),
+    premium: parseValue(r.premium_value),
+    premiumOnly: r.premium_only,
+    bonus: bonusRowIds.includes(r.id),
+  }));
+
   return (
     <section className="py-20 px-6 bg-transparent">
       <div className="max-w-4xl mx-auto">
@@ -83,6 +90,12 @@ export default function PricingComparisonTable() {
                   >
                     <td className="text-xs sm:text-sm text-white py-3.5 px-4 sm:px-6 font-medium">
                       {row.feature}
+                      {row.bonus && (
+                        <span className="ml-2 inline-flex items-center gap-1 align-middle rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide bg-brand-orange/15 text-brand-orange">
+                          <Gift className="w-2.5 h-2.5" />
+                          Bonus
+                        </span>
+                      )}
                     </td>
                     <td className="text-center py-3.5 px-3">
                       <div className="flex justify-center">
