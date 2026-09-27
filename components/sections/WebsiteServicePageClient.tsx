@@ -10,6 +10,8 @@ import type { PricingConfig } from "@/lib/pricingConfig";
 
 interface PortfolioVideo {
   video_url: string | null;
+  youtube_id: string | null;
+  facebook_url: string | null;
   title: string;
   tag: string | null;
   live_link: string | null;
@@ -30,7 +32,9 @@ export default function WebsiteServicePageClient({ service, videos, tiers, compa
   const gridRef = useRef<HTMLDivElement>(null);
 
   const WEBSITE_VIDEOS = videos.map((v) => ({
-    src: v.video_url ?? "",
+    src: v.video_url ?? undefined,
+    youtubeId: v.youtube_id ?? undefined,
+    facebookUrl: v.facebook_url ?? undefined,
     title: v.title,
     tag: v.tag ?? "",
     link: v.live_link ?? undefined,

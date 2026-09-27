@@ -1,10 +1,12 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
+import PortfolioMedia from "@/components/ui/PortfolioMedia";
 
 export interface VideoItem {
   src?: string;
   youtubeId?: string;
+  facebookUrl?: string;
   title: string;
   tag?: string;
   link?: string;
@@ -65,33 +67,21 @@ function VideoCard({ item, priority = false }: { item: VideoItem; priority?: boo
           </svg>
         </div>
       )}
-      {item.src ? (
-        <video
-          ref={videoRef}
-          src={item.src}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload={priority ? "auto" : "metadata"}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-        />
-      ) : item.youtubeId ? (
-        <iframe
-          src={`https://www.youtube.com/embed/${item.youtubeId}?autoplay=0&mute=1&controls=0&modestbranding=1&rel=0`}
-          allow="autoplay; encrypted-media"
-          className="w-full h-full border-0"
-          title={item.title}
-        />
-      ) : null}
+      <PortfolioMedia
+        videoUrl={item.src}
+        youtubeId={item.youtubeId}
+        facebookUrl={item.facebookUrl}
+        title={item.title}
+        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+      />
 
       {/* Overlay: always dark gradient at bottom, play icon when not hovered */}
       <div className="absolute inset-0 bg-gradient-to-t from-brand-black/80 via-transparent to-transparent" />
 
       {/* Play icon — shown when not hovered */}
-      {item.src && (
+      {(item.src || item.youtubeId || item.facebookUrl) && (
         <div
-          className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${
+          className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 pointer-events-none ${
             hovered ? "opacity-0" : "opacity-100"
           }`}
         >

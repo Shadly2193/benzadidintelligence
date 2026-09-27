@@ -6,6 +6,8 @@ import { createClient } from "@/lib/supabase/client";
 import {
   LayoutDashboard,
   Film,
+  Clapperboard,
+  GraduationCap,
   Briefcase,
   Home,
   User,
@@ -23,6 +25,8 @@ import {
 const NAV_PRIMARY = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/videos", label: "Videos", icon: Film },
+  { href: "/admin/content-videos", label: "Content Videos", icon: Clapperboard },
+  { href: "/admin/tutorials", label: "Tutorials", icon: GraduationCap },
   { href: "/admin/services", label: "Services", icon: Briefcase },
   { href: "/admin/homepage", label: "Homepage", icon: Home },
   { href: "/admin/about", label: "About Page", icon: User },
@@ -39,6 +43,8 @@ const NAV_SECONDARY = [
 const LABELS: Record<string, string> = {
   "/admin": "Dashboard",
   "/admin/videos": "Videos",
+  "/admin/content-videos": "Content Videos",
+  "/admin/tutorials": "Tutorials",
   "/admin/services": "Services",
   "/admin/homepage": "Homepage",
   "/admin/about": "About Page",

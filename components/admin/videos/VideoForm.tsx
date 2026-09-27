@@ -9,6 +9,7 @@ export interface PortfolioVideoRow {
   tag: string | null;
   video_url: string | null;
   youtube_id: string | null;
+  facebook_url: string | null;
   live_link: string | null;
   tier: "essential" | "premium" | null;
   placement: string[];
@@ -31,11 +32,12 @@ interface VideoFormProps {
 export default function VideoForm({ initial, onClose, onSaved }: VideoFormProps) {
   const [title, setTitle] = useState(initial?.title ?? "");
   const [tag, setTag] = useState(initial?.tag ?? "");
-  const [sourceType, setSourceType] = useState<"upload" | "youtube">(
-    initial?.youtube_id ? "youtube" : "upload"
+  const [sourceType, setSourceType] = useState<"upload" | "youtube" | "facebook">(
+    initial?.youtube_id ? "youtube" : initial?.facebook_url ? "facebook" : "upload"
   );
   const [videoUrl, setVideoUrl] = useState(initial?.video_url ?? "");
   const [youtubeId, setYoutubeId] = useState(initial?.youtube_id ?? "");
+  const [facebookUrl, setFacebookUrl] = useState(initial?.facebook_url ?? "");
   const [liveLink, setLiveLink] = useState(initial?.live_link ?? "");
   const [tier, setTier] = useState<"essential" | "premium" | "">(initial?.tier ?? "");
   const [placement, setPlacement] = useState<string[]>(initial?.placement ?? []);
@@ -88,6 +90,7 @@ export default function VideoForm({ initial, onClose, onSaved }: VideoFormProps)
       tag: tag || null,
       video_url: sourceType === "upload" ? videoUrl || null : null,
       youtube_id: sourceType === "youtube" ? extractYoutubeId(youtubeId) || null : null,
+      facebook_url: sourceType === "facebook" ? facebookUrl.trim() || null : null,
       live_link: liveLink || null,
       tier: tier || null,
       placement,
@@ -177,6 +180,17 @@ export default function VideoForm({ initial, onClose, onSaved }: VideoFormProps)
             >
               YouTube Link
             </button>
+            <button
+              type="button"
+              onClick={() => setSourceType("facebook")}
+              className={`flex-1 rounded-lg text-xs font-semibold py-2 border transition-colors ${
+                sourceType === "facebook"
+                  ? "bg-brand-orange/15 border-brand-orange/50 text-brand-orange"
+                  : "border-white/10 text-brand-gray-text"
+              }`}
+            >
+              Facebook Link
+            </button>
           </div>
 
           {sourceType === "upload" ? (
@@ -190,13 +204,25 @@ export default function VideoForm({ initial, onClose, onSaved }: VideoFormProps)
                 <p className="text-[11px] text-brand-gray-text mt-1.5 truncate">{videoUrl}</p>
               )}
             </div>
-          ) : (
+          ) : sourceType === "youtube" ? (
             <input
               value={youtubeId}
               onChange={(e) => setYoutubeId(e.target.value)}
               className="w-full rounded-lg bg-black/30 border border-white/10 px-3.5 py-2.5 text-sm text-white outline-none focus:border-brand-orange/60"
               placeholder="Paste YouTube link or video ID"
             />
+          ) : (
+            <>
+              <input
+                value={facebookUrl}
+                onChange={(e) => setFacebookUrl(e.target.value)}
+                className="w-full rounded-lg bg-black/30 border border-white/10 px-3.5 py-2.5 text-sm text-white outline-none focus:border-brand-orange/60"
+                placeholder="Paste the full Facebook video post link"
+              />
+              <p className="text-[11px] text-brand-gray-text mt-1.5">
+                The Facebook video must be Public — private/unlisted Facebook videos will not embed.
+              </p>
+            </>
           )}
         </div>
 

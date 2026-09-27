@@ -1,9 +1,11 @@
 "use client";
 import DecryptText from "@/components/ui/DecryptText";
-import AutoPlayVideo from "@/components/ui/AutoPlayVideo";
+import PortfolioMedia from "@/components/ui/PortfolioMedia";
 
 interface PortfolioVideo {
   video_url: string | null;
+  youtube_id: string | null;
+  facebook_url: string | null;
   title: string;
   tag: string | null;
   live_link: string | null;
@@ -11,7 +13,9 @@ interface PortfolioVideo {
 
 export default function WorkWebsiteShowcase({ data }: { data: PortfolioVideo[] }) {
   const WEBSITES = data.map((v) => ({
-    src: v.video_url ?? "",
+    src: v.video_url ?? undefined,
+    youtubeId: v.youtube_id ?? undefined,
+    facebookUrl: v.facebook_url ?? undefined,
     title: v.title,
     tag: v.tag ? `${v.tag} · AI Build` : "AI Build",
     link: v.live_link ?? undefined,
@@ -60,8 +64,12 @@ export default function WorkWebsiteShowcase({ data }: { data: PortfolioVideo[] }
                       </svg>
                     </div>
                   )}
-                  <AutoPlayVideo
-                    src={v.src}
+                  <PortfolioMedia
+                    videoUrl={v.src}
+                    youtubeId={v.youtubeId}
+                    facebookUrl={v.facebookUrl}
+                    title={v.title}
+                    lazy
                     className="w-full aspect-video object-cover"
                   />
                 </div>
@@ -74,7 +82,7 @@ export default function WorkWebsiteShowcase({ data }: { data: PortfolioVideo[] }
 
             return v.link ? (
               <a
-                key={v.src}
+                key={v.title}
                 href={v.link}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -83,7 +91,7 @@ export default function WorkWebsiteShowcase({ data }: { data: PortfolioVideo[] }
                 {inner}
               </a>
             ) : (
-              <div key={v.src} className="group">
+              <div key={v.title} className="group">
                 {inner}
               </div>
             );

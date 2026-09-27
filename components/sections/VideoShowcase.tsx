@@ -1,9 +1,11 @@
 "use client";
 import { motion } from "framer-motion";
-import AutoPlayVideo from "@/components/ui/AutoPlayVideo";
+import PortfolioMedia from "@/components/ui/PortfolioMedia";
 
 interface PortfolioVideo {
   video_url: string | null;
+  youtube_id: string | null;
+  facebook_url: string | null;
   title: string;
   tag: string | null;
   live_link: string | null;
@@ -11,7 +13,9 @@ interface PortfolioVideo {
 
 export default function VideoShowcase({ data }: { data: PortfolioVideo[] }) {
   const videos = data.map((v) => ({
-    src: v.video_url ?? "",
+    src: v.video_url ?? undefined,
+    youtubeId: v.youtube_id ?? undefined,
+    facebookUrl: v.facebook_url ?? undefined,
     label: "AI WEBSITE BUILD",
     title: v.title,
     desc: `${v.tag ?? "Client project"} — built and deployed, live in production.`,
@@ -59,8 +63,12 @@ export default function VideoShowcase({ data }: { data: PortfolioVideo[] }) {
                       </svg>
                     </div>
                   )}
-                  <AutoPlayVideo
-                    src={video.src}
+                  <PortfolioMedia
+                    videoUrl={video.src}
+                    youtubeId={video.youtubeId}
+                    facebookUrl={video.facebookUrl}
+                    title={video.title}
+                    lazy
                     className="w-full aspect-video object-cover"
                   />
                 </div>

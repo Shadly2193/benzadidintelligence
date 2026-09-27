@@ -49,6 +49,10 @@ export default function LogoForm({ initial, onClose, onSaved }: Props) {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!logoUrl.trim()) {
+      setError("Please choose a logo image before saving.");
+      return;
+    }
     setSaving(true);
     setError(null);
     const supabase = createClient();
