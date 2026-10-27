@@ -5,6 +5,8 @@ import { createClient } from "@/lib/supabase/client";
 import { courseDefaults, mergeCourse, type CourseContent } from "@/lib/course/defaults";
 
 const SLUG = "digital-residency-program";
+// RLS silently skips the update when the user is not on the admin_users list
+const NOT_ADMIN = "nothing was saved. This login is not on the admin list in Supabase.";
 const PAGE_URL = `/courses/${SLUG}`;
 
 type Json = string | number | boolean | null | Json[] | { [k: string]: Json };
@@ -192,13 +194,14 @@ export default function CourseEditor() {
     if (!doc) return false;
     setBusy("save");
     const supabase = createClient();
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("course_pages")
       .update({ draft: doc, draft_updated_at: new Date().toISOString() })
-      .eq("slug", SLUG);
+      .eq("slug", SLUG)
+      .select("slug");
     setBusy("");
-    if (error) {
-      setMsg(`Save failed: ${error.message}`);
+    if (error || !data?.length) {
+      setMsg(`Save failed: ${error?.message ?? NOT_ADMIN}`);
       return false;
     }
     setDirty(false);
@@ -234,16 +237,18 @@ export default function CourseEditor() {
     const supabase = createClient();
     const now = new Date().toISOString();
     const { data: user } = await supabase.auth.getUser();
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("course_pages")
       .update({ draft: doc, published: doc, draft_updated_at: now, published_at: now })
-      .eq("slug", SLUG);
-    if (!error) {
+      .eq("slug", SLUG)
+      .select("slug");
+    const failed = error?.message ?? (data?.length ? "" : NOT_ADMIN);
+    if (!failed) {
       await supabase.from("course_page_versions").insert({ slug: SLUG, content: doc, published_by: user.user?.id ?? null });
     }
     setBusy("");
-    if (error) {
-      setMsg(`Publish failed: ${error.message}`);
+    if (failed) {
+      setMsg(`Publish failed: ${failed}`);
       return;
     }
     setPublished(doc);
