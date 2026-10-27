@@ -1,6 +1,7 @@
 'use client';
 import { walkaway } from '@/lib/course/site';
 import { cx, useCountUp, useFlags, useInViewOnce } from '@/lib/course/useScroll';
+import { useDeadline } from '@/lib/course/useDeadline';
 
 const fmt = (n: number) => n.toLocaleString('en-US');
 
@@ -11,6 +12,7 @@ export default function Walkaway() {
   // 0 bars grow, 1 total counts, 2 strike, 3 price
   const f = useFlags([100, 200, 1500, 1900], seen);
   const shown = useCountUp(total, f[1], 1200);
+  const { amount } = useDeadline(60000);
   return (
     <section className="grid-bg" id="value">
       <div className="wrap">
@@ -49,8 +51,8 @@ export default function Walkaway() {
             </div>
             <div className={cx('vp', f[3] && 'show')}>
               <small>{walkaway.priceLabel.toUpperCase()}</small>
-              <b>{fmt(walkaway.priceAmount)} <em>BDT</em></b>
-              <span>Pay in full, or in 2 parts.</span>
+              <b>{fmt(amount)} <em>BDT</em></b>
+              <span>{amount < walkaway.priceAmount ? 'Early bird, full payment.' : 'Pay in full, or in 2 parts.'}</span>
             </div>
           </div>
         </div>

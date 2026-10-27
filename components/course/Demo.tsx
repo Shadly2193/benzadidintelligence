@@ -10,7 +10,6 @@ export default function Demo() {
   const [cur, setCur] = useState(0);
   const [seen, setSeen] = useState(false);
   const [visible, setVisible] = useState(false);
-  const [hover, setHover] = useState(false);
   const box = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -28,7 +27,7 @@ export default function Demo() {
   }, []);
 
   const Panel = PANELS[cur];
-  const running = seen && visible && !hover;
+  const running = seen && visible;
   return (
     <section id="demo">
       <div className="wrap">
@@ -42,12 +41,13 @@ export default function Demo() {
         <div
           className="card corner demo"
           ref={box}
-          onMouseEnter={() => setHover(true)}
-          onMouseLeave={() => setHover(false)}
         >
+          <p className={cx('dhint', running && 'live')} aria-hidden="true">
+            <span className="dhand">&#9758;</span> {running ? demo.hintLive : demo.hintPaused}
+          </p>
           <div className="tabs">
             {demo.tabs.map((t, i) => (
-              <button key={t} className={cx(i === cur && 'on')} onClick={() => setCur(i)}>
+              <button key={t} className={cx(i === cur && 'on', i === (cur + 1) % PANELS.length && running && 'nx')} onClick={() => setCur(i)}>
                 <small>{String(i + 1).padStart(2, '0')}</small>
                 <strong>{t}</strong>
                 {i === cur && seen && (

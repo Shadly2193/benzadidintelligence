@@ -1,94 +1,142 @@
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { roadmap } from '@/lib/course/site';
-import { cx, useSectionProgress } from '@/lib/course/useScroll';
+import { cx } from '@/lib/course/useScroll';
 
 /**
- * Horizontal roadmap driven by vertical scroll.
- * Framing fix: the track starts after a left gutter (large on wide screens).
- * Distance to travel = trackWidth + 2 x gutter - viewportWidth, so the first card sits
- * inside the gutter at the start and the last card ends one gutter from the right edge.
+ * Hand-driven roadmap: swipe on phones, drag (or arrows / wheel) on laptops.
+ * The card closest to the centre of the frame is focused, the rest are dimmed.
  */
 export default function Roadmap() {
-  const sec = useRef<HTMLElement>(null);
   const vp = useRef<HTMLDivElement>(null);
-  const track = useRef<HTMLDivElement>(null);
-  const [dist, setDist] = useState(0);
-  const [gut, setGut] = useState(22);
-  const p = useSectionProgress(sec);
+  const drag = useRef({ on: false, x: 0, left: 0, moved: false });
+  const [idx, setIdx] = useState(0);
+  const [p, setP] = useState(0);
+  const [grabbing, setGrabbing] = useState(false);
   const n = roadmap.rotations.length;
 
-  const measure = useCallback(() => {
-    const t = track.current;
-    if (!t) return;
-    const vw = document.documentElement.clientWidth;
-    const g = Math.max(22, (vw - 1180) / 2 + 22);
-    setGut(g);
-    const kids = Array.from(t.children) as HTMLElement[];
-    const gap = parseFloat(getComputedStyle(t).columnGap) || 0;
-    const trackW = kids.reduce((a, k) => a + k.offsetWidth, 0) + gap * (kids.length - 1);
-    setDist(Math.max(0, trackW + 2 * g - vw));
+  const sync = useCallback(() => {
+    const el = vp.current;
+    if (!el) return;
+    const max = el.scrollWidth - el.clientWidth;
+    setP(max > 0 ? el.scrollLeft / max : 0);
+    const mid = el.getBoundingClientRect().left + el.clientWidth / 2;
+    let best = 0;
+    let bestD = Infinity;
+    Array.from(el.children).forEach((c, i) => {
+      const r = c.getBoundingClientRect();
+      const d = Math.abs(r.left + r.width / 2 - mid);
+      if (d < bestD) {
+        bestD = d;
+        best = i;
+      }
+    });
+    setIdx(best);
   }, []);
 
   useEffect(() => {
-    measure();
-    window.addEventListener('resize', measure);
-    const ro = new ResizeObserver(measure);
-    if (track.current) ro.observe(track.current);
-    return () => {
-      window.removeEventListener('resize', measure);
-      ro.disconnect();
+    const el = vp.current;
+    if (!el) return;
+    let raf = 0;
+    const on = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(sync);
     };
-  }, [measure]);
+    sync();
+    el.addEventListener('scroll', on, { passive: true });
+    window.addEventListener('resize', on);
+    return () => {
+      cancelAnimationFrame(raf);
+      el.removeEventListener('scroll', on);
+      window.removeEventListener('resize', on);
+    };
+  }, [sync]);
 
-  const idx = Math.min(n - 1, Math.round(p * (n - 1)));
+  const go = (i: number) => {
+    const el = vp.current;
+    const c = el?.children[Math.max(0, Math.min(n - 1, i))] as HTMLElement | undefined;
+    if (!el || !c) return;
+    el.scrollTo({ left: c.offsetLeft - (el.clientWidth - c.offsetWidth) / 2, behavior: 'smooth' });
+  };
+
+  // mouse drag only; touch uses native swipe
+  const down = (e: React.PointerEvent) => {
+    if (e.pointerType !== 'mouse' || !vp.current) return;
+    drag.current = { on: true, x: e.clientX, left: vp.current.scrollLeft, moved: false };
+    setGrabbing(true);
+  };
+  const move = (e: React.PointerEvent) => {
+    const d = drag.current;
+    if (!d.on || !vp.current) return;
+    const dx = e.clientX - d.x;
+    if (Math.abs(dx) > 4) d.moved = true;
+    vp.current.scrollLeft = d.left - dx;
+  };
+  const up = () => {
+    if (!drag.current.on) return;
+    drag.current.on = false;
+    setGrabbing(false);
+    go(idx);
+  };
+
   return (
-    <section
-      className="hroad"
-      id="road"
-      ref={sec}
-      style={{ height: `calc(100svh + ${dist}px)`, minHeight: '300svh' }}
-    >
-      <div className="hsticky">
-        <div className="wrap">
-          <p className="label">{roadmap.label}</p>
-          <h2 className="hh">
-            {roadmap.title[0]}
-            <br />
-            <span className="accent">{roadmap.title[1]}</span>
-          </h2>
-          <p className="lead hl">{roadmap.lead}</p>
-          <div className="hprog">
-            <i style={{ width: `${p * 100}%` }} />
-          </div>
-          <div className="hmeta">
-            <span>
-              Rotation {idx + 1} of {n} · {roadmap.rotations[idx].n}
-            </span>
-            <span className="sm">{roadmap.hint}</span>
-          </div>
+    <section className="hroad" id="road">
+      <div className="wrap">
+        <p className="label rv">{roadmap.label}</p>
+        <h2 className="hh rv">
+          {roadmap.title[0]}
+          <br />
+          <span className="accent">{roadmap.title[1]}</span>
+        </h2>
+        <p className="lead hl rv">{roadmap.lead}</p>
+        <div className="hprog">
+          <i style={{ width: `${Math.max(p, 1 / n) * 100}%` }} />
         </div>
-        <div className="hvp" ref={vp} style={{ ['--gut' as string]: `${gut}px` }}>
-          <div className="htrack" ref={track} style={{ transform: `translate3d(${-p * dist}px,0,0)` }}>
-            {roadmap.rotations.map((r, i) => (
-              <div key={r.n} className={cx('hcard card', i === idx && 'act')}>
-                <div className="hn">{i + 1}</div>
-                <small className="rk">{r.w}</small>
-                <h3>{r.n}</h3>
-                <p className="promise">{r.promise}</p>
-                <ul className="cl2">
-                  {r.topics.map((t) => (
-                    <li key={t}>{t}</li>
-                  ))}
-                </ul>
-                <div className="make">
-                  <b>{roadmap.youMake.toUpperCase()}</b>
-                  {r.make}
-                </div>
-              </div>
-            ))}
-          </div>
+        <div className="hmeta">
+          <span>
+            Rotation {idx + 1} of {n} · {roadmap.rotations[idx].n}
+          </span>
+          <span className="harrows">
+            <button type="button" aria-label="Previous rotation" onClick={() => go(idx - 1)} disabled={idx === 0}>
+              &larr;
+            </button>
+            <button type="button" aria-label="Next rotation" onClick={() => go(idx + 1)} disabled={idx === n - 1}>
+              &rarr;
+            </button>
+          </span>
         </div>
+        <p className="sm hhint">{roadmap.hint}</p>
+      </div>
+      <div
+        className={cx('hvp', grabbing && 'grab')}
+        ref={vp}
+        onPointerDown={down}
+        onPointerMove={move}
+        onPointerUp={up}
+        onPointerLeave={up}
+        onClickCapture={(e) => drag.current.moved && e.preventDefault()}
+      >
+        {roadmap.rotations.map((r, i) => (
+          <div
+            key={r.n}
+            className={cx('hcard card', i === idx && 'act')}
+            onClick={() => !drag.current.moved && i !== idx && go(i)}
+          >
+            <div className="hn">{i + 1}</div>
+            <small className="rk">{r.w}</small>
+            <h3>{r.n}</h3>
+            <p className="promise">{r.promise}</p>
+            <ul className="cl2">
+              {r.topics.map((t) => (
+                <li key={t}>{t}</li>
+              ))}
+            </ul>
+            <div className="make">
+              <b>{roadmap.youMake.toUpperCase()}</b>
+              {r.make}
+            </div>
+          </div>
+        ))}
       </div>
     </section>
   );

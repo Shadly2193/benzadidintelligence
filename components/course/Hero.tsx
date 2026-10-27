@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { hero } from '@/lib/course/site';
+import { hero, schedule } from '@/lib/course/site';
+import { useDeadline } from '@/lib/course/useDeadline';
 
 function Decrypt({ text }: { text: string }) {
   const [t, setT] = useState(text);
@@ -23,6 +24,21 @@ function Decrypt({ text }: { text: string }) {
 }
 
 /** Small "prompt -> result" loop. Each run takes about 1.2 seconds. */
+function SeatLine() {
+  const { ready, phase, parts } = useDeadline(60000);
+  const days = parts ? parts[0] : 0;
+  const when = days > 0 ? `${days} day${days === 1 ? '' : 's'}` : 'less than a day';
+  let text: string = hero.seatNote;
+  if (ready && phase === 'early') text = `Early bird ${schedule.earlyBirdAmount.toLocaleString('en-US')} BDT ends in ${when}`;
+  if (ready && phase === 'regular') text = `Registration closes in ${when}`;
+  if (ready && phase === 'closed') text = 'Registration is closed';
+  return (
+    <div className="seat">
+      <span className="pulse" /> {text} · Classes start {schedule.classStartLabel}
+    </div>
+  );
+}
+
 export default function Hero() {
   return (
     <header className="hero grid-bg" id="top">
@@ -76,9 +92,7 @@ export default function Hero() {
             See what you will build
           </a>
         </div>
-        <div className="seat">
-          <span className="pulse" /> {hero.seatNote}
-        </div>
+        <SeatLine />
       </div>
     </header>
   );

@@ -1,13 +1,19 @@
 'use client';
 import { useState } from 'react';
-import { price, riskFree, waLink } from '@/lib/course/site';
+import { price, riskFree, schedule, waLink } from '@/lib/course/site';
+import { useDeadline } from '@/lib/course/useDeadline';
 import { cx, useCountUp, useInViewOnce } from '@/lib/course/useScroll';
 
 export default function Price() {
   const [mode, setMode] = useState<'full' | 'part'>('full');
   const [ref, seen] = useInViewOnce<HTMLDivElement>(0.5);
-  const amt = useCountUp(price.amount, seen, 1500);
+  const { phase } = useDeadline(60000);
+  const early = phase === 'early';
+  // early bird is full payment only; paying in 2 parts uses the regular price
+  const now = early && mode === 'full' ? schedule.earlyBirdAmount : price.amount;
+  const amt = useCountUp(now, seen, 1500);
   const half = price.amount / 2;
+  const fmt = (n: number) => n.toLocaleString('en-US');
   return (
     <section id="price">
       <div className="wrap">
@@ -19,10 +25,11 @@ export default function Price() {
         </h2>
         <div className="price">
           <div className="pc rec corner rv" ref={ref}>
-            <span className="badge">{price.badge}</span>
+            <span className="badge">{early ? 'EARLY BIRD' : price.badge}</span>
             <h3>{price.name}</h3>
             <div className="amt">
               {amt.toLocaleString('en-US')} <small>{price.currency}</small>
+              {early && mode === 'full' && <s className="was">{fmt(price.amount)}</s>}
             </div>
             <div className="pay" role="tablist">
               <i style={{ left: mode === 'full' ? 4 : '50%', width: 'calc(50% - 4px)' }} />
@@ -35,7 +42,7 @@ export default function Price() {
             </div>
             <div className={cx('paybar', mode === 'part' && 'parts')} aria-hidden="true">
               <div>
-                <span>{mode === 'full' ? `${price.amount.toLocaleString('en-US')} NOW` : `${half.toLocaleString('en-US')} NOW`}</span>
+                <span>{mode === 'full' ? `${fmt(now)} NOW` : `${fmt(half)} NOW`}</span>
               </div>
               <div>
                 <span>{half.toLocaleString('en-US')} IN 1 MONTH</span>
@@ -44,7 +51,7 @@ export default function Price() {
             <p className="split">
               {mode === 'full' ? (
                 <>
-                  Pay <b>{price.amount.toLocaleString('en-US')} BDT</b> once.
+                  Pay <b>{fmt(now)} BDT</b> once.
                 </>
               ) : (
                 <>
@@ -52,14 +59,27 @@ export default function Price() {
                 </>
               )}
             </p>
+            <p className="urg">
+              {phase === 'early' && (
+                <>
+                  {schedule.earlyBirdNote} {schedule.priceUpNote}
+                </>
+              )}
+              {phase === 'regular' && <>Registration closes {schedule.regEndLabel}. No late entry.</>}
+              {phase === 'closed' && <>Registration is closed for this batch.</>}
+            </p>
             <ul>
               {price.includes.map((x) => (
                 <li key={x}>{x}</li>
               ))}
             </ul>
-            <a className="btn btn-main" href="#join">
-              Apply to join
-            </a>
+            {phase === 'closed' ? (
+              <span className="btn btn-ghost" aria-disabled="true">Registration closed</span>
+            ) : (
+              <a className="btn btn-main" href="#join">
+                Apply to join
+              </a>
+            )}
           </div>
           <div className="pc rv d1">
             <h3>{price.oneToOne.title}</h3>

@@ -19,7 +19,7 @@ const Win = ({ title, children, cap }: { title: string; children: React.ReactNod
 /* Each panel finishes its animation in about 2.5 seconds. */
 
 export function WebsitePanel() {
-  const t = useTyped('Build a website for a dental surgeon. Dark theme, orange buttons, an appointment button.', 10);
+  const t = useTyped('Build a website for a dental surgeon. Dark theme, orange buttons, an appointment button.', 6);
   const f = useFlags([950, 1200, 1450, 1700, 1950]);
   const done = f.every(Boolean);
   const status = !f[0] ? '' : done ? 'Done. Now you improve it.' : 'Building...';
@@ -101,7 +101,7 @@ export function EditPanel() {
 }
 
 export function ResearchPanel() {
-  const t = useTyped('Find recent studies on my topic. Compare them. Write a short review with references.', 10);
+  const t = useTyped('Find recent studies on my topic. Compare them. Write a short review with references.', 6);
   const f = useFlags([900, 1150, 1400, 1650, 1000, 1250, 1500, 1750, 2000]);
   return (
     <Win title="YOUR RESEARCH, DONE BY COMMAND" cap="Clinical, public health or your own field. Ask in plain words, then check the work.">

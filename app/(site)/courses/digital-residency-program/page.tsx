@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import BeforeAfter from "@/components/course/BeforeAfter";
 import ChromeUI from "@/components/course/ChromeUI";
+import Countdown from "@/components/course/Countdown";
 import Demo from "@/components/course/Demo";
 import Faq from "@/components/course/Faq";
 import Final from "@/components/course/Final";
@@ -41,6 +42,7 @@ export default function DigitalResidencyPage() {
       <WhoFor />
       <Instructor />
       <Price />
+      <Countdown />
       <Walkaway />
       <Join />
       <Faq />

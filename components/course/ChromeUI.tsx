@@ -35,15 +35,23 @@ export default function ChromeUI() {
 
   useEffect(() => {
     let raf = 0;
+    // section positions are measured once per layout change, not on every scroll frame
+    let tops: number[] = [];
+    let docH = 0;
+    const measure = () => {
+      tops = sections.map((s) => {
+        const el = document.getElementById(s.id);
+        return el ? el.getBoundingClientRect().top + window.scrollY : Infinity;
+      });
+      docH = document.documentElement.scrollHeight - window.innerHeight;
+    };
     const calc = () => {
-      const h = document.documentElement.scrollHeight - window.innerHeight;
-      const pr = h > 0 ? window.scrollY / h : 0;
-      setP(pr);
+      const pr = docH > 0 ? window.scrollY / docH : 0;
+      setP(Math.round(pr * 400) / 400);
       const mid = window.scrollY + window.innerHeight * 0.4;
       let cur = 0;
-      sections.forEach((s, i) => {
-        const el = document.getElementById(s.id);
-        if (el && el.getBoundingClientRect().top + window.scrollY <= mid) cur = i;
+      tops.forEach((t, i) => {
+        if (t <= mid) cur = i;
       });
       setIdx(cur);
       if (cur !== last.current) {
@@ -53,26 +61,34 @@ export default function ChromeUI() {
       }
       const mid2 = window.innerHeight / 2;
       setHideGauge(
-        ['road', 'future'].some((id) => {
+        ['future'].some((id) => {
           const r = document.getElementById(id)?.getBoundingClientRect();
           return !!r && r.top <= mid2 && r.bottom >= mid2;
         }),
       );
       setShowNext(window.scrollY > window.innerHeight * 0.5);
       setShowJoin(window.scrollY > window.innerHeight * 0.8);
-      setInSticky(['road', 'future'].some((id) => { const r = document.getElementById(id)?.getBoundingClientRect(); return !!r && r.top <= mid2 && r.bottom >= mid2; }));
+      setInSticky(['future'].some((id) => { const r = document.getElementById(id)?.getBoundingClientRect(); return !!r && r.top <= mid2 && r.bottom >= mid2; }));
     };
     const on = () => {
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(calc);
     };
+    const relayout = () => {
+      measure();
+      on();
+    };
+    measure();
     calc();
+    const ro = new ResizeObserver(relayout);
+    ro.observe(document.body);
     window.addEventListener('scroll', on, { passive: true });
-    window.addEventListener('resize', on);
+    window.addEventListener('resize', relayout);
     return () => {
       cancelAnimationFrame(raf);
+      ro.disconnect();
       window.removeEventListener('scroll', on);
-      window.removeEventListener('resize', on);
+      window.removeEventListener('resize', relayout);
     };
   }, []);
 

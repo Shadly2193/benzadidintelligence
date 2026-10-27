@@ -5,6 +5,27 @@ export const waLink = (text: string) =>
 
 export const PROGRAM_NAME = 'Digital Residency Program';
 
+/** Dates and early-bird price. All times are Bangladesh time (+06:00). */
+export const schedule = {
+  classStart: '2026-12-04T00:00:00+06:00',
+  classStartLabel: 'Friday, 4 December',
+  earlyBirdEnd: '2026-11-20T23:59:59+06:00',
+  earlyBirdEndLabel: '20 November',
+  earlyBirdAmount: 20000,
+  earlyBirdNote: 'Early bird: full payment only.',
+  regEnd: '2026-11-30T23:59:59+06:00',
+  regEndLabel: '30 November',
+  priceUpNote: 'Price goes up to 24,000 BDT on 21 November.',
+  clock: {
+    label: 'SEATS CLOSE SOON',
+    earlyTitle: 'Early bird price ends in',
+    regTitle: 'Registration closes in',
+    closedTitle: 'Registration is closed.',
+    closedLine: 'Message me on WhatsApp to hear about the next batch.',
+    units: ['Days', 'Hours', 'Minutes', 'Seconds'],
+  },
+};
+
 export const hero = {
   eyebrow: 'DIGITAL RESIDENCY PROGRAM',
   lines: ['Doctors! Your brand,', 'marketing, videos,', 'website and AI.', 'Everything in one '] as const,
@@ -89,6 +110,8 @@ export const demo = {
   lead: 'You give AI simple commands. It does the heavy work. You stay in charge. These are examples of what you will practice.',
   tabs: ['Vibe-coded website', 'Vibe editing', 'Vibe research', 'Personal brand', 'Digital marketing', 'AI in practice'],
   footnote: 'Also inside: a guide to building a side hustle with digital products.',
+  hintLive: 'Playing by itself. Click any tab to jump to it.',
+  hintPaused: 'Click any tab to watch it.',
 };
 
 export const proof = {
@@ -109,8 +132,8 @@ export const proof = {
 export const roadmap = {
   label: 'THE 16 WEEKS',
   title: ['8 rotations.', 'One clear path.'],
-  lead: 'Like a residency, you move from one rotation to the next. Each rotation is about 2 weeks. Scroll down and the path moves sideways.',
-  hint: 'Keep scrolling →',
+  lead: 'Like a residency, you move from one rotation to the next. Each rotation is about 2 weeks.',
+  hint: 'Swipe or drag the cards to see every rotation →',
   youMake: 'You make',
   rotations: [
     { n: 'Start', w: 'WEEKS 1-2', promise: 'Start safely as a doctor. No camera needed.', topics: ['Find your stage', 'AI is your assistant', 'Beat the fear', 'Your digital toolbox'], make: 'Your doctor profile goal and your first post' },
@@ -268,13 +291,23 @@ export const join = {
   label: 'HOW TO JOIN',
   title: '3 easy steps.',
   steps: [
-    ['Fill the form', 'Your name, who you are, and your BMDC number or student ID image.'],
+    ['Fill the form', 'Your name, college, session, and your BMDC number or student year.'],
     ['Talk to me on WhatsApp', 'The form opens WhatsApp. I send the payment details to you there.'],
     ['Get your group link', 'I check your details and payment myself. Then you get the private course community link.'],
   ] as [string, string][],
-  stages: ['Student', 'Intern', 'New doctor', 'Practicing doctor', 'Established doctor'],
-  idNote: 'Your ID image is kept private. Only I can see it.',
-  devNote: '[Developer note: image upload needs the private backend. Not built in this mock.]',
+  fields: {
+    name: 'Full name',
+    fb: 'Facebook name',
+    college: 'Medical college name',
+    session: 'Session',
+    hasBmdc: 'Do you have a BMDC number?',
+    bmdc: 'BMDC number',
+    year: 'Which year are you in?',
+    idImg: 'BMDC card or student ID image',
+  },
+  years: ['1st year', '2nd year', '3rd year', '4th year', '5th year', 'Intern'],
+  idNote: 'Your ID image is kept private. Only I can see it. Please also attach it in WhatsApp after the chat opens.',
+  closedNote: 'Registration is closed for this batch.',
   agree: 'I have read the program details and the refund rules, and I agree.',
   submit: 'Send my request on WhatsApp',
   thanks: 'Thank you. WhatsApp should open now. Send the message and I will reply with the next step.',
@@ -320,6 +353,7 @@ export const sections: { id: string; name: string }[] = [
   { id: 'who', name: 'Who it is for' },
   { id: 'inst', name: 'Your instructor' },
   { id: 'price', name: 'Price' },
+  { id: 'clock', name: 'Countdown' },
   { id: 'value', name: 'What you get' },
   { id: 'join', name: 'How to join' },
   { id: 'faq', name: 'Questions' },
