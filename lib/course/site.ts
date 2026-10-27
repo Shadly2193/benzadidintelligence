@@ -248,11 +248,11 @@ export const walkaway = {
   valueNote: 'Based on what agencies in Bangladesh usually charge. We count only the lowest price. You learn to do it yourself, for good.',
   cards: [
     { h: 'Your personal brand', t: 'A page, a story and a look that people remember.', m: 'Brand building by an agency: 50,000–80,000 BDT. You keep building it for life.', v: 50000 },
-    { h: 'AI in your medical practice', t: 'Patient education, notes, communication and staying up to date.', m: 'AI training for doctors: 15,000–20,000 BDT. Saves you hours every week.', v: 15000 },
     { h: 'Digital marketing', t: 'Social media, website and Google, working together.', m: 'Marketing agencies: 40,000–60,000 BDT a month', v: 40000 },
     { h: 'A vibe-coded website', t: 'Build your own website by talking to AI.', m: 'Web agencies: 40,000–1,00,000 BDT', v: 40000 },
     { h: 'Vibe editing', t: 'Edit professional-looking videos with simple commands.', m: 'Video agencies: 8,000–20,000 BDT a video. 4 a month: 32,000+', v: 32000 },
     { h: 'Vibe research', t: 'Find, read and write research faster, in your own field.', m: 'Research help: 20,000–30,000 BDT a paper', v: 20000 },
+    { h: 'AI in your medical practice', t: 'Patient education, notes, communication and staying up to date.', m: 'AI training for doctors: 15,000–20,000 BDT. Saves you hours every week.', v: 15000 },
     { h: 'Confidence', t: 'Step in front of the camera and in front of people, calmly.', m: '', v: 0 },
     { h: 'A side hustle plan', t: 'If you want: build and market your own e-book, mini course or workshop.', m: '', v: 0 },
   ] as { h: string; t: string; m: string; v: number }[],

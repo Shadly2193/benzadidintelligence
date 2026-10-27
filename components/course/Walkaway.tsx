@@ -7,7 +7,8 @@ const fmt = (n: number) => n.toLocaleString('en-US');
 
 export default function Walkaway() {
   const [ref, seen] = useInViewOnce<HTMLDivElement>(0.45);
-  const valued = walkaway.cards.filter((c) => c.v > 0);
+  // bars run largest to smallest; cards keep their own order
+  const valued = walkaway.cards.filter((c) => c.v > 0).sort((a, b) => b.v - a.v);
   const total = valued.reduce((a, c) => a + c.v, 0);
   // 0 bars grow, 1 total counts, 2 strike, 3 price
   const f = useFlags([100, 200, 1500, 1900], seen);
