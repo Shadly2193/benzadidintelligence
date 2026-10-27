@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useRef } from 'react';
-import { proof } from '@/lib/course/site';
+import { useCourse } from '@/lib/course/content';
 
 function Clip({ src }: { src: string }) {
   const ref = useRef<HTMLVideoElement>(null);
@@ -23,6 +23,7 @@ function Clip({ src }: { src: string }) {
 }
 
 export default function Proof() {
+  const { proof } = useCourse();
   return (
     <section className="grid-bg" id="proof">
       <div className="wrap">

@@ -1,9 +1,10 @@
 'use client';
 import { useState } from 'react';
-import { fit, who } from '@/lib/course/site';
+import { useCourse } from '@/lib/course/content';
 import { cx } from '@/lib/course/useScroll';
 
 export default function WhoFor() {
+  const { fit, who } = useCourse();
   const [i, setI] = useState(0);
   const s = who.stages[i];
   return (

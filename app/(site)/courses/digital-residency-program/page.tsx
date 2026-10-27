@@ -16,6 +16,40 @@ import Roadmap from "@/components/course/Roadmap";
 import Walkaway from "@/components/course/Walkaway";
 import WhoFor from "@/components/course/WhoFor";
 import "@/components/course/course.css";
+import { CourseProvider } from "@/lib/course/content";
+import { mergeCourse } from "@/lib/course/defaults";
+import { createClient } from "@/lib/supabase/server";
+
+const SLUG = "digital-residency-program";
+
+const SECTIONS: Record<string, React.ComponentType> = {
+  top: Hero,
+  problem: Problem,
+  future: BeforeAfter,
+  demo: Demo,
+  proof: Proof,
+  road: Roadmap,
+  how: HowItWorks,
+  who: WhoFor,
+  inst: Instructor,
+  price: Price,
+  clock: Countdown,
+  value: Walkaway,
+  join: Join,
+  faq: Faq,
+  final: Final,
+};
+
+/** Published content for everyone; `?preview=1` shows the draft, but only to a logged-in admin (RLS). */
+async function loadContent(preview: boolean) {
+  const supabase = await createClient();
+  if (preview) {
+    const { data } = await supabase.from("course_pages").select("draft").eq("slug", SLUG).maybeSingle();
+    if (data) return { content: mergeCourse(data.draft), preview: true };
+  }
+  const { data } = await supabase.from("course_pages_public").select("published").eq("slug", SLUG).maybeSingle();
+  return { content: mergeCourse(data?.published), preview: false };
+}
 
 export const metadata: Metadata = {
   title: "Digital Residency Program",
@@ -29,25 +63,25 @@ export const metadata: Metadata = {
   },
 };
 
-export default function DigitalResidencyPage() {
+export default async function DigitalResidencyPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const { preview: p } = await searchParams;
+  const { content, preview } = await loadContent(p === "1");
   return (
-    <div className="dr-page">
-      <Hero />
-      <Problem />
-      <BeforeAfter />
-      <Demo />
-      <Proof />
-      <Roadmap />
-      <HowItWorks />
-      <WhoFor />
-      <Instructor />
-      <Price />
-      <Countdown />
-      <Walkaway />
-      <Join />
-      <Faq />
-      <Final />
-      <ChromeUI />
-    </div>
+    <CourseProvider value={content}>
+      {preview && <div className="dr-preview-bar">PREVIEW: this is your unpublished draft. Visitors still see the published page.</div>}
+      <div className="dr-page">
+        {content.sections
+          .filter((s) => !content.hidden.includes(s.id) && SECTIONS[s.id])
+          .map((s) => {
+            const Section = SECTIONS[s.id];
+            return <Section key={s.id} />;
+          })}
+        <ChromeUI />
+      </div>
+    </CourseProvider>
   );
 }

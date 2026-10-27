@@ -1,6 +1,6 @@
 'use client';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { roadmap } from '@/lib/course/site';
+import { useCourse } from '@/lib/course/content';
 import { cx } from '@/lib/course/useScroll';
 
 /**
@@ -8,6 +8,7 @@ import { cx } from '@/lib/course/useScroll';
  * The card closest to the centre of the frame is focused, the rest are dimmed.
  */
 export default function Roadmap() {
+  const { roadmap } = useCourse();
   const vp = useRef<HTMLDivElement>(null);
   const drag = useRef({ on: false, x: 0, left: 0, moved: false });
   const [idx, setIdx] = useState(0);

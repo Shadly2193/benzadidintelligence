@@ -1,9 +1,10 @@
 'use client';
 import { useState } from 'react';
-import { faq } from '@/lib/course/site';
+import { useCourse } from '@/lib/course/content';
 import { cx } from '@/lib/course/useScroll';
 
 export default function Faq() {
+  const { faq } = useCourse();
   const [open, setOpen] = useState<number | null>(null);
   return (
     <section id="faq">

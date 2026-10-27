@@ -1,10 +1,11 @@
 'use client';
-import { schedule, waLink } from '@/lib/course/site';
+import { useCourse } from '@/lib/course/content';
 import { useDeadline } from '@/lib/course/useDeadline';
 
 const pad = (n: number) => String(n).padStart(2, '0');
 
 export default function Countdown() {
+  const { schedule, waLink } = useCourse();
   const { phase, parts } = useDeadline();
   const c = schedule.clock;
   return (

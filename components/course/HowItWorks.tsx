@@ -1,6 +1,8 @@
-import { how } from '@/lib/course/site';
+'use client';
+import { useCourse } from '@/lib/course/content';
 
 export default function HowItWorks() {
+  const { how } = useCourse();
   return (
     <section className="grid-bg" id="how">
       <div className="wrap">

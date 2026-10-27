@@ -1,9 +1,10 @@
 'use client';
 import { useState } from 'react';
-import { problem } from '@/lib/course/site';
+import { useCourse } from '@/lib/course/content';
 import { cx } from '@/lib/course/useScroll';
 
 export default function Problem() {
+  const { problem } = useCourse();
   const [open, setOpen] = useState<number | null>(null);
   return (
     <section className="hook" id="problem">

@@ -1,12 +1,13 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
-import { demo } from '@/lib/course/site';
+import { useCourse } from '@/lib/course/content';
 import { cx } from '@/lib/course/useScroll';
 import { BrandPanel, EditPanel, MarketingPanel, PracticePanel, ResearchPanel, WebsitePanel } from './DemoPanels';
 
 const PANELS = [WebsitePanel, EditPanel, ResearchPanel, BrandPanel, MarketingPanel, PracticePanel];
 
 export default function Demo() {
+  const { demo } = useCourse();
   const [cur, setCur] = useState(0);
   const [seen, setSeen] = useState(false);
   const [visible, setVisible] = useState(false);

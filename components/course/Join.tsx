@@ -1,6 +1,6 @@
 'use client';
 import { FormEvent, useState } from 'react';
-import { join, waLink } from '@/lib/course/site';
+import { useCourse } from '@/lib/course/content';
 import { useDeadline } from '@/lib/course/useDeadline';
 
 const MINI = [
@@ -10,6 +10,7 @@ const MINI = [
 ];
 
 export default function Join() {
+  const { join, waLink } = useCourse();
   const [ok, setOk] = useState('');
   const [hasBmdc, setHasBmdc] = useState<'yes' | 'no' | ''>('');
   const { phase } = useDeadline(60000);

@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { hero, schedule } from '@/lib/course/site';
+import { useCourse } from '@/lib/course/content';
 import { useDeadline } from '@/lib/course/useDeadline';
 
 function Decrypt({ text }: { text: string }) {
@@ -25,6 +25,7 @@ function Decrypt({ text }: { text: string }) {
 
 /** Small "prompt -> result" loop. Each run takes about 1.2 seconds. */
 function SeatLine() {
+  const { hero, schedule } = useCourse();
   const { ready, phase, parts } = useDeadline(60000);
   const days = parts ? parts[0] : 0;
   const when = days > 0 ? `${days} day${days === 1 ? '' : 's'}` : 'less than a day';
@@ -41,6 +42,7 @@ function SeatLine() {
 }
 
 export default function Hero() {
+  const { hero } = useCourse();
   return (
     <header className="hero grid-bg" id="top">
       <svg className="heart" viewBox="0 0 1400 160" preserveAspectRatio="none" aria-hidden="true">

@@ -185,6 +185,8 @@ export const instructor = {
   name: 'Dr. Md. Shadly Benzadid',
   micro: 'Ex-Dentist · AI Generalist · AI Builder · AI Instructor',
   lead: 'A doctor who builds websites for doctors, and teaches doctors how to use AI.',
+  photoUrl: '', // set from admin (Course Page > Your instructor > Photo Url > Upload)
+  photoAlt: 'Dr. Md. Shadly Benzadid',
   photo: 'Your photo here',
   photoNote: '(Black and Orange series from the site)',
   facts: [

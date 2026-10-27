@@ -1,10 +1,11 @@
 'use client';
 import { useState } from 'react';
-import { price, riskFree, schedule, waLink } from '@/lib/course/site';
+import { useCourse } from '@/lib/course/content';
 import { useDeadline } from '@/lib/course/useDeadline';
 import { cx, useCountUp, useInViewOnce } from '@/lib/course/useScroll';
 
 export default function Price() {
+  const { price, riskFree, schedule, waLink } = useCourse();
   const [mode, setMode] = useState<'full' | 'part'>('full');
   const [ref, seen] = useInViewOnce<HTMLDivElement>(0.5);
   const { phase } = useDeadline(60000);

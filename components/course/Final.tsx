@@ -1,6 +1,8 @@
-import { final } from '@/lib/course/site';
+'use client';
+import { useCourse } from '@/lib/course/content';
 
 export default function Final() {
+  const { final } = useCourse();
   return (
     <section className="final grid-bg" id="final">
       <div className="wrap">

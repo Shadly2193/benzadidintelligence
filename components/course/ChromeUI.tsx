@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
-import { sections } from '@/lib/course/site';
+import { useCourse } from '@/lib/course/content';
 import { cx } from '@/lib/course/useScroll';
 
 /**
@@ -9,6 +9,7 @@ import { cx } from '@/lib/course/useScroll';
  * and the scroll reveal for every element with class "rv" or "line" (sets data-in).
  */
 export default function ChromeUI() {
+  const { sections } = useCourse();
   const [p, setP] = useState(0);
   const [idx, setIdx] = useState(0);
   const [pump, setPump] = useState(false);

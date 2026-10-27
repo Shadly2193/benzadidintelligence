@@ -20,6 +20,7 @@ import {
   Menu,
   X,
   ExternalLink,
+  School,
 } from "lucide-react";
 
 const NAV_PRIMARY = [
@@ -33,6 +34,7 @@ const NAV_PRIMARY = [
   { href: "/admin/logos", label: "Client Logos", icon: Building2 },
   { href: "/admin/testimonials", label: "Testimonials", icon: Quote },
   { href: "/admin/leads", label: "Leads", icon: Inbox },
+  { href: "/admin/courses/digital-residency", label: "Course Page", icon: School },
 ];
 
 const NAV_SECONDARY = [
@@ -51,6 +53,7 @@ const LABELS: Record<string, string> = {
   "/admin/logos": "Client Logos",
   "/admin/testimonials": "Testimonials",
   "/admin/leads": "Leads",
+  "/admin/courses/digital-residency": "Course Page",
   "/admin/media": "Media Library",
   "/admin/settings": "Site Settings",
 };

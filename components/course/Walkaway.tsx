@@ -1,11 +1,12 @@
 'use client';
-import { schedule, walkaway } from '@/lib/course/site';
+import { useCourse } from '@/lib/course/content';
 import { cx, useCountUp, useFlags, useInViewOnce } from '@/lib/course/useScroll';
 import { useDeadline } from '@/lib/course/useDeadline';
 
 const fmt = (n: number) => n.toLocaleString('en-US');
 
 export default function Walkaway() {
+  const { schedule, walkaway } = useCourse();
   const [ref, seen] = useInViewOnce<HTMLDivElement>(0.45);
   // bars run largest to smallest; cards keep their own order
   const valued = walkaway.cards.filter((c) => c.v > 0).sort((a, b) => b.v - a.v);

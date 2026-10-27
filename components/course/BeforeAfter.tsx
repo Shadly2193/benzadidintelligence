@@ -1,10 +1,11 @@
 'use client';
 import { useRef } from 'react';
-import { future } from '@/lib/course/site';
+import { useCourse } from '@/lib/course/content';
 import { cx, useSectionProgress } from '@/lib/course/useScroll';
 
 /** Option C: the slider moves as you scroll. Each row flips from a faded cross to a glowing tick. */
 export default function BeforeAfter() {
+  const { future } = useCourse();
   const ref = useRef<HTMLElement>(null);
   const p = useSectionProgress(ref, 1.1);
   const n = future.rows.length;
