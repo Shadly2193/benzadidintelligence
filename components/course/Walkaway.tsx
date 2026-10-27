@@ -26,7 +26,10 @@ export default function Walkaway() {
               <h3>{c.h}</h3>
               <p>{c.t}</p>
               {c.v > 0 ? (
-                <span className="vtag">Value {fmt(c.v)} BDT</span>
+                <>
+                  {c.m && <span className="vmkt">{c.m}</span>}
+                  <span className="vtag">Counted as {fmt(c.v)} BDT</span>
+                </>
               ) : (
                 <span className="vtag soft2">{walkaway.alsoIncluded}</span>
               )}

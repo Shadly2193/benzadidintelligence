@@ -703,3 +703,4 @@
 .dr-page .one2one .btn{margin-top:0}
 @media(max-width:640px){.dr-page .one2one{flex-direction:column;align-items:flex-start}.dr-page .o2o-r{width:100%;justify-content:space-between}}
 .dr-page .vp .vp-eb{display:block;margin-top:4px;font-size:.8rem;font-weight:700;color:var(--orange)}
+.dr-page .vmkt{display:block;margin:10px 0 8px;font-size:.8rem;font-weight:600;color:#ffd9b8;line-height:1.35}
