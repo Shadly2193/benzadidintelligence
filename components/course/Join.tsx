@@ -15,10 +15,18 @@ export default function Join() {
   const [hasBmdc, setHasBmdc] = useState<'yes' | 'no' | ''>('');
   const { phase } = useDeadline(60000);
   const fl = join.fields;
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const [sending, setSending] = useState(false);
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const f = new FormData(e.currentTarget);
+    if (sending) return;
+    const form = e.currentTarget;
+    const f = new FormData(form);
     const img = f.get('idimg');
+    const hasImg = img instanceof File && img.size > 0;
+    if (hasImg && img.size > 5 * 1024 * 1024) {
+      setOk('Your ID image is bigger than 5 MB. Please choose a smaller image.');
+      return;
+    }
     const lines = [
       'Hello, I want to join the Digital Residency Program.',
       `${fl.name}: ${f.get('name')}`,
@@ -26,11 +34,33 @@ export default function Join() {
       `${fl.college}: ${f.get('college')}`,
       `${fl.session}: ${f.get('session')}`,
       hasBmdc === 'yes' ? `${fl.bmdc}: ${f.get('bmdc')}` : `Student, ${f.get('year')}`,
-      img instanceof File && img.size > 0 ? 'I will send my ID image here.' : '',
+      hasImg ? 'I uploaded my ID image with the form.' : '',
       'I have read the details and the refund rules, and I agree.',
     ].filter(Boolean);
-    window.open(waLink(lines.join('\n')), '_blank', 'noopener');
-    setOk(join.thanks);
+    const wa = waLink(lines.join('\n'));
+    // open the tab now, inside the click, so pop-up blockers allow it; point it at WhatsApp after saving
+    const win = window.open('', '_blank');
+    setSending(true);
+    setOk('Sending…');
+    let saved = false;
+    let err = '';
+    try {
+      const r = await fetch('/api/course/apply', { method: 'POST', body: f });
+      const j = await r.json().catch(() => ({}));
+      saved = r.ok && j.ok;
+      err = j.error ?? '';
+    } catch {
+      err = 'Network problem.';
+    }
+    setSending(false);
+    // WhatsApp opens either way, so a failed save never loses the person
+    if (win) win.location.href = wa;
+    else window.location.href = wa;
+    setOk(saved ? join.thanks : `${err} WhatsApp is opening, please send the message there.`.trim());
+    if (saved) {
+      form.reset();
+      setHasBmdc('');
+    }
   };
   return (
     <section className="grid-bg" id="join">
@@ -48,6 +78,7 @@ export default function Join() {
           ))}
         </div>
         <form className="card corner jform rv" onSubmit={onSubmit} autoComplete="off">
+          <input name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" style={{ position: 'absolute', left: '-9999px', width: 1, height: 1 }} />
           <label>
             {fl.name}
             <input name="name" required maxLength={80} placeholder="Dr. / Name" />
@@ -101,8 +132,8 @@ export default function Join() {
           {phase === 'closed' ? (
             <p className="ok">{join.closedNote}</p>
           ) : (
-            <button className="btn btn-main" type="submit">
-              {join.submit}
+            <button className="btn btn-main" type="submit" disabled={sending}>
+              {sending ? 'Sending…' : join.submit}
             </button>
           )}
           <p className="ok" role="status">{ok}</p>
