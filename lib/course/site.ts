@@ -47,7 +47,7 @@ export const workedWith = [
 export const problem = {
   label: 'THE PROBLEM',
   big: ['You studied for years.', 'Nobody taught you the online part.', 'That is what we fix.'],
-  hint: 'Hover or tap a card.',
+  hint: 'Tap a card to see how we fix it.',
   cards: [
     { q: 'I feel shy on camera.', a: 'Start without your face. Step up slowly, one small step at a time.' },
     { q: 'What will people say?', a: 'This feeling goes away as you practice. We help you start small, until it feels normal.' },
@@ -224,8 +224,8 @@ export const walkaway = {
   lead: 'You learn skills that people usually pay others to do. And you learn them as a doctor, for doctors.',
   valueNote: 'This is what these skills are worth to you over the years you use them.',
   cards: [
-    { h: 'AI in your medical practice', t: 'Patient education, notes, communication and staying up to date.', v: 18000 },
-    { h: 'Your personal brand', t: 'A page, a story and a look that people remember.', v: 14000 },
+    { h: 'Your personal brand', t: 'A page, a story and a look that people remember.', v: 18000 },
+    { h: 'AI in your medical practice', t: 'Patient education, notes, communication and staying up to date.', v: 14000 },
     { h: 'Digital marketing', t: 'Social media, website and Google, working together.', v: 12000 },
     { h: 'A vibe-coded website', t: 'Build your own website by talking to AI.', v: 6000 },
     { h: 'Vibe research', t: 'Find, read and write research faster, in your own field.', v: 5000 },

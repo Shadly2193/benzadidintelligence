@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import WorkedWith from "@/components/sections/WorkedWith";
 import BeforeAfter from "@/components/course/BeforeAfter";
 import ChromeUI from "@/components/course/ChromeUI";
 import Demo from "@/components/course/Demo";
@@ -15,7 +14,6 @@ import Proof from "@/components/course/Proof";
 import Roadmap from "@/components/course/Roadmap";
 import Walkaway from "@/components/course/Walkaway";
 import WhoFor from "@/components/course/WhoFor";
-import { getClientLogos } from "@/lib/data/home";
 import "@/components/course/course.css";
 
 export const metadata: Metadata = {
@@ -30,18 +28,10 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function DigitalResidencyPage() {
-  const workedWithLogos = await getClientLogos("worked_with");
-
+export default function DigitalResidencyPage() {
   return (
     <div className="dr-page">
-      <Hero
-        logos={
-          <div className="dr-embed">
-            <WorkedWith data={workedWithLogos} />
-          </div>
-        }
-      />
+      <Hero />
       <Problem />
       <BeforeAfter />
       <Demo />

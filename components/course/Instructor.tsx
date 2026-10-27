@@ -1,10 +1,7 @@
 'use client';
 import { instructor } from '@/lib/course/site';
-import { useCountUp, useInViewOnce } from '@/lib/course/useScroll';
 
 export default function Instructor() {
-  const [ref, seen] = useInViewOnce<HTMLDivElement>(0.6);
-  const v = useCountUp(instructor.stat.value, seen);
   return (
     <section className="grid-bg" id="inst">
       <div className="wrap inst">
@@ -23,17 +20,6 @@ export default function Instructor() {
               <li key={f}>{f}</li>
             ))}
           </ul>
-        </div>
-      </div>
-      <div className="wrap" style={{ marginTop: 48 }}>
-        <div className="stats" style={{ gridTemplateColumns: '1fr' }}>
-          <div className="stat rv" ref={ref}>
-            <div className="n">
-              {v.toLocaleString('en-US')}
-              {instructor.stat.suffix}
-            </div>
-            <div className="t">{instructor.stat.label}</div>
-          </div>
         </div>
       </div>
     </section>

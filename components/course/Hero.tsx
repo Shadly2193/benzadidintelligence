@@ -1,7 +1,6 @@
 'use client';
-import { ReactNode, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { hero } from '@/lib/course/site';
-import { useReducedMotion, useTimers } from '@/lib/course/useScroll';
 
 function Decrypt({ text }: { text: string }) {
   const [t, setT] = useState(text);
@@ -24,112 +23,63 @@ function Decrypt({ text }: { text: string }) {
 }
 
 /** Small "prompt -> result" loop. Each run takes about 1.2 seconds. */
-function PromptDemo() {
-  const reduce = useReducedMotion();
-  const [typed, setTyped] = useState('');
-  const [show, setShow] = useState(false);
-  const [run, setRun] = useState(0);
-  const at = useTimers();
-  useEffect(() => {
-    const ask = hero.promptDemo.ask;
-    if (reduce) {
-      setTyped(ask);
-      setShow(true);
-      return;
-    }
-    setTyped('');
-    setShow(false);
-    const ids: number[] = [];
-    for (let k = 1; k <= ask.length; k++) ids.push(window.setTimeout(() => setTyped(ask.slice(0, k)), k * 24));
-    ids.push(window.setTimeout(() => setShow(true), ask.length * 24 + 250));
-    ids.push(window.setTimeout(() => setRun((r) => r + 1), 5200));
-    return () => ids.forEach(clearTimeout);
-  }, [run, reduce]);
-  void at;
+export default function Hero() {
   return (
-    <div className="pdemo" aria-hidden="true">
-      <div className="pd-ask">
-        <small>YOU SAY</small>
-        <span>
-          {typed}
-          <i className="cur" />
-        </span>
-      </div>
-      <div className={'pd-res' + (show ? ' show' : '')}>
-        <small>AI MAKES</small>
-        <b>{hero.promptDemo.resultName}</b>
-        <span>{hero.promptDemo.resultLine}</span>
-      </div>
-    </div>
-  );
-}
-
-export default function Hero({ logos }: { logos?: ReactNode }) {
-  return (
-    <>
-      <header className="hero grid-bg" id="top">
-        <svg className="heart" viewBox="0 0 1400 160" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M0 80 H300 L330 80 L350 30 L390 140 L420 50 L440 80 H760 L790 80 L810 30 L850 140 L880 50 L900 80 H1400" />
-        </svg>
-        <div className="wrap hero-grid">
-          <div>
-            <p className="label">
-              <Decrypt text={hero.eyebrow} />
-            </p>
-            <h1>
-              <span className="line">
-                <span>{hero.lines[0]}</span>
-              </span>
-              <span className="line">
-                <span className="accent">{hero.lines[1]}</span>
-              </span>
-              <span className="line">
-                <span className="accent">{hero.lines[2]}</span>
-              </span>
-              <span className="line tail">
-                <span>
-                  {hero.lines[3]}
-                  <span className="glitch accent" data-text={hero.glitchWord}>
-                    {hero.glitchWord}
-                  </span>
-                  .
-                </span>
-              </span>
-            </h1>
-            <p className="sub">{hero.sub}</p>
-            <div className="chips">
-              {hero.chips.map((c) => (
-                <span className="chip" key={c}>
-                  {c}
-                </span>
-              ))}
-            </div>
-            <div className="cta-row">
-              <a className="btn btn-main" href="#price">
-                Join the program
-              </a>
-              <a className="btn btn-ghost" href="#demo">
-                See what you will build
-              </a>
-            </div>
-            <div className="seat">
-              <span className="pulse" /> {hero.seatNote}
-            </div>
-          </div>
-          <div>
-            <div className="video corner">
-              <div className="in-v">
-                <div className="play-btn" />
-                <strong>{hero.videoTitle}</strong>
-                <small>{hero.videoHint}</small>
-              </div>
-            </div>
-            <p className="vnote">{hero.videoTip}</p>
-            <PromptDemo />
+    <header className="hero grid-bg" id="top">
+      <svg className="heart" viewBox="0 0 1400 160" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 80 H300 L330 80 L350 30 L390 140 L420 50 L440 80 H760 L790 80 L810 30 L850 140 L880 50 L900 80 H1400" />
+      </svg>
+      <div className="hero-stack">
+        <p className="label">
+          <Decrypt text={hero.eyebrow} />
+        </p>
+        <div className="video corner hero-video">
+          <div className="in-v">
+            <div className="play-btn" />
+            <strong>{hero.videoTitle}</strong>
+            <small>{hero.videoHint}</small>
           </div>
         </div>
-      </header>
-      {logos}
-    </>
+        <h1>
+          <span className="line">
+            <span>{hero.lines[0]}</span>
+          </span>
+          <span className="line">
+            <span className="accent">{hero.lines[1]}</span>
+          </span>
+          <span className="line">
+            <span className="accent">{hero.lines[2]}</span>
+          </span>
+          <span className="line tail">
+            <span>
+              {hero.lines[3]}
+              <span className="glitch accent" data-text={hero.glitchWord}>
+                {hero.glitchWord}
+              </span>
+              .
+            </span>
+          </span>
+        </h1>
+        <p className="sub">{hero.sub}</p>
+        <div className="chips">
+          {hero.chips.map((c) => (
+            <span className="chip" key={c}>
+              {c}
+            </span>
+          ))}
+        </div>
+        <div className="cta-row">
+          <a className="btn btn-main" href="#price">
+            Join the program
+          </a>
+          <a className="btn btn-ghost" href="#demo">
+            See what you will build
+          </a>
+        </div>
+        <div className="seat">
+          <span className="pulse" /> {hero.seatNote}
+        </div>
+      </div>
+    </header>
   );
 }
