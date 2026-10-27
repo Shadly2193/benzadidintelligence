@@ -19,6 +19,7 @@ const NAV_LINKS = [
     ],
   },
   { label: "Work", href: "/work" },
+  { label: "Courses", href: "/courses/digital-residency-program" },
   { label: "Contact", href: "/contact" },
 ];
 
