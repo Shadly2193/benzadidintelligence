@@ -56,7 +56,8 @@ export default function Roadmap() {
     const el = vp.current;
     const c = el?.children[Math.max(0, Math.min(n - 1, i))] as HTMLElement | undefined;
     if (!el || !c) return;
-    el.scrollTo({ left: c.offsetLeft - (el.clientWidth - c.offsetWidth) / 2, behavior: 'smooth' });
+    const off = c.getBoundingClientRect().left - el.getBoundingClientRect().left;
+    el.scrollTo({ left: el.scrollLeft + off - (el.clientWidth - c.offsetWidth) / 2, behavior: 'smooth' });
   };
 
   // mouse drag only; touch uses native swipe
