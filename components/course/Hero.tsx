@@ -29,7 +29,8 @@ function SeatLine() {
   const days = parts ? parts[0] : 0;
   const when = days > 0 ? `${days} day${days === 1 ? '' : 's'}` : 'less than a day';
   let text: string = hero.seatNote;
-  if (ready && phase === 'early') text = `Early bird ${schedule.earlyBirdAmount.toLocaleString('en-US')} BDT ends in ${when}`;
+  // no amounts above the price section: only the deadline
+  if (ready && phase === 'early') text = `Early bird ends in ${when}`;
   if (ready && phase === 'regular') text = `Registration closes in ${when}`;
   if (ready && phase === 'closed') text = 'Registration is closed';
   return (
