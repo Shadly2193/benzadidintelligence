@@ -27,7 +27,7 @@ create policy "admins read admin_users" on admin_users for select using (is_admi
 
 -- Add Shadly as the first admin (uses the existing login account).
 insert into admin_users (user_id, email)
-select id, email from auth.users where email = 'shadlybenzadid@gmail.com'
+select id, email from auth.users where email = 'benzadidintelligence@gmail.com'
 on conflict (user_id) do nothing;
 
 -- ------------------------------------------------------------
@@ -140,3 +140,35 @@ drop policy if exists "public insert course_events" on course_events;
 create policy "public insert course_events" on course_events for insert with check (true);
 drop policy if exists "admin read course_events" on course_events;
 create policy "admin read course_events" on course_events for select using (is_admin());
+
+-- ------------------------------------------------------------
+-- 5. PAYMENTS (PRIVATE): one row per instalment, admin bookkeeping only
+-- ------------------------------------------------------------
+alter table course_applications add column if not exists fee integer;  -- agreed fee (20000 / 24000, editable for discounts)
+
+create table if not exists course_payments (
+  id uuid primary key default gen_random_uuid(),
+  application_id uuid not null references course_applications (id) on delete cascade,
+  amount integer not null check (amount > 0),
+  paid_on date not null default current_date,
+  method text not null check (method in ('bkash', 'nagad', 'rocket', 'bank', 'cash', 'other')),
+  trx_id text check (trx_id is null or char_length(trx_id) <= 60),
+  note text,
+  created_at timestamptz not null default now(),
+  created_by uuid references auth.users (id)
+);
+create index if not exists course_payments_app_idx on course_payments (application_id, paid_on);
+create unique index if not exists course_payments_trx_uniq on course_payments (trx_id) where trx_id is not null;
+alter table course_payments enable row level security;
+drop policy if exists "admin all course_payments" on course_payments;
+create policy "admin all course_payments" on course_payments for all using (is_admin()) with check (is_admin());
+
+create or replace view course_payment_summary
+with (security_invoker = true) as
+  select a.id, a.full_name, a.status, a.fee,
+         coalesce(sum(p.amount), 0) as paid,
+         coalesce(a.fee, 0) - coalesce(sum(p.amount), 0) as due,
+         max(p.paid_on) as last_paid_on
+  from course_applications a
+  left join course_payments p on p.application_id = a.id
+  group by a.id;
