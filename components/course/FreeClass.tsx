@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useCourse } from '@/lib/course/content';
 
 /** Accepts a youtu.be, watch?v=, embed or shorts link, or a bare id. */
@@ -13,6 +13,12 @@ export default function FreeClass() {
   const { freeClass } = useCourse();
   const [play, setPlay] = useState(false);
   const id = youtubeId(freeClass.youtube);
+  // hide the side gauge while the class plays, so it never sits over the video
+  useEffect(() => {
+    if (!play) return;
+    document.documentElement.classList.add('dr-playing');
+    return () => document.documentElement.classList.remove('dr-playing');
+  }, [play]);
   if (!id) return null;
   return (
     <section className="grid-bg" id="free">
@@ -25,7 +31,8 @@ export default function FreeClass() {
         </h2>
         <p className="lead rv">{freeClass.lead}</p>
       </div>
-      <div className="fc-player rv">
+      <div className="fc-frame rv">
+        <div className="fc-player corner">
           {play ? (
             <iframe
               src={`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&modestbranding=1`}
@@ -53,6 +60,7 @@ export default function FreeClass() {
               </span>
             </button>
           )}
+        </div>
       </div>
       <div className="wrap">
         <ul className="fc-points rv">

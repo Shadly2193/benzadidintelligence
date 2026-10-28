@@ -118,9 +118,6 @@ export default function ChromeUI() {
             <circle cx="60" cy="68" r="4.5" fill="#FF6A00" />
           </g>
         </svg>
-        <div className="rd">
-          <b>{done ? '120/80' : Math.round(p * 140)}</b> <span>{done ? 'healthy brand' : 'mmHg'}</span>
-        </div>
       </div>
       <nav id="dots" aria-label="Page sections">
         {sections.map((s, i) => (

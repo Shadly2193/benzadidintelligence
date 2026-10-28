@@ -730,5 +730,7 @@
 
 /* free class: full-bleed player, like the hero */
 .dr-page #free{padding-bottom:0}
-.dr-page #free .fc-player{width:100%;border-radius:0;border-left:0;border-right:0;max-height:100svh;aspect-ratio:16/9}
+.dr-page #free .fc-frame{max-width:1320px;margin:0 auto;padding:0 clamp(12px,3vw,40px)}
+.dr-page #free .fc-player{width:100%;max-height:calc(100svh - var(--dr-nav) - 24px);border-radius:18px;box-shadow:0 0 0 1px rgba(255,106,0,.25),0 30px 80px rgba(0,0,0,.6),0 0 60px rgba(255,106,0,.12)}
+html.dr-playing #gauge{opacity:0!important;pointer-events:none}
 .dr-page #free .fc-points{justify-content:center;padding:22px 0 70px}
