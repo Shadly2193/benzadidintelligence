@@ -14,6 +14,7 @@ import Price from "@/components/course/Price";
 import Problem from "@/components/course/Problem";
 import Proof from "@/components/course/Proof";
 import Roadmap from "@/components/course/Roadmap";
+import Track from "@/components/course/Track";
 import Walkaway from "@/components/course/Walkaway";
 import WhoFor from "@/components/course/WhoFor";
 import "@/components/course/course.css";
@@ -83,6 +84,7 @@ export default async function DigitalResidencyPage({
             return <Section key={s.id} />;
           })}
         <ChromeUI />
+        <Track />
       </div>
     </CourseProvider>
   );

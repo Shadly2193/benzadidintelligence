@@ -22,6 +22,7 @@ import {
   ExternalLink,
   School,
   Wallet,
+  BarChart3,
 } from "lucide-react";
 
 const NAV_PRIMARY = [
@@ -35,6 +36,7 @@ const NAV_PRIMARY = [
   { href: "/admin/logos", label: "Client Logos", icon: Building2 },
   { href: "/admin/testimonials", label: "Testimonials", icon: Quote },
   { href: "/admin/leads", label: "Leads", icon: Inbox },
+  { href: "/admin/courses/dashboard", label: "Course Dashboard", icon: BarChart3 },
   { href: "/admin/courses/digital-residency", label: "Course Page", icon: School },
   { href: "/admin/courses/applications", label: "Course Students", icon: Wallet },
 ];
@@ -55,6 +57,7 @@ const LABELS: Record<string, string> = {
   "/admin/logos": "Client Logos",
   "/admin/testimonials": "Testimonials",
   "/admin/leads": "Leads",
+  "/admin/courses/dashboard": "Course Dashboard",
   "/admin/courses/digital-residency": "Course Page",
   "/admin/courses/applications": "Course Students",
   "/admin/media": "Media Library",
