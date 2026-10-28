@@ -71,6 +71,7 @@ export default function WebsiteServicePageClient({ service, videos, tiers, compa
     <ServicePageTemplate
       service={service}
       afterHeroSlot={videoSlot}
+      staticHero
       whatYouGetOverride={
         <WebsitePricingTiers
           tiers={tiers}

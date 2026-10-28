@@ -26,6 +26,8 @@ interface Service {
 interface ServicePageTemplateProps {
   service: Service;
   afterHeroSlot?: React.ReactNode;
+  /** Show the whole hook at once (no pinned word-by-word reveal). */
+  staticHero?: boolean;
   beforeWhatYouGetSlot?: React.ReactNode;
   whatYouGetHeadline?: React.ReactNode;
   /** Fully replaces the default "What You Get" section (features + process + pricing box) */
@@ -44,6 +46,7 @@ const PROCESS_STEPS = [
 export default function ServicePageTemplate({
   service,
   afterHeroSlot,
+  staticHero = false,
   beforeWhatYouGetSlot,
   whatYouGetHeadline,
   whatYouGetOverride,
@@ -56,6 +59,7 @@ export default function ServicePageTemplate({
   const painLines = service.pain.split("\n");
 
   useLayoutEffect(() => {
+    if (staticHero) return;
     const words = wordsWrapRef.current?.querySelectorAll<HTMLSpanElement>("[data-word]");
     if (!words || words.length === 0) return;
 
@@ -88,7 +92,7 @@ export default function ServicePageTemplate({
       ScrollTrigger.getAll().forEach((t) => t.kill());
       ctx.revert();
     };
-  }, [service.pain]);
+  }, [service.pain, staticHero]);
 
   return (
     <div className="pt-20">
