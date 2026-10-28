@@ -24,7 +24,8 @@ export default function FreeClass() {
           <span className="accent">{freeClass.title[1]}</span>
         </h2>
         <p className="lead rv">{freeClass.lead}</p>
-        <div className="fc-player corner rv">
+      </div>
+      <div className="fc-player rv">
           {play ? (
             <iframe
               src={`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&modestbranding=1`}
@@ -35,14 +36,25 @@ export default function FreeClass() {
           ) : (
             <button type="button" className="fc-thumb" onClick={() => setPlay(true)} aria-label={freeClass.play}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`} alt="" loading="lazy" decoding="async" />
+              <img
+                src={`https://i.ytimg.com/vi/${id}/maxresdefault.jpg`}
+                onError={(e) => {
+                  // not every video has a max-res thumbnail
+                  const img = e.currentTarget;
+                  if (!img.src.includes('hqdefault')) img.src = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+                }}
+                alt=""
+                loading="lazy"
+                decoding="async"
+              />
               <span className="play-btn" />
               <span className="fc-cta">
                 {freeClass.play} · {freeClass.duration}
               </span>
             </button>
           )}
-        </div>
+      </div>
+      <div className="wrap">
         <ul className="fc-points rv">
           {freeClass.points.map((p) => (
             <li key={p}>{p}</li>

@@ -133,7 +133,7 @@ export const freeClass = {
   label: 'FREE CLASS',
   title: ['Watch a free session', 'before you decide.'],
   lead: 'A real 1-hour session I gave at a medical college, for dental faculty. The examples are from dentistry, but the same ways of using AI work in every field of medicine. See how I teach, then decide.',
-  youtube: '',
+  youtube: 'https://youtu.be/NRk46uKkrzY',
   duration: 'About 1 hour',
   points: ['AI in medical work', 'AI for presentations', 'AI for research', 'AI for social media'],
   play: 'Play the free session',

@@ -727,3 +727,8 @@
 /* Touch screens: no floating "next section" pill. It sat where the thumb scrolls, so a tap to stop
    momentum scrolling fired a smooth jump to another section (reported on iPhone). The join bar stays. */
 @media (hover:none),(max-width:760px){.dr-page #next{display:none}}
+
+/* free class: full-bleed player, like the hero */
+.dr-page #free{padding-bottom:0}
+.dr-page #free .fc-player{width:100%;border-radius:0;border-left:0;border-right:0;max-height:100svh;aspect-ratio:16/9}
+.dr-page #free .fc-points{justify-content:center;padding:22px 0 70px}
