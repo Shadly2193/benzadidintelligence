@@ -19,6 +19,7 @@ const GROUPS: [keyof CourseContent, string, string][] = [
   ["future", "Your future (before / after)", "Each row: [before, after]."],
   ["demo", "See it happen (demo tabs)", "The animations inside the demo stay as they are; tab names and text are editable."],
   ["proof", "Real work (videos)", "Video path or full URL in 'src'."],
+  ["freeClass", "Free class (YouTube video)", "Paste the YouTube link (unlisted is fine). The section shows only when a link is here."],
   ["roadmap", "The 16 weeks (rotations)", ""],
   ["how", "How it works", ""],
   ["who", "Who it is for", ""],

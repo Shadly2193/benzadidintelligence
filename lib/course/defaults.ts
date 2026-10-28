@@ -14,6 +14,7 @@ export const courseDefaults = {
   future: site.future,
   demo: site.demo,
   proof: site.proof,
+  freeClass: site.freeClass,
   roadmap: site.roadmap,
   how: site.how,
   who: site.who,
@@ -44,4 +45,19 @@ export function deepMerge<T>(base: T, over: unknown): T {
   return (typeof over === typeof base ? over : base) as T;
 }
 
-export const mergeCourse = (over: unknown): CourseContent => deepMerge(courseDefaults, over);
+/** Sections added in code after content was saved still appear, right after their neighbour. */
+function withNewSections(saved: CourseContent['sections']) {
+  const out = [...saved];
+  courseDefaults.sections.forEach((s, i) => {
+    if (out.some((x) => x.id === s.id)) return;
+    const prev = courseDefaults.sections[i - 1];
+    const at = prev ? out.findIndex((x) => x.id === prev.id) + 1 : 0;
+    out.splice(at, 0, s);
+  });
+  return out;
+}
+
+export function mergeCourse(over: unknown): CourseContent {
+  const c = deepMerge(courseDefaults, over);
+  return { ...c, sections: withNewSections(c.sections) };
+}

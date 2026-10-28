@@ -5,6 +5,7 @@ import Countdown from "@/components/course/Countdown";
 import Demo from "@/components/course/Demo";
 import Faq from "@/components/course/Faq";
 import Final from "@/components/course/Final";
+import FreeClass from "@/components/course/FreeClass";
 import Hero from "@/components/course/Hero";
 import HowItWorks from "@/components/course/HowItWorks";
 import Instructor from "@/components/course/Instructor";
@@ -28,6 +29,7 @@ const SECTIONS: Record<string, React.ComponentType> = {
   future: BeforeAfter,
   demo: Demo,
   proof: Proof,
+  free: FreeClass,
   road: Roadmap,
   how: HowItWorks,
   who: WhoFor,

@@ -712,3 +712,14 @@
 /* real instructor photo */
 .dr-page .photo.has-img{padding:0;overflow:hidden;background:#000}
 .dr-page .photo.has-img img{width:100%;height:100%;object-fit:cover;object-position:50% 20%;display:block}
+
+/* free class video */
+.dr-page .fc-player{position:relative;aspect-ratio:16/9;border-radius:16px;overflow:hidden;border:1px solid rgba(255,106,0,.3);background:#000;margin-top:28px}
+.dr-page .fc-player iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.dr-page .fc-thumb{position:absolute;inset:0;width:100%;height:100%;padding:0;border:0;cursor:pointer;background:#000;display:flex;align-items:center;justify-content:center}
+.dr-page .fc-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.7;transition:opacity .3s}
+.dr-page .fc-thumb:hover img{opacity:.9}
+.dr-page .fc-thumb .play-btn{position:relative;z-index:1}
+.dr-page .fc-cta{position:absolute;left:0;right:0;bottom:0;z-index:1;padding:14px 18px;background:linear-gradient(transparent,rgba(10,6,3,.9));color:var(--text);font-weight:700;font-size:.9rem;text-align:left}
+.dr-page .fc-points{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:18px;padding:0;list-style:none;color:var(--muted);font-size:.9rem}
+.dr-page .fc-points li::before{content:'✓ ';color:var(--orange)}

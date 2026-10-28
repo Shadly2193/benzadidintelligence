@@ -128,6 +128,17 @@ export const proof = {
   ],
 };
 
+/** Free sample class (YouTube, unlisted). The section stays hidden until a link is added in admin. */
+export const freeClass = {
+  label: 'FREE CLASS',
+  title: ['Watch a free class', 'before you decide.'],
+  lead: 'A full 1-hour class on how doctors and medical professionals can use AI. See how I teach, then decide.',
+  youtube: '',
+  duration: 'About 1 hour',
+  points: ['How AI helps in medical work', 'Real examples, step by step', 'No signup needed'],
+  play: 'Play the free class',
+};
+
 /** Public roadmap: headline topics only. Class-by-class details stay in the private module plan. */
 export const roadmap = {
   label: 'THE 16 WEEKS',
@@ -350,6 +361,7 @@ export const sections: { id: string; name: string }[] = [
   { id: 'future', name: 'Your future' },
   { id: 'demo', name: 'See it happen' },
   { id: 'proof', name: 'Real work' },
+  { id: 'free', name: 'Free class' },
   { id: 'road', name: 'The 16 weeks' },
   { id: 'how', name: 'How it works' },
   { id: 'who', name: 'Who it is for' },
