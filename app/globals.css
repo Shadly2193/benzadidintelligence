@@ -450,3 +450,11 @@ a:not(.btn-red):not(.btn-gradient):not(.btn-outline):hover {
 .neon-dot {
   animation: neon-pulse 2s ease-in-out infinite;
 }
+
+/* Touch screens: iOS treats the scrolling finger as hover, which made hover-lift elements jump. */
+@media (hover: none) {
+  h1:hover, h2:hover, h3:hover,
+  .glass-card:hover, .glass-card-dark:hover, .video-glass-border:hover {
+    transform: none;
+  }
+}

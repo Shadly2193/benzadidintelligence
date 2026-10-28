@@ -320,7 +320,7 @@
 .dr-page .rgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:20px}
 .dr-page .rgrid .card p{color:var(--muted);font-size:.9rem;margin-top:6px}
 .dr-page .rk{color:var(--orange);letter-spacing:.2em;font-size:.68rem;font-weight:700;display:block;margin-bottom:6px}
-.dr-page .inside{list-style:none;margin-top:18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px 28px;color:#f1dcc6}
+.dr-page .inside{list-style:none;margin-top:18px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:10px 28px;color:#f1dcc6}
 .dr-page .inside li::before{content:'✓';color:var(--orange);font-weight:900;margin-right:10px}
 .dr-page .wl{color:var(--orange-l);text-decoration:underline}
 .dr-page .guarantee{max-width:940px;margin:36px auto 0}
@@ -734,3 +734,21 @@
 .dr-page #free .fc-player{width:100%;max-height:calc(100svh - var(--dr-nav) - 24px);border-radius:18px;box-shadow:0 0 0 1px rgba(255,106,0,.25),0 30px 80px rgba(0,0,0,.6),0 0 60px rgba(255,106,0,.12)}
 html.dr-playing #gauge{opacity:0!important;pointer-events:none}
 .dr-page #free .fc-points{justify-content:center;padding:22px 0 70px}
+
+/* Touch screens: iOS keeps :hover on whatever the finger touched while scrolling, so cards and buttons
+   that lift on hover were moving up and down under the finger (the "jumping" sections). No lift on touch. */
+@media (hover:none){
+  .dr-page .card:hover,.dr-page .btn-main:hover,.dr-page .video:hover .play-btn,.dr-page h1:hover,.dr-page h2:hover,.dr-page h3:hover{transform:none}
+  .dr-page .card:hover{box-shadow:none}
+}
+.dr-page{-webkit-tap-highlight-color:transparent}
+
+/* Join form: Safari sizes inputs (file input above all) by their own content, which pushed the form
+   past the right edge on iPhone. Every field now shrinks to the card width. */
+.dr-page .jform{grid-template-columns:minmax(0,1fr)}
+.dr-page .jform label,.dr-page .jform fieldset{min-width:0;min-inline-size:0;max-width:100%}
+.dr-page .jform input:not([type=radio]):not([type=checkbox]),.dr-page .jform select{width:100%;min-width:0;max-width:100%;box-sizing:border-box}
+.dr-page .jform input[type=file]{font-size:.8rem;padding:10px 12px}
+.dr-page .jform .chk{min-width:0}
+.dr-page .jform .chk input{flex:0 0 18px}
+.dr-page .jform fieldset{border:0;padding:0;margin:0}
