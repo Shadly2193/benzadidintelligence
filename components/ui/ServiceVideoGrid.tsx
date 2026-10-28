@@ -68,6 +68,7 @@ function VideoCard({ item, priority = false }: { item: VideoItem; priority?: boo
         </div>
       )}
       <PortfolioMedia
+        lazy
         videoUrl={item.src}
         youtubeId={item.youtubeId}
         facebookUrl={item.facebookUrl}

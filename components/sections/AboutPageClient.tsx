@@ -94,7 +94,7 @@ export default function AboutPageClient({ intro, timeline, philosophy, quickFact
         {/* Background image */}
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('/images/about-hero.jpg')" }}
+          style={{ backgroundImage: "url('/images/about-hero.webp')" }}
         />
         {/* Dark gradient veil — heavier on edges, clear in center */}
         <div className="absolute inset-0" style={{

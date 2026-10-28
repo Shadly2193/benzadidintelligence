@@ -76,12 +76,13 @@ export default function PortfolioMedia({
   if (youtubeId) {
     return (
       <div ref={wrapperRef} className={className}>
-        <iframe
+        {shouldLoad && <iframe
+          loading="lazy"
           src={`https://www.youtube.com/embed/${youtubeId}?autoplay=0&mute=1&controls=0&modestbranding=1&rel=0`}
           allow="autoplay; encrypted-media"
           className="w-full h-full border-0"
           title={title}
-        />
+        />}
       </div>
     );
   }
@@ -92,14 +93,15 @@ export default function PortfolioMedia({
     )}&show_text=false&autoplay=false&mute=true`;
     return (
       <div ref={wrapperRef} className={className}>
-        <iframe
+        {shouldLoad && <iframe
+          loading="lazy"
           src={src}
           className="w-full h-full border-0"
           scrolling="no"
           allow="autoplay; encrypted-media; picture-in-picture; web-share"
           allowFullScreen
           title={title}
-        />
+        />}
       </div>
     );
   }

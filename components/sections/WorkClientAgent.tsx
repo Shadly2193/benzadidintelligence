@@ -28,6 +28,7 @@ export default function WorkClientAgent() {
         >
           <div className="aspect-video w-full">
             <iframe
+              loading="lazy"
               src="https://www.youtube.com/embed/rD1RuVPIpQE?rel=0"
               title="How I Cracked This Trickiest AI Automation"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

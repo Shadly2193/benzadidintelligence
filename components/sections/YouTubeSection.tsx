@@ -1,6 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import LazyYouTube from "@/components/ui/LazyYouTube";
 
 const YOUTUBE_CHANNEL = "https://www.youtube.com/@benzadidintelligence";
 
@@ -54,13 +55,7 @@ export default function YouTubeSection() {
             >
               <div className="video-glass-border rounded-none border-0">
                 <div className="relative aspect-video">
-                  <iframe
-                    src={`https://www.youtube.com/embed/${video.id}?autoplay=1&mute=1&loop=1&playlist=${video.id}&controls=1&modestbranding=1`}
-                    title={video.title}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    className="absolute inset-0 w-full h-full"
-                  />
+                  <LazyYouTube id={video.id} title={video.title} params={`autoplay=1&mute=1&loop=1&playlist=${video.id}&controls=1&modestbranding=1`} />
                 </div>
               </div>
               <div className="p-4">

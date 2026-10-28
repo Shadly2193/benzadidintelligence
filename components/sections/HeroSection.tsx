@@ -76,7 +76,9 @@ export default function HeroSection({ data: HERO }: { data: HeroData }) {
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         ref={imgRef}
-        src="/images/hero-bg.jpeg"
+        src="/images/hero-bg.webp"
+        srcSet="/images/hero-bg-m.webp 900w, /images/hero-bg.webp 1920w"
+        sizes="100vw"
         alt=""
         aria-hidden="true"
         className="absolute inset-0 w-full pointer-events-none z-0 hero-bg-img"

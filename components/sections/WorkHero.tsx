@@ -15,7 +15,7 @@ export default function WorkHero() {
       <div
         className="absolute inset-0 md:hidden"
         style={{
-          backgroundImage: "url('/images/work-hero.jpg')",
+          backgroundImage: "url('/images/work-hero-m.webp')",
           backgroundSize: "cover",
           backgroundPosition: "right center",
         }}
@@ -23,7 +23,7 @@ export default function WorkHero() {
 
       {/* Desktop-only: character image pinned to right edge */}
       <img
-        src="/images/work-hero.jpg"
+        src="/images/work-hero.webp"
         alt=""
         fetchPriority="high"
         decoding="async"

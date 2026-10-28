@@ -723,3 +723,7 @@
 .dr-page .fc-cta{position:absolute;left:0;right:0;bottom:0;z-index:1;padding:14px 18px;background:linear-gradient(transparent,rgba(10,6,3,.9));color:var(--text);font-weight:700;font-size:.9rem;text-align:left}
 .dr-page .fc-points{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:18px;padding:0;list-style:none;color:var(--muted);font-size:.9rem}
 .dr-page .fc-points li::before{content:'✓ ';color:var(--orange)}
+
+/* Touch screens: no floating "next section" pill. It sat where the thumb scrolls, so a tap to stop
+   momentum scrolling fired a smooth jump to another section (reported on iPhone). The join bar stays. */
+@media (hover:none),(max-width:760px){.dr-page #next{display:none}}
