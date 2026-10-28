@@ -131,12 +131,12 @@ export const proof = {
 /** Free sample class (YouTube, unlisted). The section stays hidden until a link is added in admin. */
 export const freeClass = {
   label: 'FREE CLASS',
-  title: ['Watch a free class', 'before you decide.'],
-  lead: 'A full 1-hour class on how doctors and medical professionals can use AI. See how I teach, then decide.',
+  title: ['Watch a free session', 'before you decide.'],
+  lead: 'A real 1-hour session I gave at a medical college, for dental faculty. The examples are from dentistry, but the same ways of using AI work in every field of medicine. See how I teach, then decide.',
   youtube: '',
   duration: 'About 1 hour',
-  points: ['How AI helps in medical work', 'Real examples, step by step', 'No signup needed'],
-  play: 'Play the free class',
+  points: ['AI in medical work', 'AI for presentations', 'AI for research', 'AI for social media'],
+  play: 'Play the free session',
 };
 
 /** Public roadmap: headline topics only. Class-by-class details stay in the private module plan. */
