@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useCourse } from '@/lib/course/content';
-import { cx } from '@/lib/course/useScroll';
+import { cx, justScrolled } from '@/lib/course/useScroll';
 
 export default function WhoFor() {
   const { fit, who } = useCourse();
@@ -19,7 +19,7 @@ export default function WhoFor() {
         <p className="lead rv">{who.lead}</p>
         <div className="pick" role="tablist">
           {who.stages.map((st, k) => (
-            <button key={st.k} role="tab" aria-selected={k === i} className={cx(k === i && 'on')} onClick={() => setI(k)}>
+            <button key={st.k} role="tab" aria-selected={k === i} className={cx(k === i && 'on')} onClick={() => !justScrolled() && setI(k)}>
               {st.k}
             </button>
           ))}

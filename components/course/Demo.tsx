@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { useCourse } from '@/lib/course/content';
-import { cx } from '@/lib/course/useScroll';
+import { cx, justScrolled } from '@/lib/course/useScroll';
 import { BrandPanel, EditPanel, MarketingPanel, PracticePanel, ResearchPanel, WebsitePanel } from './DemoPanels';
 
 const PANELS = [WebsitePanel, EditPanel, ResearchPanel, BrandPanel, MarketingPanel, PracticePanel];
@@ -48,7 +48,7 @@ export default function Demo() {
           </p>
           <div className="tabs">
             {demo.tabs.map((t, i) => (
-              <button key={t} className={cx(i === cur && 'on', i === (cur + 1) % PANELS.length && running && 'nx')} onClick={() => setCur(i)}>
+              <button key={t} className={cx(i === cur && 'on', i === (cur + 1) % PANELS.length && running && 'nx')} onClick={() => !justScrolled() && setCur(i)}>
                 <small>{String(i + 1).padStart(2, '0')}</small>
                 <strong>{t}</strong>
                 {i === cur && seen && (

@@ -77,6 +77,18 @@ export function useTimers() {
   };
 }
 
+/** Time of the last page scroll, shared by every section. */
+let lastScroll = 0;
+if (typeof window !== 'undefined') {
+  window.addEventListener('scroll', () => (lastScroll = performance.now()), { passive: true });
+}
+/**
+ * True while the page is still moving or just stopped. On iPhone a tap that only stops a
+ * momentum scroll can still fire a click, which opened a FAQ or switched a tab and made the
+ * page jump. Layout-changing taps ignore clicks in that window.
+ */
+export const justScrolled = (ms = 350) => performance.now() - lastScroll < ms;
+
 export const cx = (...a: (string | false | null | undefined)[]) => a.filter(Boolean).join(' ');
 
 /** flags[i] becomes true after times[i] ms. All true at once when motion is reduced. */

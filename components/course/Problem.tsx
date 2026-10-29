@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useCourse } from '@/lib/course/content';
-import { cx } from '@/lib/course/useScroll';
+import { cx, justScrolled } from '@/lib/course/useScroll';
 
 export default function Problem() {
   const { problem } = useCourse();
@@ -25,7 +25,7 @@ export default function Problem() {
               role="button"
               aria-pressed={open === i}
               tabIndex={0}
-              onClick={() => setOpen(open === i ? null : i)}
+              onClick={() => !justScrolled() && setOpen(open === i ? null : i)}
               onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setOpen(open === i ? null : i)}
             >
               <div>
