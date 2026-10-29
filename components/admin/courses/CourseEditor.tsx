@@ -14,7 +14,7 @@ type Json = string | number | boolean | null | Json[] | { [k: string]: Json };
 /** Friendly names for the top-level groups, in page order. */
 const GROUPS: [keyof CourseContent, string, string][] = [
   ["schedule", "Dates, early bird and countdown", "Pick dates from the calendar. All times are Bangladesh time. Date labels and the price-up note fill in by themselves."],
-  ["hero", "Hero (top of page)", ""],
+  ["hero", "Hero (top of page)", "Welcome video: paste the YouTube link in 'Video Youtube'. The YouTube thumbnail shows by itself; upload your own (up to 5 MB) in 'Video Thumbnail Url' to replace it."],
   ["problem", "The problem (flip cards)", ""],
   ["future", "Your future (before / after)", "Each row: [before, after]."],
   ["demo", "See it happen (demo tabs)", "The animations inside the demo stay as they are; tab names and text are editable."],
@@ -457,6 +457,10 @@ function ImageField({ name, value, onChange }: { name: string; value: string; on
   async function upload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      alert("This image is over 5 MB. Please pick a smaller one.");
+      return;
+    }
     setBusy(true);
     const supabase = createClient();
     const path = `course/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.]/g, "_")}`;

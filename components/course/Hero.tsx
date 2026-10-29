@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useCourse } from '@/lib/course/content';
 import { useDeadline } from '@/lib/course/useDeadline';
+import { youtubeId } from './FreeClass';
 
 function Decrypt({ text }: { text: string }) {
   const [t, setT] = useState(text);
@@ -41,6 +42,58 @@ function SeatLine() {
   );
 }
 
+/** Welcome video: thumbnail until clicked, then the YouTube player. */
+function HeroVideo() {
+  const { hero } = useCourse();
+  const [play, setPlay] = useState(false);
+  // older content had the link pasted into the hint line
+  const id = youtubeId(hero.videoYoutube || hero.videoHint);
+  useEffect(() => {
+    if (!play) return;
+    document.documentElement.classList.add('dr-playing');
+    return () => document.documentElement.classList.remove('dr-playing');
+  }, [play]);
+  if (!id) {
+    return (
+      <div className="video corner hero-video">
+        <div className="in-v">
+          <div className="play-btn" />
+          <strong>{hero.videoTitle}</strong>
+          <small>{hero.videoHint}</small>
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div className="video corner hero-video fc-player">
+      {play ? (
+        <iframe
+          src={`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&modestbranding=1`}
+          title={hero.videoTitle}
+          allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+          allowFullScreen
+        />
+      ) : (
+        <button type="button" className="fc-thumb" onClick={() => setPlay(true)} aria-label={`Play: ${hero.videoTitle}`}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={hero.videoThumbnailUrl || `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`}
+            onError={(e) => {
+              // not every video has a max-res thumbnail
+              const img = e.currentTarget;
+              if (!img.src.includes('hqdefault')) img.src = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+            }}
+            alt=""
+            fetchPriority="high"
+            decoding="async"
+          />
+          <span className="play-btn" />
+        </button>
+      )}
+    </div>
+  );
+}
+
 export default function Hero() {
   const { hero } = useCourse();
   return (
@@ -52,13 +105,7 @@ export default function Hero() {
         <p className="label">
           <Decrypt text={hero.eyebrow} />
         </p>
-        <div className="video corner hero-video">
-          <div className="in-v">
-            <div className="play-btn" />
-            <strong>{hero.videoTitle}</strong>
-            <small>{hero.videoHint}</small>
-          </div>
-        </div>
+        <HeroVideo />
         <h1>
           <span className="line">
             <span>{hero.lines[0]}</span>

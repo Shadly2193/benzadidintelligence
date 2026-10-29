@@ -43,6 +43,10 @@ export const hero = {
   videoTitle: 'Welcome video',
   videoHint: 'Your YouTube (unlisted) video goes here',
   videoTip: 'Tip: who it is for, what they get, how to join. Under 2 minutes.',
+  /** YouTube link (unlisted is fine). Empty = the placeholder above shows. */
+  videoYoutube: '',
+  /** Optional own thumbnail; empty = YouTube's thumbnail. */
+  videoThumbnailUrl: '',
   promptDemo: {
     ask: 'Write my doctor profile intro.',
     resultName: 'Dr. Your Name',
