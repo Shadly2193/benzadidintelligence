@@ -24,15 +24,30 @@ export default function WhoFor() {
             </button>
           ))}
         </div>
-        <div className="card pickout corner" key={i}>
-          <h3>{s.k}</h3>
-          <p>{s.t}</p>
-          <ul>
-            {s.a.map((x) => (
-              <li key={x}>{x}</li>
-            ))}
-          </ul>
-          <div className="pathline" />
+        {/* hidden copies of every stage keep the box at the tallest one's height, so picking a stage never moves the page */}
+        <div className="pickstack">
+          {who.stages.map((st) => (
+            <div className="card pickout corner sizer" aria-hidden="true" key={st.k}>
+              <h3>{st.k}</h3>
+              <p>{st.t}</p>
+              <ul>
+                {st.a.map((x) => (
+                  <li key={x}>{x}</li>
+                ))}
+              </ul>
+              <div className="pathline" />
+            </div>
+          ))}
+          <div className="card pickout corner" key={i}>
+            <h3>{s.k}</h3>
+            <p>{s.t}</p>
+            <ul>
+              {s.a.map((x) => (
+                <li key={x}>{x}</li>
+              ))}
+            </ul>
+            <div className="pathline" />
+          </div>
         </div>
         <h3 className="fit-t rv">{fit.title}</h3>
         <div className="fit rv" id="fit">

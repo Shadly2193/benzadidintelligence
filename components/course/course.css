@@ -761,3 +761,12 @@ html.dr-playing #gauge{opacity:0!important;pointer-events:none}
 .dr-page .bas.flat .br{display:grid;font-size:.86rem}
 .dr-page .bas.flat .br>div{position:relative;inset:auto;grid-area:1/1;padding:11px 14px}
 .dr-page .bas.flat .lead,.dr-page .bas.flat .soft{display:block}
+
+/* demo stage: panels stack in one cell; hidden sizers hold the height of the tallest one */
+.dr-page .stage{display:grid;min-height:0}
+.dr-page .stage>.pn{grid-area:1/1;min-width:0}
+.dr-page .pn.sizer{display:block;visibility:hidden;pointer-events:none;animation:none}
+.dr-page .pn.sizer *{animation:none!important;transition:none!important}
+.dr-page .pickstack{display:grid}
+.dr-page .pickstack>.pickout{grid-area:1/1;min-width:0}
+.dr-page .pickout.sizer{visibility:hidden;pointer-events:none;animation:none}

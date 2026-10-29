@@ -62,7 +62,14 @@ export default function Demo() {
               </button>
             ))}
           </div>
+          {/* Every panel is also rendered invisibly in the same grid cell, so the stage is always as tall
+              as the tallest panel. Switching tabs never changes the page height (iPhone saw that as a jump). */}
           <div className="stage">
+            {PANELS.map((P, i) => (
+              <div className="pn sizer" aria-hidden="true" key={i}>
+                <P />
+              </div>
+            ))}
             <div className="pn on" key={`${cur}-${seen}`}>
               {seen ? <Panel /> : null}
             </div>
