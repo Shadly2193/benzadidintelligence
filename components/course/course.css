@@ -754,3 +754,10 @@ html.dr-playing #gauge{opacity:0!important;pointer-events:none}
 .dr-page .jform .chk{min-width:0}
 .dr-page .jform .chk input{flex:0 0 18px}
 .dr-page .jform fieldset{border:0;padding:0;margin:0}
+
+/* Before/after on phones and touch screens: a normal section, no pinned scroll (see BeforeAfter.tsx) */
+.dr-page .bas.flat .bas-st{position:relative;top:auto;height:auto;padding:80px 0;overflow:visible}
+.dr-page .bas.flat .brs{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.dr-page .bas.flat .br{display:grid;font-size:.86rem}
+.dr-page .bas.flat .br>div{position:relative;inset:auto;grid-area:1/1;padding:11px 14px}
+.dr-page .bas.flat .lead,.dr-page .bas.flat .soft{display:block}

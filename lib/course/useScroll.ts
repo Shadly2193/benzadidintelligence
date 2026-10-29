@@ -10,9 +10,10 @@ export function useReducedMotion(): boolean {
 }
 
 /** 0 to 1 while the section is pinned (sticky) on screen. `factor` > 1 finishes a bit early. */
-export function useSectionProgress(ref: RefObject<HTMLElement | null>, factor = 1): number {
+export function useSectionProgress(ref: RefObject<HTMLElement | null>, factor = 1, enabled = true): number {
   const [p, setP] = useState(0);
   useEffect(() => {
+    if (!enabled) return;
     let raf = 0;
     const calc = () => {
       const el = ref.current;
@@ -38,7 +39,7 @@ export function useSectionProgress(ref: RefObject<HTMLElement | null>, factor = 
       window.removeEventListener('scroll', on);
       window.removeEventListener('resize', on);
     };
-  }, [ref, factor]);
+  }, [ref, factor, enabled]);
   return p;
 }
 

@@ -39,12 +39,17 @@ export default function ChromeUI() {
     // section positions are measured once per layout change, not on every scroll frame
     let tops: number[] = [];
     let docH = 0;
+    let fut: [number, number] = [Infinity, Infinity];
+    let pinned = true;
     const measure = () => {
       tops = sections.map((s) => {
         const el = document.getElementById(s.id);
         return el ? el.getBoundingClientRect().top + window.scrollY : Infinity;
       });
       docH = document.documentElement.scrollHeight - window.innerHeight;
+      const f = document.getElementById('future')?.getBoundingClientRect();
+      fut = f ? [f.top + window.scrollY, f.bottom + window.scrollY] : [Infinity, Infinity];
+      pinned = !document.getElementById('future')?.classList.contains('flat');
     };
     const calc = () => {
       const pr = docH > 0 ? window.scrollY / docH : 0;
@@ -60,16 +65,13 @@ export default function ChromeUI() {
         setPump(true);
         window.setTimeout(() => setPump(false), 380);
       }
-      const mid2 = window.innerHeight / 2;
-      setHideGauge(
-        ['future'].some((id) => {
-          const r = document.getElementById(id)?.getBoundingClientRect();
-          return !!r && r.top <= mid2 && r.bottom >= mid2;
-        }),
-      );
+      // from measured positions: no layout read on every scroll frame
+      const mid2 = window.scrollY + window.innerHeight / 2;
+      const inFuture = mid2 >= fut[0] && mid2 <= fut[1];
+      setHideGauge(inFuture);
       setShowNext(window.scrollY > window.innerHeight * 0.5);
       setShowJoin(window.scrollY > window.innerHeight * 0.8);
-      setInSticky(['future'].some((id) => { const r = document.getElementById(id)?.getBoundingClientRect(); return !!r && r.top <= mid2 && r.bottom >= mid2; }));
+      setInSticky(inFuture && pinned);
     };
     const on = () => {
       cancelAnimationFrame(raf);

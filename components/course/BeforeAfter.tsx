@@ -1,5 +1,5 @@
 'use client';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useCourse } from '@/lib/course/content';
 import { cx, useSectionProgress } from '@/lib/course/useScroll';
 
@@ -7,11 +7,38 @@ import { cx, useSectionProgress } from '@/lib/course/useScroll';
 export default function BeforeAfter() {
   const { future } = useCourse();
   const ref = useRef<HTMLElement>(null);
-  const p = useSectionProgress(ref, 1.1);
   const n = future.rows.length;
+  // Phones and touch screens: no pinned scroll-scrub. On iPhone, three screens of pinned scrolling
+  // felt like the page was stuck, so there each row flips as it scrolls into view instead.
+  const [flat, setFlat] = useState(false);
+  const [seen, setSeen] = useState(0);
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width:760px),(hover:none)');
+    const on = () => setFlat(mq.matches);
+    on();
+    mq.addEventListener('change', on);
+    return () => mq.removeEventListener('change', on);
+  }, []);
+  useEffect(() => {
+    if (!flat || !ref.current) return;
+    const rows = [...ref.current.querySelectorAll<HTMLElement>('.br')];
+    const io = new IntersectionObserver(
+      (es) =>
+        es.forEach((e) => {
+          if (!e.isIntersecting) return;
+          setSeen((v) => Math.max(v, rows.indexOf(e.target as HTMLElement) + 1));
+          io.unobserve(e.target);
+        }),
+      { rootMargin: '0px 0px -30% 0px' },
+    );
+    rows.forEach((r) => io.observe(r));
+    return () => io.disconnect();
+  }, [flat]);
+  const scrub = useSectionProgress(ref, 1.1, !flat);
+  const p = flat ? seen / n : scrub;
   const pct = Math.round(p * 100);
   return (
-    <section className="bas" id="future" ref={ref} style={{ height: '320svh' }}>
+    <section className={cx('bas', flat && 'flat')} id="future" ref={ref} style={flat ? undefined : { height: '320svh' }}>
       <div className="bas-st grid-bg">
         <div className="wrap">
           <p className="label">{future.label}</p>
@@ -32,7 +59,7 @@ export default function BeforeAfter() {
           </div>
           <div className="brs">
             {future.rows.map(([b, a], i) => (
-              <div className={cx('br', p * 1.0 * n > i + 0.6 && 'done')} key={b}>
+              <div className={cx('br', (flat ? i < seen : p * n > i + 0.6) && 'done')} key={b}>
                 <div className="bf">{b}</div>
                 <div className="af">{a}</div>
               </div>
