@@ -13,7 +13,7 @@ type Json = string | number | boolean | null | Json[] | { [k: string]: Json };
 
 /** Friendly names for the top-level groups, in page order. */
 const GROUPS: [keyof CourseContent, string, string][] = [
-  ["schedule", "Dates, early bird and countdown", "Dates use the format 2026-11-20T23:59:59+06:00 (Bangladesh time)."],
+  ["schedule", "Dates, early bird and countdown", "Pick dates from the calendar. All times are Bangladesh time. Date labels and the price-up note fill in by themselves."],
   ["hero", "Hero (top of page)", ""],
   ["problem", "The problem (flip cards)", ""],
   ["future", "Your future (before / after)", "Each row: [before, after]."],
@@ -56,6 +56,54 @@ const inputCls =
   "w-full rounded-lg bg-black/30 border border-white/10 px-3 py-2 text-sm text-white outline-none focus:border-brand-orange/60";
 const labelCls = "block text-[11px] font-semibold uppercase tracking-wide text-brand-gray-text mb-1";
 const iconBtn = "p-1.5 rounded-md text-brand-gray-text hover:text-white hover:bg-white/10 disabled:opacity-30";
+
+/** Schedule dates picked from a calendar, stored as ISO with +06:00. */
+const DATE_KEYS = new Set(["classStart", "earlyBirdEnd", "regEnd"]);
+/** Filled in from the dates (and price) by syncSchedule, shown read-only. */
+const AUTO_KEYS = new Set(["classStartLabel", "earlyBirdEndLabel", "regEndLabel", "priceUpNote"]);
+
+const bd = (iso: string, o: Intl.DateTimeFormatOptions) =>
+  new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Dhaka", ...o }).format(new Date(iso));
+
+function syncSchedule(c: CourseContent): CourseContent {
+  const s = c.schedule;
+  if ([s.classStart, s.earlyBirdEnd, s.regEnd].some((d) => Number.isNaN(Date.parse(d)))) return c;
+  const dm = { day: "numeric", month: "long" } as const;
+  // the first second after early bird ends is when the price goes up
+  const up = new Date(Date.parse(s.earlyBirdEnd) + 1000).toISOString();
+  return {
+    ...c,
+    schedule: {
+      ...s,
+      classStartLabel: bd(s.classStart, { weekday: "long", ...dm }).replace(" ", ", "),
+      earlyBirdEndLabel: bd(s.earlyBirdEnd, dm),
+      regEndLabel: bd(s.regEnd, dm),
+      priceUpNote: `Price goes up to ${c.price.amount.toLocaleString("en-US")} BDT on ${bd(up, dm)}.`,
+    },
+  };
+}
+
+function DateField({ name, value, onChange }: { name: string; value: string; onChange: (v: string) => void }) {
+  const ok = !Number.isNaN(Date.parse(value));
+  const date = ok ? new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Dhaka" }).format(new Date(value)) : "";
+  const time = ok ? bd(value, { hour: "2-digit", minute: "2-digit", hourCycle: "h23" }) : "";
+  const set = (d: string, t: string) => d && t && onChange(`${d}T${t}:${t === "23:59" ? "59" : "00"}+06:00`);
+  return (
+    <div>
+      <span className={labelCls}>{name}</span>
+      <div className="flex flex-wrap items-center gap-2">
+        <input type="date" className={`${inputCls} w-auto [color-scheme:dark]`} value={date} onChange={(e) => set(e.target.value, time || "23:59")} />
+        <input type="time" className={`${inputCls} w-auto [color-scheme:dark]`} value={time} onChange={(e) => set(date, e.target.value)} />
+        <button type="button" onClick={() => set(date, "23:59")} className="rounded-lg border border-white/15 px-3 py-2 text-xs text-brand-gray-text hover:text-white">
+          End of day (11:59 PM)
+        </button>
+      </div>
+      <p className="mt-1 text-xs text-brand-orange">
+        {ok ? `${bd(value, { weekday: "long", day: "numeric", month: "long", year: "numeric", hour: "numeric", minute: "2-digit", hour12: true })} (Bangladesh time)` : "Pick a date"}
+      </p>
+    </div>
+  );
+}
 
 function Field({ name, value, example, onChange }: { name: string; value: Json; example?: Json; onChange: (v: Json) => void }) {
   if (typeof value === "boolean") {
@@ -139,9 +187,18 @@ function Field({ name, value, example, onChange }: { name: string; value: Json; 
   return (
     <div className="flex flex-col gap-3">
       {name && <span className="text-xs font-bold text-white">{name}</span>}
-      {Object.keys(obj).map((k) => (
-        <Field key={k} name={human(k)} value={obj[k]} onChange={(v) => onChange({ ...obj, [k]: v })} />
-      ))}
+      {Object.keys(obj).map((k) =>
+        DATE_KEYS.has(k) && typeof obj[k] === "string" ? (
+          <DateField key={k} name={human(k)} value={obj[k] as string} onChange={(v) => onChange({ ...obj, [k]: v })} />
+        ) : AUTO_KEYS.has(k) ? (
+          <div key={k}>
+            <span className={labelCls}>{human(k)} (fills in by itself)</span>
+            <p className="text-sm text-white/70">{String(obj[k])}</p>
+          </div>
+        ) : (
+          <Field key={k} name={human(k)} value={obj[k]} onChange={(v) => onChange({ ...obj, [k]: v })} />
+        )
+      )}
     </div>
   );
 }
@@ -169,7 +226,7 @@ export default function CourseEditor() {
       setMsg("Could not load. Are you logged in with the admin email?");
       return;
     }
-    setDoc(mergeCourse(data.draft));
+    setDoc(syncSchedule(mergeCourse(data.draft)));
     setPublished(mergeCourse(data.published));
   }
 
@@ -186,7 +243,7 @@ export default function CourseEditor() {
   }, [dirty]);
 
   function update(next: CourseContent) {
-    setDoc(next);
+    setDoc(syncSchedule(next));
     setDirty(true);
     setMsg("");
   }
@@ -219,7 +276,7 @@ export default function CourseEditor() {
     const e = Date.parse(c.schedule.earlyBirdEnd);
     const r = Date.parse(c.schedule.regEnd);
     const s = Date.parse(c.schedule.classStart);
-    if ([e, r, s].some(Number.isNaN)) return "One of the dates is not valid. Use the format 2026-11-20T23:59:59+06:00.";
+    if ([e, r, s].some(Number.isNaN)) return "One of the dates is not valid. Pick it again from the calendar.";
     if (!(e <= r && r <= s)) return "Dates are out of order: early bird end ≤ registration end ≤ class start.";
     if (!/^\d{8,15}$/.test(c.whatsapp)) return "WhatsApp number must be digits only, with country code.";
     if (c.price.amount <= 0) return "Price must be more than 0.";
