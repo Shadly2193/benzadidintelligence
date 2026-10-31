@@ -428,6 +428,19 @@ export default function CourseEditor() {
             example={courseDefaults[key] as unknown as Json}
             onChange={(v) => update({ ...doc, [key]: v } as CourseContent)}
           />
+          {/* saved content wins over the code, so new text shipped in code needs this to show up */}
+          <button
+            type="button"
+            disabled={JSON.stringify(doc[key]) === JSON.stringify(courseDefaults[key])}
+            onClick={() => {
+              if (confirm(`Replace everything in "${title}" with the latest version from the website code? Your edits in this section are lost. Nothing goes live until you Publish.`)) {
+                update({ ...doc, [key]: courseDefaults[key] } as CourseContent);
+              }
+            }}
+            className="self-start inline-flex items-center gap-1.5 rounded-lg border border-white/15 px-3 py-1.5 text-xs text-brand-gray-text hover:text-white hover:border-brand-orange/40 disabled:opacity-30"
+          >
+            <RotateCcw size={13} /> Load latest from website code
+          </button>
         </Panel>
       ))}
     </div>

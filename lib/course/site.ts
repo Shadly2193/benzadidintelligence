@@ -151,14 +151,14 @@ export const roadmap = {
   hint: 'Swipe or drag the cards to see every rotation →',
   youMake: 'You make',
   rotations: [
-    { n: 'Start', w: 'WEEKS 1-2', promise: 'Start safely as a doctor. No camera needed.', topics: ['Find your stage', 'AI is your assistant', 'Beat the fear', 'Your digital toolbox'], make: 'Your doctor profile goal and your first post' },
-    { n: 'Profile', w: 'WEEKS 3-4', promise: 'Look clear and trusted as a doctor online.', topics: ['Brand basics', 'Your page', 'Content pillars', 'Respectful promotion'], make: 'Your professional page' },
-    { n: 'Content', w: 'WEEKS 5-6', promise: 'Make health content fast.', topics: ['Video basics', 'AI images', 'AI video', 'Vibe editing'], make: 'Your first health education Reel' },
-    { n: 'Marketing', w: 'WEEKS 7-8', promise: 'Reach the right patients, with respect.', topics: ['Marketing basics', 'Growth on social', 'Scheduling and results', 'Google and all platforms'], make: 'A 30-day plan for your chamber or practice' },
-    { n: 'AI in medical practice', w: 'WEEKS 9-10', promise: 'Use AI in your own medical field.', topics: ['AI in your field', 'Patient education', 'Clinic follow-up', 'Slides, CV and updates'], make: 'Your own medical AI assistant' },
-    { n: 'AI Research', w: 'WEEKS 11-12', promise: 'Do medical research faster.', topics: ['Vibe research', 'Data and charts', 'Writing and journals', 'Research agent'], make: 'A medical research summary' },
-    { n: 'Build', w: 'WEEKS 13-14', promise: 'Own your doctor website.', topics: ['Vibe coding', 'Your website', 'Domain and publish', 'Agents and automation'], make: 'Your live doctor website' },
-    { n: 'Hustle and finish', w: 'WEEKS 15-16', promise: 'Turn your medical knowledge into value.', topics: ['Hustle mindset', 'Your digital product', 'Launch', 'Final presentation'], make: 'A digital product from your knowledge, and your 90-day plan' },
+    { n: 'Understanding Your Stage', w: 'WEEKS 1-2', promise: 'Start with AI, step by step.', topics: ['Basic AI', 'Prompting', 'AI tools'], make: 'Making AI your assistant' },
+    { n: 'Branding', w: 'WEEKS 3-4', promise: 'Look clear and trusted as a doctor online.', topics: ['Your online presence', 'Social media presence', 'Communication channel presence', 'Self promotion'], make: 'Your content pillars' },
+    { n: 'Marketing', w: 'WEEKS 5-6', promise: 'Reach the right patients, with respect.', topics: ['Basics of marketing', 'Social media growth', 'Google and all platforms'], make: 'Your 1-month content plan' },
+    { n: 'Content', w: 'WEEKS 7-8', promise: 'Make health content fast.', topics: ['Basics of image', 'Video editing basics', 'AI image', 'AI video', 'Vibe editing'], make: 'Your first content' },
+    { n: 'AI in Medical Practice', w: 'WEEKS 9-10', promise: 'Use AI in your own medical work.', topics: ['Patient education', 'Clinic follow-up', 'Slides', 'CV'], make: 'Your own AI assistant' },
+    { n: 'Research', w: 'WEEKS 11-12', promise: 'Do medical research faster.', topics: ['Vibe research', 'Data, charts and journals', 'Protocol / proposal', 'Presentation'], make: 'Prepare your own journal paper' },
+    { n: 'Build Apps & Websites', w: 'WEEKS 13-14', promise: 'Own your doctor website.', topics: ['Websites and app basics', 'Vibe coding', 'Domain and publish', 'Automation'], make: 'Your own live website' },
+    { n: 'AI Agent, Automation, Hustle & Finish', w: 'WEEKS 15-16', promise: 'Turn your knowledge into value.', topics: ['Understanding AI agents and agentic work', 'Automating your work', 'Digital product sell and marketing plan'], make: 'Hustling preparation with the hustling mindset' },
   ],
 };
 
