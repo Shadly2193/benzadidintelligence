@@ -45,7 +45,7 @@ export default function Walkaway() {
             {valued.map((c) => (
               <div key={c.h} className="vseg" style={{ flexGrow: c.v, ['--w' as string]: f[0] ? '1' : '0' }}>
                 <i style={{ transform: f[0] ? 'scaleX(1)' : 'scaleX(0)' }} />
-                <span>{c.h.replace('A vibe-coded website', 'Website').replace('AI in your medical practice', 'AI in practice').replace('Your personal brand', 'Brand').replace('Digital marketing', 'Marketing').replace('Vibe editing', 'Editing').replace('Vibe research', 'Research')}</span>
+                <span>{c.h.replace('Vibe-coded websites and apps', 'Website & apps').replace('A vibe-coded website', 'Website').replace('AI in your medical practice', 'AI in practice').replace('Your personal brand', 'Brand').replace('Digital marketing', 'Marketing').replace('Vibe editing', 'Editing').replace('Vibe research', 'Research')}</span>
               </div>
             ))}
           </div>

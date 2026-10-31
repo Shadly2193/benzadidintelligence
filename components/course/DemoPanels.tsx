@@ -19,12 +19,13 @@ const Win = ({ title, children, cap }: { title: string; children: React.ReactNod
 /* Each panel finishes its animation in about 2.5 seconds. */
 
 export function WebsitePanel() {
-  const t = useTyped('Build a website for a dental surgeon. Dark theme, orange buttons, an appointment button.', 6);
-  const f = useFlags([950, 1200, 1450, 1700, 1950]);
+  const t = useTyped('Build a website and a booking app for a dental surgeon. Dark theme, orange buttons.', 6);
+  // 0-3 website blocks, 4-7 app steps, 8 live
+  const f = useFlags([900, 1100, 1300, 1500, 1250, 1550, 1850, 2150, 2350]);
   const done = f.every(Boolean);
   const status = !f[0] ? '' : done ? 'Done. Now you improve it.' : 'Building...';
   return (
-    <Win title="YOUR WEBSITE, BUILT BY TALKING TO AI" cap="You describe it. AI builds it. You check it and improve it.">
+    <Win title="YOUR WEBSITE AND APP, BUILT BY TALKING TO AI" cap="You describe it. AI builds the website and the app. You check them and improve them.">
       <div className="code">
         <div className="chat">
           <div className="bubble">
@@ -33,26 +34,38 @@ export function WebsitePanel() {
           </div>
           <div className="status">{status}</div>
         </div>
-        <div className="site">
-          <div className={cx('blk s-nav', f[0] && 'show')}>
-            <b />
-            <span>Home · About · Services · Contact</span>
+        <div className="site-app">
+          <div className="site">
+            <div className={cx('blk s-nav', f[0] && 'show')}>
+              <b />
+              <span>Home · About · Contact</span>
+            </div>
+            <div className={cx('blk s-hero', f[1] && 'show')}>
+              <h4>Dr. Your Name</h4>
+              <p>Dental surgeon. Book your visit.</p>
+              <span>Book appointment</span>
+            </div>
+            <div className={cx('blk s-cards', f[2] && 'show')}>
+              <div />
+              <div />
+              <div />
+            </div>
+            <div className={cx('blk s-cta', f[3] && 'show')}>Contact and clinic map</div>
           </div>
-          <div className={cx('blk s-hero', f[1] && 'show')}>
-            <h4>Dr. Your Name</h4>
-            <p>Dental surgeon. Book your visit.</p>
-            <span>Book appointment</span>
+          <div className={cx('phone', f[4] && 'show')} aria-hidden="true">
+            <div className="ph-top">Booking app</div>
+            <div className="ph-slots">
+              <span>Sat 4 PM</span>
+              <span className={cx(f[5] && 'on')}>Sat 5 PM</span>
+              <span>Sun 6 PM</span>
+            </div>
+            <div className={cx('ph-btn', f[6] && 'ok')}>{f[6] ? 'Booked ✓' : 'Book'}</div>
+            <div className={cx('ph-wa', f[7] && 'show')}>WhatsApp: See you Sat at 5 PM. Reply 1 to confirm.</div>
           </div>
-          <div className={cx('blk s-cards', f[2] && 'show')}>
-            <div />
-            <div />
-            <div />
-          </div>
-          <div className={cx('blk s-cta', f[3] && 'show')}>Contact and clinic map</div>
-          <div className={cx('blk s-live', f[4] && 'show')}>
-            <i />
-            yourname.com is live
-          </div>
+        </div>
+        <div className={cx('blk s-live', f[8] && 'show')}>
+          <i />
+          yourname.com and your app are live
         </div>
       </div>
     </Win>

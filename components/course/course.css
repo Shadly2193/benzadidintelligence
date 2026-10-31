@@ -772,3 +772,18 @@ html.dr-playing #gauge{opacity:0!important;pointer-events:none}
 .dr-page .pickout.sizer{visibility:hidden;pointer-events:none;animation:none}
 /* iPhone zooms the page when an input under 16px is focused, which jumped the form area */
 @media (max-width:760px),(hover:none){.dr-page .jform input,.dr-page .jform select,.dr-page .jform textarea{font-size:16px}}
+/* demo tab 1: website + phone booking app side by side */
+.dr-page .site-app{display:grid;grid-template-columns:1fr 118px;gap:10px;align-items:start;padding:14px 14px 0}
+.dr-page .site-app .site{padding:0}
+.dr-page .code>.s-live{grid-column:1/-1;margin:0 14px 14px;justify-self:start}
+.dr-page .phone{border:2px solid rgba(255,130,60,.45);border-radius:18px;padding:10px 7px 12px;background:#120804;display:grid;gap:7px;opacity:0;transform:translateY(12px) scale(.96);transition:all .5s}
+.dr-page .phone.show{opacity:1;transform:none}
+.dr-page .ph-top{font-size:.62rem;font-weight:800;letter-spacing:.06em;color:#fff;text-align:center;padding-bottom:5px;border-bottom:1px solid rgba(255,130,60,.2)}
+.dr-page .ph-slots{display:grid;gap:5px}
+.dr-page .ph-slots span{font-size:.6rem;color:#d9b999;text-align:center;padding:5px 2px;border-radius:7px;border:1px solid rgba(255,130,60,.2);transition:all .35s}
+.dr-page .ph-slots span.on{background:rgba(255,106,0,.22);border-color:var(--orange);color:#fff}
+.dr-page .ph-btn{font-size:.62rem;font-weight:800;text-align:center;padding:6px 2px;border-radius:7px;color:#fff;background:linear-gradient(135deg,var(--ember),var(--orange));transition:all .35s}
+.dr-page .ph-btn.ok{background:rgba(74,222,128,.18);color:#bbf7d0;box-shadow:0 0 0 1px rgba(74,222,128,.5)}
+.dr-page .ph-wa{font-size:.56rem;line-height:1.3;color:#e8f5e9;background:rgba(37,211,102,.16);border:1px solid rgba(37,211,102,.4);border-radius:8px 8px 8px 2px;padding:6px;opacity:0;transform:translateY(6px);transition:all .4s}
+.dr-page .ph-wa.show{opacity:1;transform:none}
+@media(max-width:400px){.dr-page .site-app{grid-template-columns:1fr 104px;gap:8px;padding:10px 10px 0}}

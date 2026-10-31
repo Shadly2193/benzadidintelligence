@@ -28,9 +28,9 @@ export const schedule = {
 
 export const hero = {
   eyebrow: 'DIGITAL RESIDENCY PROGRAM',
-  lines: ['Doctors! Your brand,', 'marketing, videos,', 'website and AI.', 'Everything in one '] as const,
+  lines: ['Doctors! Your brand,', 'marketing, videos,', 'websites, apps and AI.', 'Everything in one '] as const,
   glitchWord: 'program',
-  sub: 'Doctors! It is time to upgrade yourself. Build your own brand with AI. Learn marketing, videos, website and your marketing plan, all in this program.',
+  sub: 'Doctors! It is time to upgrade yourself. Build your own brand with AI. Learn marketing, videos, websites, apps and your marketing plan, all in this program.',
   chips: [
     'Live classes, 3 days a week',
     '1.5 hours each class',
@@ -103,7 +103,7 @@ export const future = {
     ['I cannot make videos.', 'I make and edit videos with AI, with or without my face.'],
     ['AI tools feel confusing.', 'I use AI in my own field: patient education, documents, learning and research.'],
     ['I wait for an agency, and I fear the cost.', 'I know what to spend, and when. I start small myself.'],
-    ['I wait for someone to build my website.', 'I build my own website, the kind that sells for $800 to $1,000.'],
+    ['I wait for someone to build my website.', 'I build my own websites and apps, the kind that sell for $1,000 to $3,000.'],
     ['I am a student. I do not know how to begin.', 'I start building my name before I graduate. I am ahead of my batch.'],
   ] as [string, string][],
 };
@@ -112,7 +112,7 @@ export const demo = {
   label: 'SEE IT HAPPEN',
   title: ['This is what you will', 'learn to do.'],
   lead: 'You give AI simple commands. It does the heavy work. You stay in charge. These are examples of what you will practice.',
-  tabs: ['Vibe-coded website', 'Vibe editing', 'Vibe research', 'Personal brand', 'Digital marketing', 'AI in practice'],
+  tabs: ['Vibe-coded website & app', 'Vibe editing', 'Vibe research', 'Personal brand', 'Digital marketing', 'AI in practice'],
   footnote: 'Also inside: a guide to building a side hustle with digital products.',
   hintLive: 'Playing by itself. Click any tab to jump to it.',
   hintPaused: 'Click any tab to watch it.',
@@ -124,9 +124,10 @@ export const proof = {
   lead: 'These are websites and videos I made with AI. You will learn the same way of working.',
   note: '1,100+ students have learned AI from me. Now I teach doctors, step by step.',
   items: [
-    { src: '/course/videos/dr-ehsan-website.mp4', tag: 'WEBSITE', title: 'Doctor website', sub: 'Built with AI', wide: false },
-    { src: '/course/videos/dr-towhid-medicine-specialist.mp4', tag: 'WEBSITE', title: 'Medicine specialist website', sub: 'Built with AI', wide: false },
-    { src: '/course/videos/dr-rayhan-hepatobiliary-surgeon.mp4', tag: 'WEBSITE', title: 'Surgeon website', sub: 'Built with AI', wide: false },
+    { src: '/videos/sikder-dental-point.mp4', tag: 'WEBSITE', title: 'Sikder Dental Point', sub: 'Dental chamber website, built with AI', wide: true },
+    { src: '/videos/kgh-dental-chamber.mp4', tag: 'WEBSITE', title: 'KGH Dental', sub: 'Multi-doctor dental website, built with AI', wide: true },
+    { src: '/videos/dr-nahal-ophthalmologist.mp4', tag: 'WEBSITE', title: 'Dr. Nahal Eye Care', sub: 'Eye specialist website, built with AI', wide: true },
+    { src: '/videos/fouzia-dental-care.mp4', tag: 'WEBSITE', title: 'Fouzia Dental Care', sub: 'Dental clinic website, built with AI', wide: true },
     { src: '/course/videos/black-orange-ad.mp4', tag: 'VIDEO', title: 'Video work', sub: 'Made with AI', wide: true },
     { src: '/course/videos/orange-juice-ad.mp4', tag: 'VIDEO', title: 'Video work', sub: 'Made with AI', wide: true },
   ],
@@ -157,7 +158,7 @@ export const roadmap = {
     { n: 'Content', w: 'WEEKS 7-8', promise: 'Make health content fast.', topics: ['Basics of image', 'Video editing basics', 'AI image', 'AI video', 'Vibe editing'], make: 'Your first content' },
     { n: 'AI in Medical Practice', w: 'WEEKS 9-10', promise: 'Use AI in your own medical work.', topics: ['Patient education', 'Clinic follow-up', 'Slides', 'CV'], make: 'Your own AI assistant' },
     { n: 'Research', w: 'WEEKS 11-12', promise: 'Do medical research faster.', topics: ['Vibe research', 'Data, charts and journals', 'Protocol / proposal', 'Presentation'], make: 'Prepare your own journal paper' },
-    { n: 'Build Apps & Websites', w: 'WEEKS 13-14', promise: 'Own your doctor website.', topics: ['Websites and app basics', 'Vibe coding', 'Domain and publish', 'Automation'], make: 'Your own live website' },
+    { n: 'Build Apps & Websites', w: 'WEEKS 13-14', promise: 'Build your own website and AI apps.', topics: ['Websites and app basics', 'Vibe coding', 'Domain and publish', 'Automation'], make: 'Your own live website or app' },
     { n: 'AI Agent, Automation, Hustle & Finish', w: 'WEEKS 15-16', promise: 'Turn your knowledge into value.', topics: ['Understanding AI agents and agentic work', 'Automating your work', 'Digital product sell and marketing plan'], make: 'Hustling preparation with the hustling mindset' },
   ],
 };
@@ -228,7 +229,7 @@ export const price = {
   payParts: 'Pay in 2 parts',
   includes: [
     'Live classes with every recording',
-    'Vibe-coded website, vibe editing, vibe research',
+    'Vibe-coded websites and apps, vibe editing, vibe research',
     'Personal brand and digital marketing',
     'AI in your medical practice',
     'A side hustle plan, if you want one',
@@ -266,7 +267,7 @@ export const walkaway = {
   cards: [
     { h: 'Your personal brand', t: 'A page, a story and a look that people remember.', m: 'Brand building by an agency: 50,000–80,000 BDT. You keep building it for life.', v: 50000 },
     { h: 'Digital marketing', t: 'Social media, website and Google, working together.', m: 'Marketing agencies: 40,000–60,000 BDT a month', v: 40000 },
-    { h: 'A vibe-coded website', t: 'Build your own website by talking to AI.', m: 'Web agencies: 40,000–1,00,000 BDT', v: 40000 },
+    { h: 'Vibe-coded websites and apps', t: 'Build your own website and simple AI apps by talking to AI.', m: 'Web agencies: 40,000–1,00,000 BDT', v: 40000 },
     { h: 'Vibe editing', t: 'Edit professional-looking videos with simple commands.', m: 'Video agencies: 8,000–20,000 BDT a video. 4 a month: 32,000+', v: 32000 },
     { h: 'Vibe research', t: 'Find, read and write research faster, in your own field.', m: 'Research help: 20,000–30,000 BDT a paper', v: 20000 },
     { h: 'AI in your medical practice', t: 'Patient education, notes, communication and staying up to date.', m: 'AI training for doctors: 15,000–20,000 BDT. Saves you hours every week.', v: 15000 },
@@ -299,7 +300,7 @@ export const fit = {
     ['You think your chamber does not need marketing.', 'You know your chamber needs marketing, and you want to do it better yourself.'],
     ['You want an agency to do your marketing.', 'You want to do your own digital marketing.'],
     ['You want someone else to make and edit your videos.', 'You want to make and edit your own videos.'],
-    ['You do not want to build your own website.', 'You want to build your own website.'],
+    ['You do not want to build your own website or app.', 'You want to build your own website or app.'],
     ['You are not a BMDC-registered doctor, or not enrolled in MBBS or BDS.', 'You are a BMDC-registered doctor, or enrolled in MBBS or BDS.'],
   ] as [string, string][],
 };
@@ -334,7 +335,7 @@ export const faq = {
   label: 'QUESTIONS',
   title: 'Quick answers.',
   items: [
-    ['Why 24,000 BDT?', 'You learn to build a website, edit videos, do research, grow your brand and use AI in your practice. Real skills that people usually pay others for. You get live classes, every recording, a private community and feedback on every milestone. It is built only for doctors, by a doctor.'],
+    ['Why 24,000 BDT?', 'You learn to build websites and apps, edit videos, do research, grow your brand and use AI in your practice. Real skills that people usually pay others for. You get live classes, every recording, a private community and feedback on every milestone. It is built only for doctors, by a doctor.'],
     ['Can I pay in parts?', 'Yes. Pay 12,000 BDT to join, and the other 12,000 BDT after 1 month. The total price stays the same.'],
     ['Is there a refund?', 'Yes, for the first 2 classes. Attend both (live or by recording), do the two small class tasks, and ask within 96 hours after class 2 ends. I refund what you paid. You then leave the course and the private community, and keep the free Facebook group.'],
     ['What is the 1-to-1 option?', 'It is personal training with me, for 60,000 BDT. Message me first on WhatsApp and we will plan it around your goal.'],
