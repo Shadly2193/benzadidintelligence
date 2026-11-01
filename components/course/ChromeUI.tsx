@@ -16,8 +16,8 @@ export default function ChromeUI() {
   const [idx, setIdx] = useState(0);
   const [pump, setPump] = useState(false);
   const [showNext, setShowNext] = useState(false);
-  // join bar: after 25% of the page or 15 s, hidden while the form is on screen, closable for the session
-  const [timeUp, setTimeUp] = useState(false);
+  // join bar: once the hero video has scrolled away, hidden while the form is on screen, closable for the session
+  const [pastHero, setPastHero] = useState(false);
   const [formInView, setFormInView] = useState(false);
   const [barClosed, setBarClosed] = useState(true);
   const [hideGauge, setHideGauge] = useState(false);
@@ -45,8 +45,6 @@ export default function ChromeUI() {
     } catch {
       setBarClosed(false);
     }
-    const t = window.setTimeout(() => setTimeUp(true), 15000);
-    return () => window.clearTimeout(t);
   }, []);
 
   useEffect(() => {
@@ -56,6 +54,7 @@ export default function ChromeUI() {
     let docH = 0;
     let fut: [number, number] = [Infinity, Infinity];
     let form: [number, number] = [Infinity, Infinity];
+    let heroEnd = Infinity;
     let pinned = true;
     const measure = () => {
       tops = sections.map((s) => {
@@ -67,6 +66,8 @@ export default function ChromeUI() {
       fut = f ? [f.top + window.scrollY, f.bottom + window.scrollY] : [Infinity, Infinity];
       const j = document.getElementById('join')?.getBoundingClientRect();
       form = j ? [j.top + window.scrollY, j.bottom + window.scrollY] : [Infinity, Infinity];
+      const hv = (document.querySelector('#top .hero-video') ?? document.getElementById('top'))?.getBoundingClientRect();
+      heroEnd = hv ? hv.bottom + window.scrollY : Infinity;
       pinned = !document.getElementById('future')?.classList.contains('flat');
     };
     const calc = () => {
@@ -89,6 +90,7 @@ export default function ChromeUI() {
       setHideGauge(inFuture);
       setShowNext(window.scrollY > window.innerHeight * 0.5);
       setInSticky(inFuture && pinned);
+      setPastHero(window.scrollY > heroEnd);
       setFormInView(window.scrollY + window.innerHeight > form[0] && window.scrollY < form[1]);
     };
     const on = () => {
@@ -116,7 +118,7 @@ export default function ChromeUI() {
   const done = p > 0.985;
   const lastIdx = sections.length - 1;
   const nextLabel = idx >= lastIdx ? 'Join the program' : sections[idx + 1].name;
-  const showBar = !barClosed && (timeUp || p >= 0.25) && !formInView && !(inSticky && typeof window !== 'undefined' && window.innerWidth < 760);
+  const showBar = !barClosed && pastHero && !formInView && !(inSticky && typeof window !== 'undefined' && window.innerWidth < 760);
   const goTo = (id: string) => {
     const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     document.getElementById(id)?.scrollIntoView({ behavior: still ? 'auto' : 'smooth' });
