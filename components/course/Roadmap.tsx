@@ -4,12 +4,18 @@ import { useCourse } from '@/lib/course/content';
 import { cx } from '@/lib/course/useScroll';
 
 /**
- * Hand-driven roadmap: swipe on phones, drag (or arrows / wheel) on laptops.
+ * Roadmap: swipe on phones; on laptops (mouse, wide screen) the section pins and
+ * the page scroll slides the cards, while drag and arrows still work (they move the page scroll).
  * The card closest to the centre of the frame is focused, the rest are dimmed.
  */
+const PIN_MQ = '(min-width: 901px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)';
+// page scroll (in vh) spent per card while pinned
+const VH_PER_CARD = 45;
 export default function Roadmap() {
   const { roadmap } = useCourse();
   const vp = useRef<HTMLDivElement>(null);
+  const sec = useRef<HTMLElement>(null);
+  const [pin, setPin] = useState(false);
   const drag = useRef({ on: false, x: 0, left: 0, moved: false });
   const [idx, setIdx] = useState(0);
   const [p, setP] = useState(0);
@@ -36,6 +42,57 @@ export default function Roadmap() {
   }, []);
 
   useEffect(() => {
+    const mq = window.matchMedia(PIN_MQ);
+    const on = () => setPin(mq.matches);
+    on();
+    mq.addEventListener('change', on);
+    return () => mq.removeEventListener('change', on);
+  }, []);
+
+  // pinned: vertical page scroll -> horizontal card position
+  const span = useCallback(() => {
+    const s = sec.current;
+    return s ? s.offsetHeight - window.innerHeight : 0;
+  }, []);
+  const toPage = useCallback(
+    (left: number, smooth: boolean) => {
+      const el = vp.current;
+      const s = sec.current;
+      if (!el || !s) return;
+      const max = el.scrollWidth - el.clientWidth;
+      const k = max > 0 ? Math.min(1, Math.max(0, left / max)) : 0;
+      const top = s.getBoundingClientRect().top + window.scrollY + k * span();
+      window.scrollTo({ top, behavior: smooth ? 'smooth' : 'instant' });
+    },
+    [span],
+  );
+  useEffect(() => {
+    if (!pin) return;
+    let raf = 0;
+    const calc = () => {
+      const el = vp.current;
+      const s = sec.current;
+      if (!el || !s || drag.current.on) return;
+      const sp = span();
+      const k = sp > 0 ? Math.min(1, Math.max(0, -s.getBoundingClientRect().top / sp)) : 0;
+      el.scrollLeft = k * (el.scrollWidth - el.clientWidth);
+      sync();
+    };
+    const on = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(calc);
+    };
+    calc();
+    window.addEventListener('scroll', on, { passive: true });
+    window.addEventListener('resize', on);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener('scroll', on);
+      window.removeEventListener('resize', on);
+    };
+  }, [pin, span, sync]);
+
+  useEffect(() => {
     const el = vp.current;
     if (!el) return;
     let raf = 0;
@@ -58,7 +115,9 @@ export default function Roadmap() {
     const c = el?.children[Math.max(0, Math.min(n - 1, i))] as HTMLElement | undefined;
     if (!el || !c) return;
     const off = c.getBoundingClientRect().left - el.getBoundingClientRect().left;
-    el.scrollTo({ left: el.scrollLeft + off - (el.clientWidth - c.offsetWidth) / 2, behavior: 'smooth' });
+    const left = el.scrollLeft + off - (el.clientWidth - c.offsetWidth) / 2;
+    if (pin) toPage(left, true);
+    else el.scrollTo({ left, behavior: 'smooth' });
   };
 
   // mouse drag only; touch uses native swipe
@@ -74,15 +133,24 @@ export default function Roadmap() {
     if (Math.abs(dx) > 4) d.moved = true;
     vp.current.scrollLeft = d.left - dx;
   };
+  // after a drag while pinned, move the page to match, so the next scroll continues from here
+  const settle = () => (pin && vp.current ? toPage(vp.current.scrollLeft, false) : undefined);
   const up = () => {
     if (!drag.current.on) return;
     drag.current.on = false;
     setGrabbing(false);
+    settle();
     go(idx);
   };
 
   return (
-    <section className="hroad" id="road">
+    <section
+      className={cx('hroad', pin && 'pinned')}
+      id="road"
+      ref={sec}
+      style={pin ? { height: `calc(100vh + ${(n - 1) * VH_PER_CARD}vh)` } : undefined}
+    >
+      <div className="hpin">
       <div className="wrap">
         <p className="label rv">{roadmap.label}</p>
         <h2 className="hh rv">
@@ -139,6 +207,7 @@ export default function Roadmap() {
             </div>
           </div>
         ))}
+      </div>
       </div>
     </section>
   );
