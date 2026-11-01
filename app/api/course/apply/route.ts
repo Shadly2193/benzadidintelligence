@@ -36,6 +36,24 @@ async function logToSheet(row: Record<string, string>) {
   }
 }
 
+/** Pings Shadly's phone on Telegram for every saved application. Never throws. */
+async function notifyTelegram(lines: string[]) {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  const chat = process.env.TELEGRAM_CHAT_ID;
+  if (!token || !chat) return;
+  try {
+    const r = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chat_id: chat, text: lines.join("\n"), disable_web_page_preview: true }),
+      signal: AbortSignal.timeout(SHEET_TIMEOUT),
+    });
+    if (!r.ok) console.error("telegram notify failed", r.status, await r.text().catch(() => ""));
+  } catch (e) {
+    console.error("telegram notify failed", e);
+  }
+}
+
 /** Saves a course application (and the optional private ID image). The thank-you view then offers WhatsApp. */
 export async function POST(req: Request) {
   let f: FormData;
@@ -122,7 +140,17 @@ export async function POST(req: Request) {
     return fail(500, "Could not save your request. Please message me on WhatsApp.");
   }
 
-  await logToSheet({
+  const wa = whatsapp.replace(/[^\d]/g, "").replace(/^0/, "880");
+  const notify = notifyTelegram([
+    "🆕 New course application",
+    full_name,
+    `📱 ${whatsapp}  https://wa.me/${wa}`,
+    email ? `✉️ ${email}` : "",
+    has_bmdc ? `🩺 Doctor, BMDC ${bmdc_number}` : `🎓 Student, ${medical_college}, ${student_year}`,
+    `💰 ${phase === "early" ? "Early bird" : "Regular"}, ${fee.toLocaleString("en-US")} BDT`,
+    id_image_path ? "🪪 ID image uploaded" : "",
+  ].filter(Boolean));
+  const sheet = logToSheet({
     timestamp: new Date().toLocaleString("en-GB", { timeZone: "Asia/Dhaka" }),
     name: full_name,
     whatsapp,
@@ -132,5 +160,6 @@ export async function POST(req: Request) {
     // the image stays in the private bucket; this link opens it in the admin panel (login needed)
     id_photo: id_image_path ? `${new URL(req.url).origin}/admin/courses/applications` : "",
   });
+  await Promise.all([notify, sheet]);
   return Response.json({ ok: true });
 }
