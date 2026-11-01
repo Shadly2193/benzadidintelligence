@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useCourse } from '@/lib/course/content';
 import { useDeadline } from '@/lib/course/useDeadline';
 import { cx, useCountUp, useInViewOnce } from '@/lib/course/useScroll';
@@ -15,6 +15,15 @@ export default function Price() {
   const eb = useCountUp(schedule.earlyBirdAmount, seen, 1200);
   const half = price.amount / 2;
   const save = price.amount - schedule.earlyBirdAmount;
+  // guarantee card: the refund amount counts up after the 3 checks tick
+  const [rfRef, rfSeen] = useInViewOnce<HTMLDivElement>(0.2);
+  const [stamped, setStamped] = useState(false);
+  useEffect(() => {
+    if (!rfSeen) return;
+    const t = window.setTimeout(() => setStamped(true), 1900);
+    return () => window.clearTimeout(t);
+  }, [rfSeen]);
+  const back = useCountUp(early ? schedule.earlyBirdAmount : price.amount, stamped, 1100);
   const fmt = (n: number) => n.toLocaleString('en-US');
   return (
     <section id="price">
@@ -36,7 +45,7 @@ export default function Price() {
                 {fmt(full)} <em>{price.currency}</em>
               </b>
               <span>Pay in full, or 12,000 + 12,000</span>
-              <span className="pt-when">Until {schedule.regEndLabel}</span>
+              <span className="pt-when">Register until {schedule.regEndLabel}</span>
             </div>
             <div className={cx('pt pt-eb', !early && 'over')}>
               <small>EARLY BIRD</small>
@@ -71,7 +80,7 @@ export default function Price() {
               )
             ) : (
               <>
-                Pay <b>{fmt(half)} BDT</b> now (50%). Pay <b>{fmt(half)} BDT</b> after 1 month (50%). Total <b>{fmt(price.amount)} BDT</b>.
+                Pay <b>{fmt(half)} BDT</b> now. Pay the other <b>{fmt(half)} BDT</b> exactly 1 month after your first payment. Total <b>{fmt(price.amount)} BDT</b>.
               </>
             )}
           </p>
@@ -111,7 +120,7 @@ export default function Price() {
           </div>
         </div>
 
-        <div className="card corner rf rv">
+        <div className={cx('card corner rf rv', rfSeen && 'go')} ref={rfRef}>
           <div className="gh">
             <span className="shield">✓</span>
             <div>
@@ -120,13 +129,18 @@ export default function Price() {
             </div>
           </div>
           <div className="rf-flow">
-            {riskFree.checks.map((c) => (
-              <div className="rf-chk" key={c}>
+            {riskFree.checks.map((c, i) => (
+              <div className="rf-chk" key={c} style={{ '--i': i } as React.CSSProperties}>
                 <i>✓</i>
                 <span>{c}</span>
               </div>
             ))}
-            <div className="rf-res">{riskFree.result.toUpperCase()}</div>
+            <div className="rf-res">
+              <span className="rf-stamp">{riskFree.result.toUpperCase()}</span>
+              <span className="rf-amt">
+                {fmt(back)} <em>{price.currency}</em>
+              </span>
+            </div>
           </div>
           <ul className="gl">
             {riskFree.rules.map((r) => (

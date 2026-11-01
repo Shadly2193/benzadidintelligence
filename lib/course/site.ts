@@ -247,13 +247,13 @@ export const price = {
 };
 
 export const riskFree = {
-  label: 'RISK-FREE START',
-  title: 'Try the first 2 classes. If it is not for you, get your money back.',
-  checks: ['Attend both of the first 2 classes (live or by recording)', 'Do the two small class tasks (post your goal and niche, and your first build)', 'Ask for the refund within 96 hours after class 2 ends'],
+  label: '2-CLASS GUARANTEE',
+  title: 'Join the first 2 live classes. Not for you? Get all your money back.',
+  checks: ['Attend the first 2 classes live', 'Do the 2 small class tasks (your goal and niche, and your first build)', 'Ask within 4 days after class 2'],
   result: 'Money back',
   rules: [
-    'Ask me on WhatsApp. I refund what you paid, the same way you paid.',
-    'After a refund you leave the private course community and lose access to the course and recordings.',
+    'Message me on WhatsApp. I refund all the money you paid, early bird or installment, the same way you paid.',
+    'After a refund, your access to the course, recordings and private community ends.',
     'You stay in the free Facebook group.',
     'One refund per person.',
   ],
@@ -310,11 +310,13 @@ export const join = {
   title: '3 easy steps.',
   steps: [
     ['Fill the form', 'Your name, college, session, and your BMDC number or student year.'],
-    ['Talk to me on WhatsApp', 'The form opens WhatsApp. I send the payment details to you there.'],
+    ['Talk to me on WhatsApp', 'After the form, tap the WhatsApp button. I send the payment details to you there.'],
     ['Get your group link', 'I check your details and payment myself. Then you get the private course community link.'],
   ] as [string, string][],
   fields: {
     name: 'Full name',
+    whatsapp: 'WhatsApp number',
+    email: 'Email',
     fb: 'Facebook name',
     college: 'Medical college name',
     session: 'Session',
@@ -324,11 +326,22 @@ export const join = {
     idImg: 'BMDC card or student ID image',
   },
   years: ['1st year', '2nd year', '3rd year', '4th year', '5th year', 'Intern'],
-  idNote: 'Your ID image is kept private. Only I can see it. Please also attach it in WhatsApp after the chat opens.',
+  idNote: 'Your ID image is kept private. Only I can see it. You can also send it on WhatsApp.',
   closedNote: 'Registration is closed for this batch.',
   agree: 'I have read the program details and the refund rules, and I agree.',
-  submit: 'Send my request on WhatsApp',
+  submit: 'Send my request',
   thanks: 'Thank you. WhatsApp should open now. Send the message and I will reply with the next step.',
+  done: {
+    label: 'REQUEST RECEIVED',
+    title: 'Welcome',
+    lines: [
+      'You are about to learn one of the most advanced technologies of your life: building, editing and researching with AI.',
+      'One step is left: the payment. Message me on WhatsApp now, and I will send you the payment details.',
+    ],
+    cta: 'Message me on the WhatsApp NOW',
+    waText: 'আমি {name}। আমি কোর্সে জয়েন করতে আগ্রহী, ফর্ম ফিলআপ করেছি, পেমেন্টের ডিটেইলস জানার জন্য আপনাকে নক দিচ্ছি।',
+    note: 'Your seat is confirmed after payment. I add you to the private course community myself.',
+  },
 };
 
 export const faq = {
@@ -336,8 +349,8 @@ export const faq = {
   title: 'Quick answers.',
   items: [
     ['Why 24,000 BDT?', 'You learn to build websites and apps, edit videos, do research, grow your brand and use AI in your practice. Real skills that people usually pay others for. You get live classes, every recording, a private community and feedback on every milestone. It is built only for doctors, by a doctor.'],
-    ['Can I pay in parts?', 'Yes. Pay 12,000 BDT to join, and the other 12,000 BDT after 1 month. The total price stays the same.'],
-    ['Is there a refund?', 'Yes, for the first 2 classes. Attend both (live or by recording), do the two small class tasks, and ask within 96 hours after class 2 ends. I refund what you paid. You then leave the course and the private community, and keep the free Facebook group.'],
+    ['Can I pay in parts?', 'Yes. The regular price is 24,000 BDT. Pay 12,000 BDT now to join, and the other 12,000 BDT exactly 1 month after your first payment. The early bird price (20,000 BDT) is full payment only.'],
+    ['Is there a refund?', 'Yes. Attend the first 2 classes live and do the 2 small class tasks. If the course is not for you, message me within 4 days after class 2. I refund all the money you paid, early bird or installment, the same way you paid. After a refund, your course access ends. You keep the free Facebook group.'],
     ['What is the 1-to-1 option?', 'It is personal training with me, for 60,000 BDT. Message me first on WhatsApp and we will plan it around your goal.'],
     ['I am a student. Is this for me?', 'Yes. Open to medical and dental students, interns and doctors. Your homework changes with your stage, and you can start building your name before you graduate.'],
     ['Will you teach AI for my medical practice?', 'Yes. You learn to use AI for patient education, notes and documents, communication, and staying up to date. We do not use AI to make medical decisions.'],
@@ -355,7 +368,7 @@ export const faq = {
 export const final = {
   label: 'NEXT STEP',
   big: ['Limited seats.', 'Take yours.'],
-  lead: '24,000 BDT, or pay in 2 parts. Refund-backed for the first 2 classes.',
+  lead: '24,000 BDT, or pay in 2 parts. Money back if the first 2 live classes are not for you.',
   ctaMain: 'Join the program',
   ctaGhost: 'See the 16 weeks again',
 };

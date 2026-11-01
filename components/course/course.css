@@ -787,3 +787,36 @@ html.dr-playing #gauge{opacity:0!important;pointer-events:none}
 .dr-page .ph-wa{font-size:.56rem;line-height:1.3;color:#e8f5e9;background:rgba(37,211,102,.16);border:1px solid rgba(37,211,102,.4);border-radius:8px 8px 8px 2px;padding:6px;opacity:0;transform:translateY(6px);transition:all .4s}
 .dr-page .ph-wa.show{opacity:1;transform:none}
 @media(max-width:400px){.dr-page .site-app{grid-template-columns:1fr 104px;gap:8px;padding:10px 10px 0}}
+
+/* thank-you card after the form is saved */
+.dr-page .jdone{max-width:640px;margin:34px auto 0;display:grid;gap:14px;text-align:center;justify-items:center;padding:34px 22px}
+.dr-page .jdone h3{font-size:clamp(1.5rem,5vw,2.1rem);line-height:1.2;margin:0}
+.dr-page .jdone p{margin:0;color:#f1dcc6;max-width:52ch}
+.dr-page .jdone .label{margin:0}
+.dr-page .jdone .btn{margin-top:8px;max-width:100%;white-space:normal}
+.dr-page .jdone .sm{color:var(--muted)}
+
+/* sticky join bar, every screen size (replaces the old phone-only bar) */
+.dr-page #joinbar{display:flex;align-items:center;justify-content:center;gap:10px;position:fixed;left:0;right:0;bottom:0;z-index:950;padding:10px 14px;padding-bottom:calc(10px + env(safe-area-inset-bottom));background:rgba(10,6,3,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid rgba(255,106,0,.35);transform:translateY(110%);transition:transform .4s;pointer-events:none}
+.dr-page #joinbar.show{transform:none;pointer-events:auto}
+.dr-page #joinbar .btn{flex:0 1 220px;padding:11px 14px;font-size:.88rem;white-space:nowrap}
+.dr-page #joinbar .jb-x{flex:none;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,130,60,.3);background:none;color:var(--muted);font:inherit;font-size:1.2rem;line-height:1;cursor:pointer}
+.dr-page #next.lift{bottom:86px}
+@media(max-width:760px){.dr-page #joinbar{gap:8px;padding-left:10px;padding-right:10px}.dr-page #joinbar .btn{flex:1;padding:12px 8px;font-size:.82rem}}
+@media(prefers-reduced-motion:reduce){.dr-page #joinbar{transition:none}}
+
+/* 2-class guarantee: checks slide in and tick one by one, then the MONEY BACK stamp lands and the amount counts up */
+.dr-page .rf .rf-chk{opacity:0;transform:translateX(-14px);transition:opacity .45s ease,transform .45s ease;transition-delay:calc(var(--i,0) * .5s)}
+.dr-page .rf.go .rf-chk{opacity:1;transform:none}
+.dr-page .rf.go .rf-chk i{background:var(--orange);border-color:var(--orange);color:#000;box-shadow:0 0 12px rgba(255,106,0,.6);animation:dr-tick .45s ease both;animation-delay:calc(var(--i,0) * .5s + .3s)}
+.dr-page .rf .rf-chk i{transition-delay:calc(var(--i,0) * .5s + .3s)}
+@keyframes dr-tick{0%{transform:scale(.4)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
+.dr-page .rf .rf-res{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;opacity:0;transform:scale(1.35) rotate(-4deg);transition:none}
+.dr-page .rf.go .rf-res{animation:dr-stamp .5s cubic-bezier(.2,1.6,.4,1) 1.8s both}
+@keyframes dr-stamp{0%{opacity:0;transform:scale(1.35) rotate(-4deg)}70%{opacity:1;transform:scale(.96) rotate(-1deg)}100%{opacity:1;transform:none}}
+.dr-page .rf-stamp{font-weight:900;letter-spacing:.16em}
+.dr-page .rf-amt{font-weight:800;font-size:1.15rem;color:#fff;font-variant-numeric:tabular-nums;min-width:8.5ch;text-align:left}
+.dr-page .rf-amt em{font-style:normal;font-size:.7em;color:var(--orange);letter-spacing:.08em}
+@media(prefers-reduced-motion:reduce){.dr-page .rf .rf-chk,.dr-page .rf .rf-res{opacity:1;transform:none;animation:none!important}.dr-page .rf .rf-chk i{background:var(--orange);border-color:var(--orange);color:#000}}
+/* the older data-in rules would show these before the card is in view */
+@media(prefers-reduced-motion:no-preference){.dr-page .rf[data-in]:not(.go) .rf-res{opacity:0}.dr-page .rf[data-in]:not(.go) .rf-chk i{background:none;border-color:rgba(255,130,60,.4);color:transparent;box-shadow:none}}

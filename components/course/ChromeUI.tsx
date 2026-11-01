@@ -5,16 +5,21 @@ import { cx } from '@/lib/course/useScroll';
 
 /**
  * Page-level helpers (mock only, the real site has its own header and footer):
- * progress bar + ECG dot, blood-pressure gauge, section dots, NEXT pill, mobile join bar,
+ * progress bar + ECG dot, blood-pressure gauge, section dots, NEXT pill, sticky join bar,
  * and the scroll reveal for every element with class "rv" or "line" (sets data-in).
  */
+const BAR_KEY = 'dr-joinbar-closed';
+
 export default function ChromeUI() {
   const { sections } = useCourse();
   const [p, setP] = useState(0);
   const [idx, setIdx] = useState(0);
   const [pump, setPump] = useState(false);
   const [showNext, setShowNext] = useState(false);
-  const [showJoin, setShowJoin] = useState(false);
+  // join bar: after 25% of the page or 15 s, hidden while the form is on screen, closable for the session
+  const [timeUp, setTimeUp] = useState(false);
+  const [formInView, setFormInView] = useState(false);
+  const [barClosed, setBarClosed] = useState(true);
   const [hideGauge, setHideGauge] = useState(false);
   const [inSticky, setInSticky] = useState(false);
   const last = useRef(0);
@@ -35,11 +40,22 @@ export default function ChromeUI() {
   }, []);
 
   useEffect(() => {
+    try {
+      setBarClosed(sessionStorage.getItem(BAR_KEY) === '1');
+    } catch {
+      setBarClosed(false);
+    }
+    const t = window.setTimeout(() => setTimeUp(true), 15000);
+    return () => window.clearTimeout(t);
+  }, []);
+
+  useEffect(() => {
     let raf = 0;
     // section positions are measured once per layout change, not on every scroll frame
     let tops: number[] = [];
     let docH = 0;
     let fut: [number, number] = [Infinity, Infinity];
+    let form: [number, number] = [Infinity, Infinity];
     let pinned = true;
     const measure = () => {
       tops = sections.map((s) => {
@@ -49,6 +65,8 @@ export default function ChromeUI() {
       docH = document.documentElement.scrollHeight - window.innerHeight;
       const f = document.getElementById('future')?.getBoundingClientRect();
       fut = f ? [f.top + window.scrollY, f.bottom + window.scrollY] : [Infinity, Infinity];
+      const j = document.getElementById('join')?.getBoundingClientRect();
+      form = j ? [j.top + window.scrollY, j.bottom + window.scrollY] : [Infinity, Infinity];
       pinned = !document.getElementById('future')?.classList.contains('flat');
     };
     const calc = () => {
@@ -70,8 +88,8 @@ export default function ChromeUI() {
       const inFuture = mid2 >= fut[0] && mid2 <= fut[1];
       setHideGauge(inFuture);
       setShowNext(window.scrollY > window.innerHeight * 0.5);
-      setShowJoin(window.scrollY > window.innerHeight * 0.8);
       setInSticky(inFuture && pinned);
+      setFormInView(window.scrollY + window.innerHeight > form[0] && window.scrollY < form[1]);
     };
     const on = () => {
       cancelAnimationFrame(raf);
@@ -98,6 +116,17 @@ export default function ChromeUI() {
   const done = p > 0.985;
   const lastIdx = sections.length - 1;
   const nextLabel = idx >= lastIdx ? 'Join the program' : sections[idx + 1].name;
+  const showBar = !barClosed && (timeUp || p >= 0.25) && !formInView && !(inSticky && typeof window !== 'undefined' && window.innerWidth < 760);
+  const goTo = (id: string) => {
+    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.getElementById(id)?.scrollIntoView({ behavior: still ? 'auto' : 'smooth' });
+  };
+  const closeBar = () => {
+    setBarClosed(true);
+    try {
+      sessionStorage.setItem(BAR_KEY, '1');
+    } catch {}
+  };
   const goNext = () => {
     const id = idx >= lastIdx ? 'price' : sections[idx + 1].id;
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
@@ -128,15 +157,21 @@ export default function ChromeUI() {
           </a>
         ))}
       </nav>
-      <button id="next" className={cx(showNext && 'show')} onClick={goNext} aria-label="Go to next section">
+      <button id="next" className={cx(showNext && 'show', showBar && 'lift')} onClick={goNext} aria-label="Go to next section">
         <small>NEXT</small>
         <span>{nextLabel}</span>
         <b>↓</b>
       </button>
-      <div id="joinbar" className={cx(showJoin && !(inSticky && typeof window !== 'undefined' && window.innerWidth < 760) && 'show')}>
-        <a className="btn btn-main" href="#price">
+      <div id="joinbar" className={cx(showBar && 'show')} role="region" aria-label="Join the program" aria-hidden={!showBar}>
+        <button className="btn btn-ghost" type="button" tabIndex={showBar ? 0 : -1} onClick={() => goTo('demo')}>
+          Know the details
+        </button>
+        <button className="btn btn-main" type="button" tabIndex={showBar ? 0 : -1} onClick={() => goTo('join')}>
           Join the program
-        </a>
+        </button>
+        <button className="jb-x" type="button" tabIndex={showBar ? 0 : -1} onClick={closeBar} aria-label="Close">
+          ×
+        </button>
       </div>
     </>
   );

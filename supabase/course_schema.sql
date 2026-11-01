@@ -83,6 +83,8 @@ create table if not exists course_applications (
   created_at timestamptz not null default now(),
   course_slug text not null default 'digital-residency-program',
   full_name text not null check (char_length(full_name) between 2 and 80),
+  whatsapp text check (whatsapp is null or char_length(whatsapp) <= 20),
+  email text check (email is null or char_length(email) <= 120),
   facebook_name text not null check (char_length(facebook_name) between 2 and 80),
   medical_college text not null check (char_length(medical_college) between 2 and 120),
   session text not null check (char_length(session) between 2 and 20),

@@ -1,5 +1,5 @@
 'use client';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useRef, useState } from 'react';
 import { useCourse } from '@/lib/course/content';
 import { useDeadline } from '@/lib/course/useDeadline';
 
@@ -16,6 +16,12 @@ export default function Join() {
   const { phase } = useDeadline(60000);
   const fl = join.fields;
   const [sending, setSending] = useState(false);
+  // name of the person who just applied; set only after a successful save
+  const [doneName, setDoneName] = useState('');
+  const doneRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (doneName) doneRef.current?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  }, [doneName]);
   const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (sending) return;
@@ -30,6 +36,7 @@ export default function Join() {
     const lines = [
       'Hello, I want to join the Digital Residency Program.',
       `${fl.name}: ${f.get('name')}`,
+      `${fl.whatsapp}: ${f.get('whatsapp')}`,
       `${fl.fb}: ${f.get('fb')}`,
       `${fl.college}: ${f.get('college')}`,
       `${fl.session}: ${f.get('session')}`,
@@ -37,9 +44,6 @@ export default function Join() {
       hasImg ? 'I uploaded my ID image with the form.' : '',
       'I have read the details and the refund rules, and I agree.',
     ].filter(Boolean);
-    const wa = waLink(lines.join('\n'));
-    // open the tab now, inside the click, so pop-up blockers allow it; point it at WhatsApp after saving
-    const win = window.open('', '_blank');
     setSending(true);
     setOk('Sending…');
     let saved = false;
@@ -53,15 +57,18 @@ export default function Join() {
       err = 'Network problem.';
     }
     setSending(false);
-    // WhatsApp opens either way, so a failed save never loses the person
-    if (win) win.location.href = wa;
-    else window.location.href = wa;
-    setOk(saved ? join.thanks : `${err} WhatsApp is opening, please send the message there.`.trim());
     if (saved) {
+      setOk('');
+      setDoneName(String(f.get('name') ?? '').trim());
       form.reset();
       setHasBmdc('');
+      return;
     }
+    // the save failed: open WhatsApp with every detail, so the person is never lost
+    setOk(`${err} WhatsApp is opening, please send the message there.`.trim());
+    window.location.href = waLink(lines.join('\n'));
   };
+  const done = join.done;
   return (
     <section className="grid-bg" id="join">
       <div className="wrap">
@@ -77,11 +84,34 @@ export default function Join() {
             </div>
           ))}
         </div>
+        {doneName ? (
+          <div className="card corner jdone" ref={doneRef} role="status">
+            <p className="label">{done.label}</p>
+            <h3>
+              {done.title}, <span className="accent">{doneName}</span>!
+            </h3>
+            {done.lines.map((l) => (
+              <p key={l}>{l}</p>
+            ))}
+            <a className="btn btn-main" href={waLink(done.waText.replace('{name}', doneName))} target="_blank" rel="noopener noreferrer">
+              {done.cta}
+            </a>
+            <p className="sm">{done.note}</p>
+          </div>
+        ) : (
         <form className="card corner jform rv" onSubmit={onSubmit} autoComplete="off">
           <input name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" style={{ position: 'absolute', left: '-9999px', width: 1, height: 1 }} />
           <label>
             {fl.name}
             <input name="name" required maxLength={80} placeholder="Dr. / Name" />
+          </label>
+          <label>
+            {fl.whatsapp}
+            <input name="whatsapp" type="tel" required inputMode="tel" minLength={10} maxLength={20} placeholder="01XXXXXXXXX" />
+          </label>
+          <label>
+            {fl.email}
+            <input name="email" type="email" maxLength={120} placeholder="you@example.com (optional)" />
           </label>
           <label>
             {fl.fb}
@@ -138,6 +168,7 @@ export default function Join() {
           )}
           <p className="ok" role="status">{ok}</p>
         </form>
+        )}
       </div>
     </section>
   );
