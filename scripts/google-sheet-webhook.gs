@@ -1,78 +1,110 @@
 /**
- * Course applications -> private Google Sheet.
- * The website (app/api/course/apply/route.ts) POSTs one row after each saved form.
+ * Admin panel payments -> the course block of the monthly finance Sheet.
  * Setup steps: scripts/GOOGLE_SHEET_WEBHOOK_README.md
  *
- * The shared secret lives in Project Settings -> Script Properties as SHEET_SECRET,
- * never in this file.
+ * SAFETY: this script only ever writes to the tab named in the request (the current month), only
+ * on rows 4-63, and only in the columns listed below. It never deletes anything and never touches
+ * columns A-AD, the formula columns (Total Received, Balance Due, Status) or Notes.
+ *
+ * The shared secret lives in Project Settings -> Script Properties as SHEET_SECRET.
  */
 
-var SHEET_NAME = 'Applications';
-
-// order of the columns in the Sheet; the last four are filled by hand
-var COLUMNS = [
-  ['timestamp', 'Timestamp'],
-  ['name', 'Name'],
-  ['whatsapp', 'WhatsApp'],
-  ['email', 'Email'],
-  ['who', 'Who (doctor/student)'],
-  ['bmdc_or_college', 'BMDC no. / College + session'],
-  ['id_photo', 'ID photo link'],
-  ['status', 'Status'],
-  ['payment', 'Payment'],
-  ['amount', 'Amount'],
-  ['notes', 'Notes'],
-];
+var FIRST = 4, LAST = 63;
+var NAME = 32 /* AF */, DATE = 44 /* AR */, METHOD = 45 /* AS */, ID = 48 /* AV */;
+var METHODS = ['bKash', 'Nagad', 'Rocket', 'Bank', 'Cash', 'Other'];
 
 function doPost(e) {
   try {
     var body = JSON.parse((e && e.postData && e.postData.contents) || '{}');
     var secret = PropertiesService.getScriptProperties().getProperty('SHEET_SECRET');
     if (!secret || body.secret !== secret) return reply({ ok: false, error: 'unauthorized' });
+    if (!/^[A-Z][a-z]+ \d{4}$/.test(String(body.tab))) return reply({ ok: false, error: 'bad tab name' });
 
-    var row = body.row || {};
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(body.tab);
+    if (!sheet) return reply({ ok: false, error: 'Tab "' + body.tab + '" not found. Duplicate last month and name it exactly that.' });
+
     var lock = LockService.getScriptLock();
-    lock.waitLock(10000);
+    lock.waitLock(20000);
     try {
-      var sheet = getSheet();
-      var values = COLUMNS.map(function (c) {
-        return String(row[c[0]] == null ? '' : row[c[0]]).slice(0, 500);
-      });
-      var at = sheet.getLastRow() + 1;
-      var range = sheet.getRange(at, 1, 1, values.length);
-      range.setNumberFormat('@'); // plain text: keeps the leading 0 of phone numbers, no formulas
-      range.setValues([values]);
+      return reply(upsert_(sheet, body.students || []));
     } finally {
       lock.releaseLock();
     }
-    return reply({ ok: true });
   } catch (err) {
     return reply({ ok: false, error: String(err) });
   }
 }
 
-/** Opening the URL in a browser shows nothing useful on purpose. */
 function doGet() {
   return reply({ ok: false, error: 'POST only' });
 }
 
-function getSheet() {
-  var book = SpreadsheetApp.getActiveSpreadsheet();
-  var sheet = book.getSheetByName(SHEET_NAME) || book.insertSheet(SHEET_NAME);
-  if (sheet.getLastRow() === 0) {
-    sheet.appendRow(COLUMNS.map(function (c) { return c[1]; }));
-    sheet.getRange(1, 1, 1, COLUMNS.length).setFontWeight('bold');
-    sheet.setFrozenRows(1);
+/** Updates a student's line, found by ID; a new student takes the first completely empty line. */
+function upsert_(sheet, students) {
+  prepare_(sheet);
+  var count = LAST - FIRST + 1;
+  var ids = sheet.getRange(FIRST, ID, count, 1).getValues();
+  var names = sheet.getRange(FIRST, NAME, count, 1).getValues();
+  var updated = 0, added = 0, full = 0;
+
+  students.forEach(function (s) {
+    var i = -1, k;
+    for (k = 0; k < count; k++) if (String(ids[k][0]) === String(s.id)) { i = k; break; }
+    var isNew = i < 0;
+    if (isNew) {
+      if (!s.add) return;
+      for (k = 0; k < count; k++) if (!ids[k][0] && !names[k][0]) { i = k; break; }
+      if (i < 0) { full++; return; }
+    }
+    write_(sheet, FIRST + i, s);
+    ids[i][0] = s.id;
+    names[i][0] = s.name;
+    if (isNew) added++; else updated++;
+  });
+
+  if (full) return { ok: false, error: 'No empty student lines left (' + full + ' not added).' };
+  return { ok: true, updated: updated, added: added };
+}
+
+function write_(sheet, row, s) {
+  sheet.getRange(row, NAME + 1, 1, 1).setNumberFormat('@'); // keeps the leading 0 of the phone number
+  sheet.getRange(row, DATE, 1, 1).setNumberFormat('@');
+  sheet.getRange(row, NAME, 1, 10).setValues([[
+    s.name, s.whatsapp, s.email, s.who, s.bmdc, s.plan, s.fee, s.previous, s.received, s.refund,
+  ]]);
+  sheet.getRange(row, DATE, 1, 2).setValues([[s.secondDate, s.method]]);
+  sheet.getRange(row, ID, 1, 1).setValue(s.id);
+}
+
+/** First run on a tab: adds the hidden ID column and the full payment method list. */
+function prepare_(sheet) {
+  if (sheet.getMaxColumns() < ID) sheet.insertColumnsAfter(sheet.getMaxColumns(), ID - sheet.getMaxColumns());
+  if (sheet.getRange(3, ID).getValue() !== 'ID') {
+    sheet.getRange(3, ID).setValue('ID');
+    sheet.hideColumns(ID);
+    sheet.getRange(FIRST, METHOD, LAST - FIRST + 1, 1).setDataValidation(
+      SpreadsheetApp.newDataValidation().requireValueInList(METHODS, true).setAllowInvalid(true).build()
+    );
   }
-  return sheet;
 }
 
 function reply(obj) {
   return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
 }
 
-/** Run this once from the editor (Run -> testRow) to check the Sheet works. */
-function testRow() {
-  var sheet = getSheet();
-  sheet.appendRow(['TEST', 'Test row, delete me']);
+/**
+ * Safe test, run once from the editor: makes a copy of the current tab called "SCRIPT TEST",
+ * writes a fake student there twice, and logs the result. Delete that copy afterwards.
+ */
+function testOnCopy() {
+  var book = SpreadsheetApp.getActiveSpreadsheet();
+  var copy = book.getActiveSheet().copyTo(book).setName('SCRIPT TEST');
+  var s = {
+    id: 'test-1', add: true, name: 'TEST STUDENT', whatsapp: '01700000000', email: 'test@example.com', who: 'Doctor',
+    bmdc: '00000', plan: 'Installment', fee: 24000, previous: 0, received: 12000, refund: 0, secondDate: '8 Dec 2026', method: 'bKash',
+  };
+  Logger.log(JSON.stringify(upsert_(copy, [s])));
+  s.received = 24000;
+  s.secondDate = '';
+  Logger.log(JSON.stringify(upsert_(copy, [s])));
 }

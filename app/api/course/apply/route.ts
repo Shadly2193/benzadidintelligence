@@ -7,33 +7,13 @@ const MAX_IMG = 5 * 1024 * 1024;
 const IMG_EXT: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" };
 const PER_HOUR = 3;
 
-const SHEET_TIMEOUT = 5000;
+const NOTIFY_TIMEOUT = 5000;
 
 const fail = (status: number, error: string) => Response.json({ ok: false, error }, { status });
 
 function text(f: FormData, key: string, min: number, max: number) {
   const v = String(f.get(key) ?? "").trim();
   return v.length >= min && v.length <= max ? v : null;
-}
-
-/** Copies one saved application to the private Google Sheet. Never throws: the form must work even if the Sheet is down. */
-async function logToSheet(row: Record<string, string>) {
-  const url = process.env.GOOGLE_SHEET_WEBHOOK_URL;
-  const secret = process.env.GOOGLE_SHEET_WEBHOOK_SECRET;
-  if (!url || !secret) return;
-  try {
-    const r = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({ secret, row }),
-      redirect: "follow",
-      signal: AbortSignal.timeout(SHEET_TIMEOUT),
-    });
-    const j = await r.json().catch(() => null);
-    if (!r.ok || !j?.ok) console.error("google sheet log failed", r.status, j?.error ?? "");
-  } catch (e) {
-    console.error("google sheet log failed", e);
-  }
 }
 
 /** Pings Shadly's phone on Telegram for every saved application. Never throws. */
@@ -46,7 +26,7 @@ async function notifyTelegram(lines: string[]) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ chat_id: chat, text: lines.join("\n"), disable_web_page_preview: true }),
-      signal: AbortSignal.timeout(SHEET_TIMEOUT),
+      signal: AbortSignal.timeout(NOTIFY_TIMEOUT),
     });
     if (!r.ok) console.error("telegram notify failed", r.status, await r.text().catch(() => ""));
   } catch (e) {
@@ -141,7 +121,7 @@ export async function POST(req: Request) {
   }
 
   const wa = whatsapp.replace(/[^\d]/g, "").replace(/^0/, "880");
-  const notify = notifyTelegram([
+  await notifyTelegram([
     "🆕 New course application",
     full_name,
     `📱 ${whatsapp}  https://wa.me/${wa}`,
@@ -150,16 +130,5 @@ export async function POST(req: Request) {
     `💰 ${phase === "early" ? "Early bird" : "Regular"}, ${fee.toLocaleString("en-US")} BDT`,
     id_image_path ? "🪪 ID image uploaded" : "",
   ].filter(Boolean));
-  const sheet = logToSheet({
-    timestamp: new Date().toLocaleString("en-GB", { timeZone: "Asia/Dhaka" }),
-    name: full_name,
-    whatsapp,
-    email: email ?? "",
-    who: has_bmdc ? "Doctor" : "Student",
-    bmdc_or_college: has_bmdc ? `BMDC ${bmdc_number}` : `${medical_college}, session ${session}, ${student_year}`,
-    // the image stays in the private bucket; this link opens it in the admin panel (login needed)
-    id_photo: id_image_path ? `${new URL(req.url).origin}/admin/courses/applications` : "",
-  });
-  await Promise.all([notify, sheet]);
   return Response.json({ ok: true });
 }

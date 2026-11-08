@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
-import { ChevronDown, Download, IdCard, Plus, Search, Trash2 } from "lucide-react";
+import { ChevronDown, Download, IdCard, Plus, RefreshCw, Search, Trash2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 const STATUSES = ["new", "contacted", "paid_half", "paid_full", "approved", "refunded", "rejected"] as const;
@@ -24,6 +24,8 @@ interface Application {
   id: string;
   created_at: string;
   full_name: string;
+  whatsapp: string | null;
+  email: string | null;
   facebook_name: string;
   medical_college: string;
   session: string;
@@ -51,6 +53,8 @@ export default function ApplicationsManager() {
   const [q, setQ] = useState("");
   const [status, setStatus] = useState("all");
   const [open, setOpen] = useState<string | null>(null);
+  const [sheetNote, setSheetNote] = useState("");
+  const [syncing, setSyncing] = useState(false);
 
   async function load() {
     const supabase = createClient();
@@ -87,10 +91,31 @@ export default function ApplicationsManager() {
     return !s || [a.full_name, a.facebook_name, a.medical_college, a.bmdc_number ?? ""].some((x) => x.toLowerCase().includes(s));
   });
 
+  /** Copies to the Google Sheet. The admin panel's own data is already saved; a failure only shows a note. */
+  async function syncSheet(target: { id: string } | { all: true }) {
+    const r = await fetch("/api/admin/course/sheet-sync", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(target),
+    }).catch(() => null);
+    const j = await r?.json().catch(() => null);
+    if (j?.ok || j?.skipped) setSheetNote(j?.skipped && "all" in target ? "The Google Sheet is not connected yet." : "");
+    else setSheetNote(`Saved here, but the Google Sheet was not updated: ${j?.error ?? "network problem"}`);
+    return j;
+  }
+
+  async function syncAll() {
+    setSyncing(true);
+    const j = await syncSheet({ all: true });
+    setSyncing(false);
+    if (j?.ok) setSheetNote(`Google Sheet updated: ${j.updated} updated, ${j.added} added.`);
+  }
+
   async function patch(id: string, fields: Partial<Application>) {
     setApps((xs) => xs.map((a) => (a.id === id ? { ...a, ...fields } : a)));
     const { error } = await createClient().from("course_applications").update(fields).eq("id", id);
-    if (error) setErr(error.message);
+    if (error) return setErr(error.message);
+    if ("status" in fields || "fee" in fields) syncSheet({ id });
   }
 
   /** Payments move the status forward (never backwards past "approved"). */
@@ -114,6 +139,7 @@ export default function ApplicationsManager() {
     }
     setPays((xs) => [...xs, data as Payment]);
     autoStatus(a, (paidBy[a.id] ?? 0) + p.amount);
+    syncSheet({ id: a.id });
     return true;
   }
 
@@ -123,6 +149,7 @@ export default function ApplicationsManager() {
     if (error) return setErr(error.message);
     setPays((xs) => xs.filter((x) => x.id !== p.id));
     autoStatus(a, (paidBy[a.id] ?? 0) - p.amount);
+    syncSheet({ id: a.id });
   }
 
   async function viewId(path: string) {
@@ -142,10 +169,10 @@ export default function ApplicationsManager() {
   }
 
   function exportCsv() {
-    const head = ["Date", "Name", "Facebook", "College", "Session", "BMDC", "Year", "Price", "Fee", "Paid", "Due", "Status", "Notes"];
+    const head = ["Date", "Name", "WhatsApp", "Email", "Facebook", "College", "Session", "BMDC", "Year", "Price", "Fee", "Paid", "Due", "Status", "Notes"];
     const rows = apps.map((a) => {
       const paid = paidBy[a.id] ?? 0;
-      return [day(a.created_at), a.full_name, a.facebook_name, a.medical_college, a.session, a.bmdc_number ?? "", a.student_year ?? "",
+      return [day(a.created_at), a.full_name, a.whatsapp ?? "", a.email ?? "", a.facebook_name, a.medical_college, a.session, a.bmdc_number ?? "", a.student_year ?? "",
         a.price_phase ?? "", a.fee ?? 0, paid, Math.max(0, (a.fee ?? 0) - paid), STATUS_LABEL[a.status], a.notes ?? ""];
     });
     const csv = [head, ...rows].map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n");
@@ -166,12 +193,19 @@ export default function ApplicationsManager() {
           <h1 className="text-2xl font-black text-white">Course applications</h1>
           <p className="text-sm text-brand-gray-text mt-1">Only you can see this page. Add each payment as it comes in.</p>
         </div>
-        <button onClick={exportCsv} className="inline-flex items-center gap-1.5 rounded-lg border border-white/15 text-white text-xs font-bold px-3 py-2">
-          <Download size={14} /> Excel (CSV)
-        </button>
+        <div className="flex flex-wrap gap-2">
+          <button onClick={syncAll} disabled={syncing} className="inline-flex items-center gap-1.5 rounded-lg border border-white/15 text-white text-xs font-bold px-3 py-2 disabled:opacity-50">
+            <RefreshCw size={14} /> {syncing ? "Syncing…" : "Sync all to Sheet"}
+          </button>
+          <button onClick={exportCsv} className="inline-flex items-center gap-1.5 rounded-lg border border-white/15 text-white text-xs font-bold px-3 py-2">
+            <Download size={14} /> Excel (CSV)
+          </button>
+        </div>
       </div>
 
       {err && <p className="rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-300">{err}</p>}
+
+      {sheetNote && <p className="rounded-lg border border-brand-orange/40 bg-brand-orange/10 px-3 py-2 text-sm text-white">{sheetNote}</p>}
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <Stat label="Applications" value={String(apps.length)} />
@@ -220,6 +254,8 @@ export default function ApplicationsManager() {
             {isOpen && (
               <div className="px-5 pb-5 flex flex-col gap-4 border-t border-white/10 pt-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1 text-sm">
+                  <Info k="WhatsApp" v={a.whatsapp ?? "Not given"} />
+                  <Info k="Email" v={a.email ?? "Not given"} />
                   <Info k="Facebook name" v={a.facebook_name} />
                   <Info k="Session" v={a.session} />
                   <Info k={a.has_bmdc ? "BMDC number" : "Student year"} v={(a.has_bmdc ? a.bmdc_number : a.student_year) ?? ""} />
