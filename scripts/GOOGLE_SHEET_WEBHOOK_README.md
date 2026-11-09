@@ -32,6 +32,8 @@ Sheet: **Benzadid Intelligence_Website clients**, owned by **benzadidintelligenc
 
 - Enter payments only in the admin panel. Hand edits in AF–AO, AR or AS are overwritten at the next sync.
 - Notes (AU) is yours. The formula columns are never written.
+- A student whose payments are all deleted, or who is rejected, has their course cells emptied (AF–AO, AR, AS, AV) on the current month's tab. Only a line with their hidden ID is touched, and whole rows are never deleted. A refunded student's line stays.
+- An emptied line is reused by the next new student, unless it still has a note in AU.
 - Only the current month's tab is ever written. Earlier months stay as they are.
 
 ## If you change the script later

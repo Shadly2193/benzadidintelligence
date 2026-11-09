@@ -3,14 +3,15 @@
  * Setup steps: scripts/GOOGLE_SHEET_WEBHOOK_README.md
  *
  * SAFETY: this script only ever writes to the tab named in the request (the current month), only
- * on rows 4-63, and only in the columns listed below. It never deletes anything and never touches
- * columns A-AD, the formula columns (Total Received, Balance Due, Status) or Notes.
+ * on rows 4-63, and only in the columns listed below. It never deletes a row and never touches
+ * columns A-AD, the formula columns (Total Received, Balance Due, Status) or Notes. A student with
+ * no money on record has only their own course cells emptied, found by the hidden ID.
  *
  * The shared secret lives in Project Settings -> Script Properties as SHEET_SECRET.
  */
 
 var FIRST = 4, LAST = 63;
-var NAME = 32 /* AF */, DATE = 44 /* AR */, METHOD = 45 /* AS */, ID = 48 /* AV */;
+var NAME = 32 /* AF */, DATE = 44 /* AR */, METHOD = 45 /* AS */, NOTES = 47 /* AU */, ID = 48 /* AV */;
 var METHODS = ['bKash', 'Nagad', 'Rocket', 'Bank', 'Cash', 'Other'];
 
 function doPost(e) {
@@ -39,21 +40,34 @@ function doGet() {
   return reply({ ok: false, error: 'POST only' });
 }
 
-/** Updates a student's line, found by ID; a new student takes the first completely empty line. */
+/**
+ * Updates a student's line, found by ID; a new student takes the first completely empty line.
+ * A line with a note is never treated as empty, so a note can't end up beside the wrong student.
+ */
 function upsert_(sheet, students) {
   prepare_(sheet);
   var count = LAST - FIRST + 1;
   var ids = sheet.getRange(FIRST, ID, count, 1).getValues();
   var names = sheet.getRange(FIRST, NAME, count, 1).getValues();
-  var updated = 0, added = 0, full = 0;
+  var notes = sheet.getRange(FIRST, NOTES, count, 1).getValues();
+  var updated = 0, added = 0, removed = 0, full = 0;
 
   students.forEach(function (s) {
+    if (!s.id) return;
     var i = -1, k;
     for (k = 0; k < count; k++) if (String(ids[k][0]) === String(s.id)) { i = k; break; }
     var isNew = i < 0;
+    if (s.remove) {
+      if (isNew) return;
+      clear_(sheet, FIRST + i);
+      ids[i][0] = '';
+      names[i][0] = '';
+      removed++;
+      return;
+    }
     if (isNew) {
       if (!s.add) return;
-      for (k = 0; k < count; k++) if (!ids[k][0] && !names[k][0]) { i = k; break; }
+      for (k = 0; k < count; k++) if (!ids[k][0] && !names[k][0] && !notes[k][0]) { i = k; break; }
       if (i < 0) { full++; return; }
     }
     write_(sheet, FIRST + i, s);
@@ -63,11 +77,19 @@ function upsert_(sheet, students) {
   });
 
   if (full) return { ok: false, error: 'No empty student lines left (' + full + ' not added).' };
-  return { ok: true, updated: updated, added: added };
+  return { ok: true, updated: updated, added: added, removed: removed };
+}
+
+/** Empties only the cells write_ fills. Dropdowns, formulas, Notes and columns A-AD stay. */
+function clear_(sheet, row) {
+  sheet.getRange(row, NAME, 1, 10).clearContent();
+  sheet.getRange(row, DATE, 1, 2).clearContent();
+  sheet.getRange(row, ID, 1, 1).clearContent();
 }
 
 function write_(sheet, row, s) {
   sheet.getRange(row, NAME + 1, 1, 1).setNumberFormat('@'); // keeps the leading 0 of the phone number
+  sheet.getRange(row, NAME + 4, 1, 1).setNumberFormat('@'); // same for a BMDC number
   sheet.getRange(row, DATE, 1, 1).setNumberFormat('@');
   sheet.getRange(row, NAME, 1, 10).setValues([[
     s.name, s.whatsapp, s.email, s.who, s.bmdc, s.plan, s.fee, s.previous, s.received, s.refund,

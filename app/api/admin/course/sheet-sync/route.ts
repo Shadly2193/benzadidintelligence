@@ -9,7 +9,7 @@ const reply = (status: number, body: Record<string, unknown>) => Response.json(b
 /**
  * Admin only (reads go through the logged-in user's RLS). Copies paying students to the current
  * month's tab of the private Google Sheet. It only reads the database; a failure never touches it.
- * Body: { id } for one student, or { all: true }.
+ * Body: { id } for one student, { all: true }, or { removeId } after an application is deleted.
  */
 export async function POST(req: Request) {
   const url = process.env.GOOGLE_SHEET_WEBHOOK_URL;
@@ -22,9 +22,11 @@ export async function POST(req: Request) {
 
   const body = await req.json().catch(() => ({}));
   const one = typeof body.id === "string" ? body.id : null;
-  if (!one && body.all !== true) return reply(400, { ok: false, error: "Bad request." });
+  const gone = typeof body.removeId === "string" ? body.removeId : null;
+  if (!one && !gone && body.all !== true) return reply(400, { ok: false, error: "Bad request." });
+  if (gone) return send(url, secret, currentMonth().tab, [{ id: gone, remove: true }]);
 
-  let apps = supabase.from("course_applications").select(COLS).neq("status", "rejected");
+  let apps = supabase.from("course_applications").select(COLS);
   let pays = supabase.from("course_payments").select("application_id, amount, paid_on, method");
   if (one) {
     apps = apps.eq("id", one);
@@ -37,14 +39,17 @@ export async function POST(req: Request) {
   const payments = (p.data ?? []) as SheetPayment[];
   const students = ((a.data ?? []) as unknown as SheetApplication[])
     .map((x) => buildStudent(x, payments, month.key))
-    .filter((s) => one || s.add || s.refund > 0);
-  if (!students.length) return reply(200, { ok: true, updated: 0, added: 0 });
+    .filter((s) => one || s.add || s.remove || s.refund > 0);
+  if (!students.length) return reply(200, { ok: true, updated: 0, added: 0, removed: 0 });
+  return send(url, secret, month.tab, students);
+}
 
+async function send(url: string, secret: string, tab: string, students: unknown[]) {
   try {
     const r = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({ secret, tab: month.tab, students }),
+      body: JSON.stringify({ secret, tab, students }),
       redirect: "follow",
       signal: AbortSignal.timeout(TIMEOUT),
     });

@@ -92,7 +92,7 @@ export default function ApplicationsManager() {
   });
 
   /** Copies to the Google Sheet. The admin panel's own data is already saved; a failure only shows a note. */
-  async function syncSheet(target: { id: string } | { all: true }) {
+  async function syncSheet(target: { id: string } | { all: true } | { removeId: string }) {
     const r = await fetch("/api/admin/course/sheet-sync", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -108,7 +108,7 @@ export default function ApplicationsManager() {
     setSyncing(true);
     const j = await syncSheet({ all: true });
     setSyncing(false);
-    if (j?.ok) setSheetNote(`Google Sheet updated: ${j.updated} updated, ${j.added} added.`);
+    if (j?.ok) setSheetNote(`Google Sheet updated: ${j.updated} updated, ${j.added} added, ${j.removed ?? 0} removed.`);
   }
 
   async function patch(id: string, fields: Partial<Application>) {
@@ -166,6 +166,7 @@ export default function ApplicationsManager() {
     if (error) return setErr(error.message);
     setApps((xs) => xs.filter((x) => x.id !== a.id));
     setPays((xs) => xs.filter((x) => x.application_id !== a.id));
+    syncSheet({ removeId: a.id });
   }
 
   function exportCsv() {

@@ -23,6 +23,7 @@ export interface SheetPayment {
 export interface SheetStudent {
   id: string;
   add: boolean; // may take a new line; otherwise only an existing line is updated
+  remove: boolean; // no money on record (or rejected): an existing line is emptied
   name: string;
   whatsapp: string;
   email: string;
@@ -63,9 +64,11 @@ export function buildStudent(a: SheetApplication, payments: SheetPayment[], mont
   const previous = list.filter((p) => p.paid_on.slice(0, 7) < monthKey).reduce((s, p) => s + p.amount, 0);
   const refunded = a.status === "refunded";
   const installment = paid < fee || list.length > 1;
+  const remove = paid === 0 || a.status === "rejected";
   return {
     id: a.id,
-    add: paid > 0 && !refunded,
+    add: !remove && !refunded,
+    remove,
     name: a.full_name,
     whatsapp: a.whatsapp ?? "",
     email: a.email ?? "",
