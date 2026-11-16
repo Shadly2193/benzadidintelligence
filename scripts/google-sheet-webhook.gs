@@ -86,8 +86,39 @@ function upsert_(sheet, students) {
     if (isNew) added++; else updated++;
   });
 
+  compact_(sheet);
   if (full) return { ok: false, error: 'No empty student lines left (' + full + ' not added).' };
   return { ok: true, updated: updated, added: added, removed: removed };
+}
+
+/**
+ * Closes gaps so the serial numbers stay in order: every used line moves up, keeping its order.
+ * Only the course cells move (AF-AO, AR-AS, AU note, AV ID). Columns A-AE and the formula columns stay.
+ */
+function compact_(sheet) {
+  var count = LAST - FIRST + 1;
+  var main = sheet.getRange(FIRST, NAME, count, 10).getValues();
+  var pay = sheet.getRange(FIRST, DATE, count, 2).getValues();
+  var tail = sheet.getRange(FIRST, NOTES, count, 2).getValues();
+  var used = [], k;
+  for (k = 0; k < count; k++) if ((main[k].join('') + pay[k].join('') + tail[k].join('')) !== '') used.push(k);
+  var gap = used.some(function (r, j) { return r !== j; });
+  if (!gap) return false;
+  var blank = function (n) { var a = []; for (var x = 0; x < n; x++) a.push(''); return a; };
+  var m2 = [], p2 = [], t2 = [];
+  for (k = 0; k < count; k++) {
+    var r = used[k];
+    m2.push(r === undefined ? blank(10) : main[r]);
+    p2.push(r === undefined ? blank(2) : pay[r]);
+    t2.push(r === undefined ? blank(2) : tail[r]);
+  }
+  sheet.getRange(FIRST, NAME + 1, count, 1).setNumberFormat('@');
+  sheet.getRange(FIRST, NAME + 4, count, 1).setNumberFormat('@');
+  sheet.getRange(FIRST, DATE, count, 1).setNumberFormat('@');
+  sheet.getRange(FIRST, NAME, count, 10).setValues(m2);
+  sheet.getRange(FIRST, DATE, count, 2).setValues(p2);
+  sheet.getRange(FIRST, NOTES, count, 2).setValues(t2);
+  return true;
 }
 
 /** Empties only the cells write_ fills. Dropdowns, formulas, Notes and columns A-AD stay. */
