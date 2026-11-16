@@ -111,18 +111,19 @@ export default function ApplicationsManager() {
     if (j?.ok) setSheetNote(`Google Sheet updated: ${j.updated} updated, ${j.added} added, ${j.removed ?? 0} removed.`);
   }
 
-  async function patch(id: string, fields: Partial<Application>) {
+  async function patch(id: string, fields: Partial<Application>, sync = true) {
     setApps((xs) => xs.map((a) => (a.id === id ? { ...a, ...fields } : a)));
     const { error } = await createClient().from("course_applications").update(fields).eq("id", id);
     if (error) return setErr(error.message);
-    if ("status" in fields || "fee" in fields) syncSheet({ id });
+    if (sync && ("status" in fields || "fee" in fields)) syncSheet({ id });
   }
 
   /** Payments move the status forward (never backwards past "approved"). */
   function autoStatus(a: Application, paid: number) {
     if (["approved", "refunded", "rejected"].includes(a.status)) return;
     const next = paid <= 0 ? (a.status.startsWith("paid") ? "contacted" : a.status) : paid >= (a.fee ?? 0) ? "paid_full" : "paid_half";
-    if (next !== a.status) patch(a.id, { status: next });
+    // the payment's own sync covers this line, so no second request races it
+    if (next !== a.status) patch(a.id, { status: next }, false);
   }
 
   async function addPayment(a: Application, p: Omit<Payment, "id" | "application_id">) {

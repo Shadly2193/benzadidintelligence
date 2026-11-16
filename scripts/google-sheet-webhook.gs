@@ -27,7 +27,9 @@ function doPost(e) {
     var lock = LockService.getScriptLock();
     lock.waitLock(20000);
     try {
-      return reply(upsert_(sheet, body.students || []));
+      var result = upsert_(sheet, body.students || []);
+      SpreadsheetApp.flush(); // writes must land before the lock opens, or a parallel request misses this line
+      return reply(result);
     } finally {
       lock.releaseLock();
     }
@@ -57,6 +59,14 @@ function upsert_(sheet, students) {
     var i = -1, k;
     for (k = 0; k < count; k++) if (String(ids[k][0]) === String(s.id)) { i = k; break; }
     var isNew = i < 0;
+    // a student found on more than one line keeps the first; extra copies are emptied
+    for (k = i + 1; !isNew && k < count; k++) {
+      if (String(ids[k][0]) !== String(s.id)) continue;
+      clear_(sheet, FIRST + k);
+      ids[k][0] = '';
+      names[k][0] = '';
+      removed++;
+    }
     if (s.remove) {
       if (isNew) return;
       clear_(sheet, FIRST + i);
