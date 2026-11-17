@@ -23,6 +23,7 @@ import {
   School,
   Wallet,
   BarChart3,
+  MapPin,
 } from "lucide-react";
 
 const NAV_PRIMARY = [
@@ -39,6 +40,7 @@ const NAV_PRIMARY = [
   { href: "/admin/courses/dashboard", label: "Course Dashboard", icon: BarChart3 },
   { href: "/admin/courses/digital-residency", label: "Course Page", icon: School },
   { href: "/admin/courses/applications", label: "Course Students", icon: Wallet },
+  { href: "/admin/courses/map", label: "Course Map", icon: MapPin },
 ];
 
 const NAV_SECONDARY = [
@@ -60,6 +62,7 @@ const LABELS: Record<string, string> = {
   "/admin/courses/dashboard": "Course Dashboard",
   "/admin/courses/digital-residency": "Course Page",
   "/admin/courses/applications": "Course Students",
+  "/admin/courses/map": "Course Map",
   "/admin/media": "Media Library",
   "/admin/settings": "Site Settings",
 };

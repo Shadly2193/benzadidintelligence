@@ -25,6 +25,7 @@ const GROUPS: [keyof CourseContent, string, string][] = [
   ["who", "Who it is for", ""],
   ["fit", "Is this for you?", "Each row: [not for you, for you]."],
   ["instructor", "Your instructor", ""],
+  ["collegeMap", "College map", "Pins come by themselves from Course Students. Only these words are edited here."],
   ["price", "Price", "The early bird amount is under 'Dates, early bird and countdown'."],
   ["riskFree", "Risk-free start (refund)", ""],
   ["walkaway", "What you get (value)", "'v' is the counted value in BDT. The total is added up by itself."],

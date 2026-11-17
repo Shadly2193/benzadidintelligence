@@ -20,6 +20,7 @@ export const courseDefaults = {
   who: site.who,
   fit: site.fit,
   instructor: site.instructor,
+  collegeMap: site.collegeMap,
   price: site.price,
   riskFree: site.riskFree,
   walkaway: site.walkaway,

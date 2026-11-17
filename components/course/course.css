@@ -825,3 +825,9 @@ html.dr-playing #gauge{opacity:0!important;pointer-events:none}
 .dr-page .hroad.pinned{padding:0}
 .dr-page .hroad.pinned .hpin{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;justify-content:center;padding-top:var(--dr-nav,88px);overflow:hidden}
 .dr-page .hroad.pinned .hvp{scroll-snap-type:none}
+/* College map section (under the instructor) */
+.dr-page .cmap-head{text-align:center;max-width:820px;margin:0 auto 36px}
+.dr-page .cmap-head .label{justify-content:center}
+.dr-page .cmap-head .lead{margin:0 auto}
+.dr-page .cmap-frame{height:clamp(420px,70vh,640px);border:1px solid rgba(200,50,5,.22);border-radius:16px;overflow:hidden;box-shadow:0 0 48px rgba(255,106,0,.08)}
+@media(max-width:760px){.dr-page .cmap-head{margin-bottom:24px}.dr-page .cmap-frame{height:min(72vh,480px)}}

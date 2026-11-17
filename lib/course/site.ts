@@ -373,6 +373,13 @@ export const final = {
   ctaGhost: 'See the 16 weeks again',
 };
 
+export const collegeMap = {
+  label: 'OUR LEARNERS',
+  title: 'Doctors from different medical colleges',
+  accent: 'have already joined',
+  lead: 'Each glowing pin is a medical college our doctors come from.',
+};
+
 export const sections: { id: string; name: string }[] = [
   { id: 'top', name: 'Start' },
   { id: 'problem', name: 'The problem' },
@@ -384,6 +391,7 @@ export const sections: { id: string; name: string }[] = [
   { id: 'how', name: 'How it works' },
   { id: 'who', name: 'Who it is for' },
   { id: 'inst', name: 'Your instructor' },
+  { id: 'map', name: 'College map' },
   { id: 'price', name: 'Price' },
   { id: 'clock', name: 'Countdown' },
   { id: 'value', name: 'What you get' },

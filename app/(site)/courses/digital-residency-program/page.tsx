@@ -10,6 +10,7 @@ import Hero from "@/components/course/Hero";
 import HowItWorks from "@/components/course/HowItWorks";
 import Instructor from "@/components/course/Instructor";
 import Join from "@/components/course/Join";
+import MapSection from "@/components/course/MapSection";
 import Price from "@/components/course/Price";
 import Problem from "@/components/course/Problem";
 import Proof from "@/components/course/Proof";
@@ -35,6 +36,7 @@ const SECTIONS: Record<string, React.ComponentType> = {
   how: HowItWorks,
   who: WhoFor,
   inst: Instructor,
+  map: MapSection,
   price: Price,
   clock: Countdown,
   value: Walkaway,
