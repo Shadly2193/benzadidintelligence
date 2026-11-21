@@ -326,7 +326,7 @@ export const join = {
     idImg: 'BMDC card or student ID image',
   },
   years: ['1st year', '2nd year', '3rd year', '4th year', '5th year', 'Intern'],
-  idNote: 'Your ID image is kept private. Only I can see it. You can also send it on WhatsApp.',
+  idNote: 'Your ID image is kept private. Only I can see it.',
   closedNote: 'Registration is closed for this batch.',
   agree: 'I have read the program details and the refund rules, and I agree.',
   submit: 'Send my request',

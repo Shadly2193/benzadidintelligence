@@ -55,7 +55,7 @@ export async function POST(req: Request) {
   const has_bmdc = f.get("hasbmdc") === "yes";
   const bmdc_number = has_bmdc ? text(f, "bmdc", 1, 20) : null;
   const student_year = has_bmdc ? null : text(f, "year", 1, 20);
-  if (!full_name || !whatsapp || !facebook_name || !medical_college || !session || f.get("agree") !== "on")
+  if (!full_name || !whatsapp || !email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !facebook_name || !medical_college || !session || f.get("agree") !== "on")
     return fail(400, "Please fill in every field.");
   if (has_bmdc ? !bmdc_number : !student_year) return fail(400, "Please add your BMDC number or your year.");
 
@@ -82,7 +82,8 @@ export async function POST(req: Request) {
   const id = randomUUID();
   let id_image_path: string | null = null;
   const img = f.get("idimg");
-  if (img instanceof File && img.size > 0) {
+  if (!(img instanceof File) || img.size === 0) return fail(400, "Please add your BMDC card or student ID image.");
+  {
     const ext = IMG_EXT[img.type];
     if (!ext || img.size > MAX_IMG) return fail(400, "ID image must be JPG, PNG or WEBP, up to 5 MB.");
     id_image_path = `${id}.${ext}`;

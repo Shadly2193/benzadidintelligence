@@ -111,7 +111,7 @@ export default function Join() {
           </label>
           <label>
             {fl.email}
-            <input name="email" type="email" maxLength={120} placeholder="you@example.com (optional)" />
+            <input name="email" type="email" required maxLength={120} placeholder="you@example.com" />
           </label>
           <label>
             {fl.fb}
@@ -153,7 +153,7 @@ export default function Join() {
           )}
           <label>
             {fl.idImg}
-            <input type="file" name="idimg" accept="image/jpeg,image/png,image/webp" />
+            <input type="file" name="idimg" required accept="image/jpeg,image/png,image/webp" />
           </label>
           <p className="sm">{join.idNote}</p>
           <label className="chk">
