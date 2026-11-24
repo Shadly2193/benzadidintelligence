@@ -15,6 +15,8 @@ export interface College {
 export const COLLEGES: College[] = [
   // Private and specific names first
   { key: "cbmc", name: "Community Based Medical College", city: "Mymensingh", ll: [24.768, 90.418], a: ["community based", "cbmc", "cbmcb"] },
+  { key: "dcmc", name: "Dhaka Community Medical College", city: "Dhaka", ll: [23.749, 90.405], a: ["dhaka community", "dcmc"] },
+  { key: "rpdc", name: "Rangpur Dental College", city: "Rangpur", ll: [25.745, 89.252], a: ["rangpur dental"] },
   { key: "dnmc", name: "Dhaka National Medical College", city: "Dhaka", ll: [23.711, 90.412], a: ["dhaka national", "dnmc"] },
   { key: "ddc", name: "Dhaka Dental College", city: "Dhaka", ll: [23.781, 90.353], a: ["dhaka dental", "ddc"] },
   { key: "sapporo", name: "Sapporo Dental College", city: "Dhaka", ll: [23.874, 90.39], a: ["sapporo"] },
