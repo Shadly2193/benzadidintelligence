@@ -378,6 +378,9 @@ export const collegeMap = {
   title: 'Doctors from different medical colleges',
   accent: 'have already joined',
   lead: 'Each glowing pin is a medical college our doctors come from.',
+  toast: 'on',
+  toastText: 'registered for the program',
+  toastJoined: 'joined the private community',
 };
 
 export const sections: { id: string; name: string }[] = [

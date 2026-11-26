@@ -11,6 +11,7 @@ import HowItWorks from "@/components/course/HowItWorks";
 import Instructor from "@/components/course/Instructor";
 import Join from "@/components/course/Join";
 import MapSection from "@/components/course/MapSection";
+import RecentJoins from "@/components/course/RecentJoins";
 import Price from "@/components/course/Price";
 import Problem from "@/components/course/Problem";
 import Proof from "@/components/course/Proof";
@@ -85,6 +86,7 @@ export default async function DigitalResidencyPage({
             const Section = SECTIONS[s.id];
             return <Section key={s.id} />;
           })}
+        <RecentJoins />
         <ChromeUI />
         <Track />
       </div>
