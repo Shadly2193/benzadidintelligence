@@ -25,9 +25,10 @@ interface Props {
   comparisonRows: DbComparisonRow[];
   customPlanPoints: string[];
   config: PricingConfig;
+  faq?: { q: string; a: string }[];
 }
 
-export default function WebsiteServicePageClient({ service, videos, tiers, comparisonRows, customPlanPoints, config }: Props) {
+export default function WebsiteServicePageClient({ service, videos, tiers, comparisonRows, customPlanPoints, config, faq }: Props) {
   const [activeTier, setActiveTier] = useState<Tier | null>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 
@@ -84,7 +85,7 @@ export default function WebsiteServicePageClient({ service, videos, tiers, compa
       afterAllSlot={
         <>
           <CustomPlanBanner points={customPlanPoints} custom={config.custom} />
-          <PricingComparisonTable rows={comparisonRows} bonusRowIds={config.bonusRowIds} />
+          <PricingComparisonTable rows={comparisonRows} bonusRowIds={config.bonusRowIds} faq={faq} />
         </>
       }
     />

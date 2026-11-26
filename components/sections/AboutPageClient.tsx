@@ -18,9 +18,10 @@ interface AboutPageProps {
   timeline: { items: { period: string; role: string; body: string; image: string }[] };
   philosophy: { big: string[]; sub: string };
   quickFacts: { items: { label: string; value: string }[] };
+  beforeCta?: React.ReactNode;
 }
 
-export default function AboutPageClient({ intro, timeline, philosophy, quickFacts }: AboutPageProps) {
+export default function AboutPageClient({ intro, timeline, philosophy, quickFacts, beforeCta }: AboutPageProps) {
   const heroSectionRef = useRef<HTMLElement>(null);
   const timelineRef = useRef<HTMLElement>(null);
 
@@ -275,6 +276,8 @@ export default function AboutPageClient({ intro, timeline, philosophy, quickFact
           </motion.div>
         </div>
       </section>
+
+      {beforeCta}
 
       {/* ── CTA ── */}
       <section className="py-20 bg-transparent px-6 text-center grid-bg relative overflow-hidden">

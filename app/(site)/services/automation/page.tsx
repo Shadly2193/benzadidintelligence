@@ -1,3 +1,4 @@
+import { pageMetadata } from "@/lib/seo";
 import ServicePageTemplate from "@/components/sections/ServicePageTemplate";
 import ServiceVideoGrid from "@/components/ui/ServiceVideoGrid";
 import { getService } from "@/lib/data/services";
@@ -20,6 +21,10 @@ const videoSlot = (
     featured
   />
 );
+
+export async function generateMetadata() {
+  return pageMetadata("automation");
+}
 
 export default async function AutomationServicePage() {
   const service = await getService("automation");

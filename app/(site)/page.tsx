@@ -1,3 +1,4 @@
+import { pageMetadata } from "@/lib/seo";
 import HeroSection from "@/components/sections/HeroSection";
 import TrustStrip from "@/components/sections/TrustStrip";
 import WorkedWith from "@/components/sections/WorkedWith";
@@ -17,6 +18,10 @@ import {
   getClientLogos,
   getTestimonials,
 } from "@/lib/data/home";
+
+export async function generateMetadata() {
+  return pageMetadata("home");
+}
 
 export default async function HomePage() {
   const [

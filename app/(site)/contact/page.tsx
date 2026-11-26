@@ -1,3 +1,4 @@
+import { pageMetadata } from "@/lib/seo";
 import ContactPageClient from "@/components/sections/ContactPageClient";
 import { createClient } from "@/lib/supabase/server";
 
@@ -14,6 +15,10 @@ async function getContactData() {
     socials,
     services: servicesRes.data ?? [],
   };
+}
+
+export async function generateMetadata() {
+  return pageMetadata("contact");
 }
 
 export default async function ContactPage() {

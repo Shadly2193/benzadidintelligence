@@ -1,6 +1,11 @@
+import { pageMetadata } from "@/lib/seo";
 import ServicePageTemplate from "@/components/sections/ServicePageTemplate";
 import ServiceVideoGrid from "@/components/ui/ServiceVideoGrid";
 import { getService, getContentVideos } from "@/lib/data/services";
+
+export async function generateMetadata() {
+  return pageMetadata("content");
+}
 
 export default async function ContentPage() {
   const [service, contentVideos] = await Promise.all([getService("content"), getContentVideos()]);

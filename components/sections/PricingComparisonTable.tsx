@@ -36,7 +36,7 @@ function Cell({ value, highlight }: { value: string | boolean; highlight?: boole
   return <span className={`text-xs sm:text-sm ${highlight ? "text-brand-orange font-semibold" : "text-white/70"}`}>{value}</span>;
 }
 
-export default function PricingComparisonTable({ rows: dbRows, bonusRowIds }: { rows: DbComparisonRow[]; bonusRowIds: string[] }) {
+export default function PricingComparisonTable({ rows: dbRows, bonusRowIds, faq }: { rows: DbComparisonRow[]; bonusRowIds: string[]; faq?: { q: string; a: string }[] }) {
   const ROWS: Row[] = dbRows.map((r) => ({
     feature: r.feature,
     essential: parseValue(r.essential_value),
@@ -112,6 +112,24 @@ export default function PricingComparisonTable({ rows: dbRows, bonusRowIds }: { 
               </tbody>
             </table>
           </div>
+
+          {faq && faq.length > 0 && (
+            <div className="p-6 sm:p-8 border-t border-white/8">
+              <p className="section-label mb-2">FAQ</p>
+              <h2 className="text-xl sm:text-2xl font-black text-white mb-5">Questions doctors ask before building a website</h2>
+              <div className="divide-y divide-white/8">
+                {faq.map((f, i) => (
+                  <details key={i} className="group py-3.5" open={i === 0}>
+                    <summary className="flex justify-between items-center gap-4 cursor-pointer list-none text-sm sm:text-base font-semibold text-white">
+                      <h3>{f.q}</h3>
+                      <span className="text-brand-orange text-xl leading-none group-open:rotate-45 transition-transform">+</span>
+                    </summary>
+                    <p className="mt-2.5 text-sm text-brand-gray-text leading-relaxed">{f.a}</p>
+                  </details>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="p-6 sm:p-8 text-center border-t border-white/8">
             <p className="text-sm text-brand-gray-text mb-4">

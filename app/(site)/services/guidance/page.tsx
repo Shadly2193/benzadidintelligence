@@ -1,6 +1,11 @@
+import { pageMetadata } from "@/lib/seo";
 import ServicePageTemplate from "@/components/sections/ServicePageTemplate";
 import GuidanceTutorialGrid from "@/components/sections/GuidanceTutorialGrid";
 import { getService, getTutorials } from "@/lib/data/services";
+
+export async function generateMetadata() {
+  return pageMetadata("guidance");
+}
 
 export default async function MentorshipServicePage() {
   const [service, tutorials] = await Promise.all([getService("guidance"), getTutorials()]);

@@ -163,8 +163,8 @@ export default function Footer({ siteName: SITE_NAME, tagline: SITE_TAGLINE, log
         </div>
 
         <div className="border-t border-white/10 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-white/40">© {new Date().getFullYear()} Md. Shadly Benzadid. All rights reserved.</p>
-          <p className="text-xs text-white/40">{SITE_NAME} — AI Agency</p>
+          <p className="text-xs text-white/40">© {new Date().getFullYear()} Dr. Md. Shadly Benzadid. All rights reserved.</p>
+          <p className="text-xs text-white/40">{SITE_NAME} — AI Agency for Doctors &amp; Professionals</p>
         </div>
       </div>
     </footer>

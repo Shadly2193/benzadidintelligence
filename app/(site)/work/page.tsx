@@ -1,3 +1,4 @@
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import WorkHero from "@/components/sections/WorkHero";
 import WorkWebsiteShowcase from "@/components/sections/WorkWebsiteShowcase";
@@ -23,6 +24,10 @@ async function getWorkPageData() {
     contentVideos: contentRes.data ?? [],
     tutorials: tutorialsRes.data ?? [],
   };
+}
+
+export async function generateMetadata() {
+  return pageMetadata("work");
 }
 
 export default async function WorkPage() {

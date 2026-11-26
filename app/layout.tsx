@@ -11,6 +11,7 @@ const inter = localFont({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.benzadidintelligence.com"),
   title: "Benzadid Intelligence — AI Websites, Agents & Automation",
   description: "AI-powered websites, automation agents, AI audit consultancy, and mentorship for professionals.",
   icons: {

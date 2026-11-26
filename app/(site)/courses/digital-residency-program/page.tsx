@@ -19,6 +19,7 @@ import Roadmap from "@/components/course/Roadmap";
 import Track from "@/components/course/Track";
 import Walkaway from "@/components/course/Walkaway";
 import WhoFor from "@/components/course/WhoFor";
+import CourseJsonLd from "@/components/seo/CourseJsonLd";
 import "@/components/course/course.css";
 import { CourseProvider } from "@/lib/course/content";
 import { mergeCourse } from "@/lib/course/defaults";
@@ -58,7 +59,8 @@ async function loadContent(preview: boolean) {
 }
 
 export const metadata: Metadata = {
-  title: "Digital Residency Program",
+  title: { absolute: "Digital Residency Program: Digital Marketing & AI Course for Doctors — Dr. Md. Shadly Benzadid" },
+  alternates: { canonical: "/courses/digital-residency-program" },
   description:
     "A 16-week live program for Bangladeshi doctors and medical students. Learn to build your own brand, videos and website with AI. Built only for doctors, by a doctor.",
   openGraph: {
@@ -78,6 +80,12 @@ export default async function DigitalResidencyPage({
   const { content, preview } = await loadContent(p === "1");
   return (
     <CourseProvider value={content}>
+      <CourseJsonLd
+        amount={(content as any).price?.amount}
+        currency={(content as any).price?.currency}
+        start={(content as any).schedule?.classStart}
+        faq={(content as any).faq?.items}
+      />
       {preview && <div className="dr-preview-bar">PREVIEW: this is your unpublished draft. Visitors still see the published page.</div>}
       <div className="dr-page">
         {content.sections

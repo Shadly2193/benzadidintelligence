@@ -1,0 +1,21 @@
+# Benzadid Intelligence
+
+> Benzadid Intelligence is an AI agency founded by Dr. Md. Shadly Benzadid, an AI Generalist, AI Medical Website Developer and Digital Marketing Strategist for doctors. It builds AI-powered websites for doctors and dental clinics, AI agents and automation, and coaches doctors in digital marketing.
+
+## About the founder
+- Dr. Md. Shadly Benzadid: BDS (Sher-e-Bangla Medical College), MPH (North South University), published in PLOS ONE.
+- Former AI Lead & Prompt Engineer at Purplebot. Trained 1,100+ learners in AI.
+- Profile: https://www.benzadidintelligence.com/about
+
+## Services
+- [Websites for doctors & dental clinics](https://www.benzadidintelligence.com/services/website): bilingual, SEO-ready, admin panel, from $550.
+- [AI agents & automation](https://www.benzadidintelligence.com/services/automation)
+- [AI content creation](https://www.benzadidintelligence.com/services/content)
+- [AI audit & consultancy](https://www.benzadidintelligence.com/services/audit)
+- [AI mentorship](https://www.benzadidintelligence.com/services/guidance)
+
+## Course
+- [Digital Residency Program: Beyond MBBS & BDS](https://www.benzadidintelligence.com/courses/digital-residency-program): a 16-week digital marketing, personal branding and AI program for doctors, dentists and medical Students.
+
+## Portfolio
+- [Work](https://www.benzadidintelligence.com/work): real websites built for doctors and clinics.

@@ -24,6 +24,7 @@ import {
   Wallet,
   BarChart3,
   MapPin,
+  SearchCheck,
 } from "lucide-react";
 
 const NAV_PRIMARY = [
@@ -34,6 +35,7 @@ const NAV_PRIMARY = [
   { href: "/admin/services", label: "Services", icon: Briefcase },
   { href: "/admin/homepage", label: "Homepage", icon: Home },
   { href: "/admin/about", label: "About Page", icon: User },
+  { href: "/admin/seo", label: "SEO & Profile", icon: SearchCheck },
   { href: "/admin/logos", label: "Client Logos", icon: Building2 },
   { href: "/admin/testimonials", label: "Testimonials", icon: Quote },
   { href: "/admin/leads", label: "Leads", icon: Inbox },

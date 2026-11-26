@@ -2,6 +2,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import ScrollToTop from "@/components/layout/ScrollToTop";
 import { createClient } from "@/lib/supabase/server";
+import SiteJsonLd from "@/components/seo/SiteJsonLd";
 
 async function getSiteData() {
   const supabase = await createClient();
@@ -19,6 +20,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
 
   return (
     <>
+      <SiteJsonLd />
       <ScrollToTop />
       <Navbar siteName={general.site_name ?? "Benzadid Intelligence"} logoUrl={general.logo_url ?? "/images/logo.png"} services={services} />
       <main className="flex-1">{children}</main>
